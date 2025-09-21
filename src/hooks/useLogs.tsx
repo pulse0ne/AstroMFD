@@ -1,5 +1,5 @@
 import {createContext, PropsWithChildren, useContext, useEffect, useState} from "react";
-import {LogEntry} from "../statusbar/types.ts";
+import {LogEntry} from "../types/websocket.ts";
 import useTauriListen from "./useTauriListen.tsx";
 
 const MAX_LOGS = 5000;

@@ -1,10 +1,6 @@
 import {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api/core";
-
-export type FontSpec = {
-  name: string;
-  postscriptName: string;
-};
+import {FontSpec} from "../types/fonts.ts";
 
 export type AttributesPanelProps = {
   onPrint: () => void;

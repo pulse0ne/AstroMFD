@@ -1,53 +1,46 @@
 import {Layer, Rect, Stage} from "react-konva";
 import {useEffect, useRef, useState} from "react";
-import Button, {ButtonAttributes} from "../widgets/Button.tsx";
-import {Position, Size, Widget} from "../widgets/widget.ts";
+import {ButtonAttributes, Position, Size, Widget} from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
-import "./editor.css";
 import {AttributesPanel} from "./AttributesPanel.tsx";
 import {Toolbar} from "./Toolbar.tsx";
+import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
+
+import "./styles.css";
 
 const TEST: ButtonAttributes = {
+  id: "1",
   type: "button",
-  width: 200,
-  height: 100,
-  x: 400,
-  y: 400,
   buttonType: "action",
   navTarget: null,
-  primary: {
-    fill: "rgb(56,30,83)",
-    text: "Hello",
+  shape: {
+    size: {width: 200, height: 100},
+    position: {x: 200, y: 200},
+    fill: "rgb(56, 30, 83)",
+    stroke: "rgb(130, 51, 152)",
+    strokeWidth: 1,
+    cornerRadius: 8
+  },
+  text: {
+    text: "Button",
+    font: null,
     fontSize: 16,
     fontColor: "white",
-    textAlignmentH: "center",
-    textAlignmentV: "middle",
-    strokeWidth: 2,
-    cornerRadius: 8,
-    icon: null,
-    font: null,
-    stroke: "rgb(130,51,152)"
+    horizontalAlignment: "center",
+    verticalAlignment: "middle"
   },
   pressed: {
-    fontSize: 16,
-    fontColor: "white",
-    textAlignmentH: "center",
-    textAlignmentV: "middle",
-    strokeWidth: 0,
-    cornerRadius: 0,
-    icon: null,
-    text: null,
-    font: null,
-    fill: null,
-    stroke: null
+    shape: {},
+    text: {}
   }
 };
 
 const SCALE_FACTOR = 1.05;
 
 export default function Editor() {
-  const [ testObj, setTestObj ] = useState(TEST);
+  const [ widgets, setWidgets ] = useState([TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2" })]);
+
   const [ selectedItem, setSelectedItem ] = useState<number|null>(null);
   const [ workspaceSize, setWorkspaceSize ] = useState<Size>({ width: 1200, height: 800 });
   const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
@@ -82,7 +75,14 @@ export default function Editor() {
   }, []);
 
   const handleUpdate = ({ x, y, width, height }: Size & Position) => {
-    setTestObj(ov => Object.assign({}, ov, { x, y, width, height }));
+    if (selectedItem === null) return;
+    const widget = widgets[selectedItem];
+    widget.shape.size = { width, height };
+    widget.shape.position = { x, y };
+    setWidgets(ov => {
+      ov.splice(selectedItem, 1, widget);
+      return [...ov];
+    });
   };
 
   const handleDeselect = (evt: KonvaEventObject<MouseEvent>) => {
@@ -167,19 +167,21 @@ export default function Editor() {
                 />
               </Layer>
               <Layer>
-                {/* TODO: add real components here */}
-                <Button
-                  attr={testObj}
-                  state="primary"
-                  isSelected={selectedItem === 1}
-                  onSelect={() => setSelectedItem(1)}
-                  onUpdate={handleUpdate}
-                />
+                {widgets.map(((widget, ix) => (
+                  <WidgetRenderer
+                    key={widget.id}
+                    widget={widget}
+                    onSelect={() => setSelectedItem(ix)}
+                    onUpdate={handleUpdate}
+                    isSelected={ix === selectedItem}
+                    state="primary"
+                  />
+                )))}
               </Layer>
             </Stage>
           </div>
         </div>
-        <AttributesPanel onPrint={() => console.log(testObj)} />
+        <AttributesPanel onPrint={() => console.log(widgets)} />
       </div>
     </div>
   );

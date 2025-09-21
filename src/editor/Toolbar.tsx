@@ -1,4 +1,4 @@
-import {Size, Widget} from "../widgets/widget.ts";
+import {Size, Widget} from "../types/widget.ts";
 import {
   MdAdd,
   MdClose,
@@ -47,6 +47,7 @@ export function Toolbar({ dimensions, onDimensionsChange }: ToolbarProps) {
           left: "50%",
           transform: "translateX(-50%)"
       }}>
+
         <input
           style={{ width: 50 }}
           value={dimensions.width}
@@ -62,6 +63,7 @@ export function Toolbar({ dimensions, onDimensionsChange }: ToolbarProps) {
           min={0}
           onChange={handleHeightChange}
         />
+
         <Popup
           trigger={
             <MdPhoneAndroid

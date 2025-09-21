@@ -1,5 +1,5 @@
 import {createContext, PropsWithChildren, useContext, useEffect, useState} from "react";
-import {ClientInfo} from "../statusbar/types.ts";
+import {ClientInfo} from "../types/websocket.ts";
 import useTauriListen from "./useTauriListen.tsx";
 
 type DevicesContextValue = { devices: ClientInfo[] };

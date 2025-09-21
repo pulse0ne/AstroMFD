@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api/core";
-import "./statusbar.css";
 import {useDevices} from "../hooks/useDevices.tsx";
 import {MdOutlineQrCode2} from "react-icons/md";
 import {QrCodeModal} from "./QrCodeModal.tsx";
 import {LogsModal} from "./LogsModal.tsx";
 import {LogsProvider} from "../hooks/useLogs.tsx";
+
+import "./styles.css";
 
 type ModalType = "qr" | "logs";
 

@@ -1,13 +1,13 @@
-import {LogEntry} from "./types.ts";
+import {LogEntry} from "../types/websocket.ts";
 import {useLogs} from "../hooks/useLogs.tsx";
 import Popup from "reactjs-popup";
 
-export type LogsOverlayProps = {
+export type LogsModalProps = {
   open: boolean,
   onClose: () => void;
 };
 
-export function LogsModal({ open, onClose }: LogsOverlayProps) {
+export function LogsModal({ open, onClose }: LogsModalProps) {
   const { logs } = useLogs();
   return (
     <Popup

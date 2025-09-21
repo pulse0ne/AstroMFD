@@ -10,4 +10,4 @@ export type ClientInfo = {
   viewportHeight: number;
 };
 
-export type ClientsUpdatedEvent = ClientInfo[];
+

@@ -51,6 +51,7 @@ pub struct Position {
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WidgetBase {
+    pub id: String,
     #[serde(flatten)]
     pub size: Size,
     #[serde(flatten)]

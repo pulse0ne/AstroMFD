@@ -1,35 +1,16 @@
-import {Attributes, Position, Size, Widget} from "./widget.ts";
+import {ButtonAttributes, ShapeAttributes, TextAttributes} from "../types/widget.ts";
 import {Group, Rect, Text, Transformer} from "react-konva";
 import {KonvaEventObject} from "konva/lib/Node";
 import {useCallback, useEffect, useRef} from "react";
 import {Shape} from "konva/lib/Shape";
+import {WidgetPropsBase} from "./WidgetPropsBase.ts";
 
-export type ButtonType = "action" | "navigation" | "toggle";
-
-export type ButtonAttributes = Widget & {
-  type: "button",
-  buttonType: ButtonType,
-  navTarget: string | null,
-  primary: Attributes;
-  pressed: Attributes;
-};
-
-export type ButtonProps = {
+export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;
   state: "primary" | "pressed";
-  onSelect: () => void;
-  onUpdate: (sizePos: Size & Position) => void;
-  isSelected?: boolean;
 };
 
-function extractAttr<K extends keyof Attributes>(attrs: ButtonAttributes, state: ButtonProps["state"], key: K): Attributes[K] {
-  if (state === "primary") {
-    return attrs.primary[key];
-  }
-  return attrs.pressed[key] ?? attrs.primary[key];
-}
-
-export default function Button({
+export function Button({
   attr,
   state,
   onSelect,
@@ -39,13 +20,23 @@ export default function Button({
   const groupRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
-  const extract = useCallback(function _<K extends keyof Attributes>(key: K): Attributes[K] {
-    return extractAttr(attr, state, key);
-  }, [attr, state]);
+  const extractShapeAttr = useCallback(function _<K extends keyof ShapeAttributes>(key: K): ShapeAttributes[K] {
+    if (state === "primary") {
+      return attr.shape[key];
+    }
+    return attr.pressed.shape[key] ?? attr.shape[key];
+  }, [state, attr]);
+
+  const extractTextAttr = useCallback(function _<K extends keyof TextAttributes>(key: K): TextAttributes[K] {
+    if (state === "primary") {
+      return attr.text[key];
+    }
+    return attr.pressed.text[key] ?? attr.text[key];
+  }, [state, attr]);
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onUpdate({ x: shape.x(), y: shape.y(), width: attr.width, height: attr.height });
+    onUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height });
   };
 
   const handleTransform = () => {
@@ -58,44 +49,51 @@ export default function Button({
     onUpdate({ x: node.x(), y: node.y(), width: node.width() * scaleX, height: node.height() * scaleY });
   };
 
+  const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
+    const isMulti = evt.evt.ctrlKey || evt.evt.shiftKey;
+    onSelect(isMulti);
+  };
+
   useEffect(() => {
+    console.log(isSelected, trRef.current, groupRef.current);
     if (isSelected && trRef.current && groupRef.current) {
       trRef.current.nodes([groupRef.current]);
       trRef.current.getLayer().batchDraw();
     }
   }, [isSelected]);
 
+  // TODO: icon/image support
   return (
     <>
       <Group
         ref={groupRef}
-        x={attr.x}
-        y={attr.y}
-        width={attr.width}
-        height={attr.height}
+        x={attr.shape.position.x}
+        y={attr.shape.position.y}
+        width={attr.shape.size.width}
+        height={attr.shape.size.height}
         draggable
-        onClick={onSelect}
-        onMouseDown={onSelect}
+        // onClick={onSelect}
+        onMouseDown={handleSelect}
         onDragEnd={handleReposition}
         onTransformEnd={handleTransform}
       >
         <Rect
-          width={attr.width}
-          height={attr.height}
-          fill={extract("fill") ?? undefined}
-          stroke={extract("stroke") ?? undefined}
-          strokeWidth={extract("strokeWidth")}
-          cornerRadius={extract("cornerRadius")}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+          fill={extractShapeAttr("fill") ?? undefined}
+          stroke={extractShapeAttr("stroke") ?? undefined}
+          strokeWidth={extractShapeAttr("strokeWidth")}
+          cornerRadius={extractShapeAttr("cornerRadius")}
         />
         <Text
-          width={attr.width}
-          height={attr.height}
-          verticalAlign={extract("textAlignmentV")}
-          align={extract("textAlignmentH")}
-          text={extract("text") ?? undefined}
-          fontFamily={extract("font") ?? undefined}
-          fontSize={extract("fontSize")}
-          fill={extract("fontColor")}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+          verticalAlign={extractTextAttr("verticalAlignment")}
+          align={extractTextAttr("horizontalAlignment")}
+          text={extractTextAttr("text") ?? undefined}
+          fontFamily={extractTextAttr("font") ?? undefined}
+          fontSize={extractTextAttr("fontSize")}
+          fill={extractTextAttr("fontColor") ?? undefined}
         />
       </Group>
       {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
