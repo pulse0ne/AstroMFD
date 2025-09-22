@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::widget::base::{Attributes, WidgetBase};
+use crate::widget::base::{ShapeAttributes, TextAttributes, WidgetBase};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -12,11 +12,18 @@ pub enum ButtonType {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct PressedOverrides {
+    pub shape: ShapeAttributes, // TODO: how to support partial? new types?
+    pub text: TextAttributes,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ButtonAttributes {
     #[serde(flatten)]
     pub widget: WidgetBase,
     pub button_type: ButtonType,
     pub nav_target: Option<String>,
-    pub primary: Attributes,
-    pub pressed: Attributes,
+    pub text: TextAttributes,
+    pub pressed: PressedOverrides,
 }

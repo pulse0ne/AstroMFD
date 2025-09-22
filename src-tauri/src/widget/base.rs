@@ -20,18 +20,13 @@ pub enum HorizontalAlignment {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Attributes {
-    pub icon: Option<String>,
+pub struct TextAttributes {
     pub text: Option<String>,
     pub font: Option<String>,
     pub font_size: f64,
-    pub font_color: String,
-    pub text_alignment_h: HorizontalAlignment,
-    pub text_alignment_v: VerticalAlignment,
-    pub fill: Option<String>,
-    pub stroke: Option<String>,
-    pub stroke_width: f64,
-    pub corner_radius: f64,
+    pub font_color: Option<String>,
+    pub horizontal_alignment: HorizontalAlignment,
+    pub vertical_alignment: VerticalAlignment,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -50,10 +45,18 @@ pub struct Position {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ShapeAttributes {
+    pub fill: Option<String>,
+    pub stroke: Option<String>,
+    pub stroke_width: f64,
+    pub corner_radius: f64,
+    pub size: Size,
+    pub position: Position,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct WidgetBase {
     pub id: String,
-    #[serde(flatten)]
-    pub size: Size,
-    #[serde(flatten)]
-    pub position: Position,
+    pub shape: ShapeAttributes,
 }
