@@ -1,20 +1,22 @@
-import {Size, Widget} from "../types/widget.ts";
+import {createButton, createLabel, createPanel, Size, Widget} from "../types/widget.ts";
 import {
   MdAdd,
   MdClose,
   MdPhoneAndroid,
 } from "react-icons/md";
-import {ChangeEvent} from "react";
+import {ChangeEvent, PropsWithChildren, useEffect, useState} from "react";
 import Popup from "reactjs-popup";
 import {useDevices} from "../hooks/useDevices.tsx";
 
 export type ToolbarProps = {
   dimensions: Size;
   onAddWidget: (widget: Widget) => void;
+  onAddScreen: () => void;
   onDimensionsChange: (size: Size) => void;
 };
 
-export function Toolbar({ dimensions, onDimensionsChange }: ToolbarProps) {
+export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChange }: ToolbarProps) {
+  const [ addPopupOpen, setAddPopupOpen ] = useState(false);
   const { devices } = useDevices();
 
   const handleWidthChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -33,11 +35,39 @@ export function Toolbar({ dimensions, onDimensionsChange }: ToolbarProps) {
     }
   };
 
+  const handleAddScreen = () => {
+    setAddPopupOpen(false);
+    onAddScreen();
+  };
+
+  const handleAddWidget = (createWidgetFn: () => Widget)=> {
+    setAddPopupOpen(false);
+    onAddWidget(createWidgetFn());
+  };
+
+  useEffect(() => {
+    console.log(`popup state: ${addPopupOpen ? "open" : "closed"}`);
+  }, [addPopupOpen]);
+
   return (
     <div className="toolbar relative">
-      <button style={{ paddingLeft: 12 }}>
-        <div className="row align-center" style={{ gap: 4 }}><MdAdd size={15} /> Add</div>
-      </button>
+      <Popup
+        open={addPopupOpen}
+        closeOnDocumentClick
+        onOpen={() => setAddPopupOpen(true)}
+        onClose={() => setAddPopupOpen(false)}
+        trigger={
+          <button style={{paddingLeft: 12}}>
+            <div className="row align-center" style={{gap: 4}}><MdAdd size={15}/> Add</div>
+          </button>
+        }
+      >
+        <AddWidgetMenuItem onClick={() => handleAddWidget(createButton)}>Button</AddWidgetMenuItem>
+        <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
+        <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
+        <div style={{borderBottom: "var(--border-light)"}}></div>
+        <AddWidgetMenuItem onClick={handleAddScreen}>Screen</AddWidgetMenuItem>
+      </Popup>
       <div
         className="fill-y row align-center"
         style={{
@@ -84,6 +114,18 @@ export function Toolbar({ dimensions, onDimensionsChange }: ToolbarProps) {
         </Popup>
 
       </div>
+    </div>
+  );
+}
+
+type AddWidgetMenuItemProps = PropsWithChildren<{
+  onClick: () => void;
+}>;
+
+function AddWidgetMenuItem({ onClick, children }: AddWidgetMenuItemProps) {
+  return (
+    <div className="add-widget-menu-item" onClick={onClick}>
+      {children}
     </div>
   );
 }

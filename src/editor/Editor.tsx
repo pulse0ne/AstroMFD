@@ -1,6 +1,6 @@
 import {Layer, Rect, Stage} from "react-konva";
 import {useEffect, useRef, useState} from "react";
-import {ButtonAttributes, Position, Size, Widget} from "../types/widget.ts";
+import {ButtonAttributes, ScreenSet, Position, Size, Widget} from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
 import {AttributesPanel} from "./AttributesPanel.tsx";
@@ -38,8 +38,13 @@ const TEST: ButtonAttributes = {
 
 const SCALE_FACTOR = 1.05;
 
-export default function Editor() {
-  const [ widgets, setWidgets ] = useState([TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2" })]);
+export type EditorProps = {
+  paneSet?: ScreenSet;
+};
+
+export default function Editor({ }: EditorProps) {
+  const [ widgets, setWidgets ] = useState([TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2", shape: { ...TEST.shape, position: { x: 200, y: 400 } } })]);
+  // const [ widgets, setWidgets ] = useState()
 
   const [ selectedItem, setSelectedItem ] = useState<number|null>(null);
   const [ workspaceSize, setWorkspaceSize ] = useState<Size>({ width: 1200, height: 800 });
@@ -128,16 +133,21 @@ export default function Editor() {
     // TODO
   };
 
+  const handleScreenAdded = () => {
+    // TODO
+  };
+
   const handleDimensionsChange = (size: Size) => {
     console.log(size);
     setWorkspaceSize(size);
   };
 
   return (
-    <div className="editor-container fill-y">
+    <div className="editor-container fill-y" onContextMenu={(e) => e.preventDefault()}>
       <Toolbar
         dimensions={workspaceSize}
         onAddWidget={handleWidgetAdded}
+        onAddScreen={handleScreenAdded}
         onDimensionsChange={handleDimensionsChange}
       />
       <div className="row fill no-overflow">

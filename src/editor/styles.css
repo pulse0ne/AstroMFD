@@ -24,3 +24,12 @@
     padding: 8px 12px;
     border-bottom: var(--border-light);
 }
+
+.add-widget-menu-item {
+    padding: 6px 24px;
+    cursor: pointer;
+}
+
+.add-widget-menu-item:hover {
+    background: var(--panel-color-hex);
+}
