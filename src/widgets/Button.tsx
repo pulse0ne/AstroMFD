@@ -4,6 +4,7 @@ import {KonvaEventObject} from "konva/lib/Node";
 import {useCallback, useEffect, useRef} from "react";
 import {Shape} from "konva/lib/Shape";
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
+import {Konva} from "konva/lib/_FullInternals";
 
 export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;
@@ -17,8 +18,8 @@ export function Button({
   onUpdate,
   isSelected = false
 }: ButtonProps) {
-  const groupRef = useRef<any>(null);
-  const trRef = useRef<any>(null);
+  const groupRef = useRef<Konva.Group | null>(null);
+  const trRef = useRef<Konva.Transformer | null>(null);
 
   const extractShapeAttr = useCallback(function _<K extends keyof ShapeAttributes>(key: K): ShapeAttributes[K] {
     if (state === "primary") {
@@ -41,12 +42,43 @@ export function Button({
 
   const handleTransform = () => {
     const node = groupRef.current;
+    if (!node) return;
+
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
+
+    const newWidth = node.width() * scaleX;
+    const newHeight = node.height() * scaleY;
+
+    onUpdate({
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+      height: newHeight,
+    });
+  };
+
+  const handleTransformEnd = () => {
+    const node = groupRef.current;
+    if (!node) return;
+
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    const newWidth = node.width() * scaleX;
+    const newHeight = node.height() * scaleY;
+
     node.scaleX(1);
     node.scaleY(1);
+    node.width(newWidth);
+    node.height(newHeight);
 
-    onUpdate({ x: node.x(), y: node.y(), width: node.width() * scaleX, height: node.height() * scaleY });
+    onUpdate({
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+      height: newHeight,
+    });
   };
 
   const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
@@ -54,11 +86,17 @@ export function Button({
     onSelect(isMulti);
   };
 
+  const handleDragging = (evt: KonvaEventObject<DragEvent>) => {
+    const { x, y } = evt.target.position();
+    const width = evt.target.width();
+    const height = evt.target.height();
+    onUpdate({ x, y, width, height });
+  };
+
   useEffect(() => {
-    console.log(isSelected, trRef.current, groupRef.current);
     if (isSelected && trRef.current && groupRef.current) {
-      trRef.current.nodes([groupRef.current]);
-      trRef.current.getLayer().batchDraw();
+      trRef.current?.nodes([groupRef.current]);
+      trRef.current?.getLayer()?.batchDraw();
     }
   }, [isSelected]);
 
@@ -72,10 +110,11 @@ export function Button({
         width={attr.shape.size.width}
         height={attr.shape.size.height}
         draggable
-        // onClick={onSelect}
         onMouseDown={handleSelect}
         onDragEnd={handleReposition}
-        onTransformEnd={handleTransform}
+        onDragMove={handleDragging}
+        onTransform={handleTransform}
+        onTransformEnd={handleTransformEnd}
       >
         <Rect
           width={attr.shape.size.width}
@@ -96,7 +135,12 @@ export function Button({
           fill={extractTextAttr("fontColor") ?? undefined}
         />
       </Group>
-      {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
+      {isSelected && (
+        <Transformer
+          ref={trRef}
+          rotateEnabled={false}
+        />
+      )}
     </>
   );
 }

@@ -1,6 +1,15 @@
 import {Layer, Rect, Stage} from "react-konva";
 import {useEffect, useRef, useState} from "react";
-import {ButtonAttributes, ScreenSet, Position, Size, Widget} from "../types/widget.ts";
+import {
+  ButtonAttributes,
+  ScreenSet,
+  Position,
+  Size,
+  Widget,
+  PanelAttributes,
+  createPanel,
+  LabelAttributes, createLabel
+} from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
 import {AttributesPanel} from "./AttributesPanel.tsx";
@@ -36,14 +45,17 @@ const TEST: ButtonAttributes = {
   }
 };
 
+const TEST_PANEL: PanelAttributes = createPanel();
+const TEST_LABEL: LabelAttributes = createLabel();
+
 const SCALE_FACTOR = 1.05;
 
 export type EditorProps = {
-  paneSet?: ScreenSet;
+  screenSet?: ScreenSet;
 };
 
-export default function Editor({ }: EditorProps) {
-  const [ widgets, setWidgets ] = useState([TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2", shape: { ...TEST.shape, position: { x: 200, y: 400 } } })]);
+export default function Editor({  }: EditorProps) {
+  const [ widgets, setWidgets ] = useState([TEST_PANEL, TEST_LABEL, TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2", shape: { ...TEST.shape, position: { x: 200, y: 400 } } })]);
   // const [ widgets, setWidgets ] = useState()
 
   const [ selectedItem, setSelectedItem ] = useState<number|null>(null);
@@ -142,6 +154,16 @@ export default function Editor({ }: EditorProps) {
     setWorkspaceSize(size);
   };
 
+  const handleAttributePanelUpdate = (widget: Widget) => {
+    if (!selectedItem) return;
+    setWidgets(ov => {
+      ov[selectedItem] = widget;
+      return [...ov];
+    });
+  };
+
+  const selectedWidget = selectedItem === null ? null : widgets[selectedItem];
+
   return (
     <div className="editor-container fill-y" onContextMenu={(e) => e.preventDefault()}>
       <Toolbar
@@ -151,6 +173,9 @@ export default function Editor({ }: EditorProps) {
         onDimensionsChange={handleDimensionsChange}
       />
       <div className="row fill no-overflow">
+        <div className="fill-y" style={{ background: "var(--toolbar-color-hex)", borderRight: "var(--border-light)" }}>
+          TODO: Screens
+        </div>
         <div className="flex-grow no-overflow">
           <div className="stage-container fill-y" ref={stageContainerRef}>
             <Stage
@@ -191,7 +216,10 @@ export default function Editor({ }: EditorProps) {
             </Stage>
           </div>
         </div>
-        <AttributesPanel onPrint={() => console.log(widgets)} />
+        <AttributesPanel
+          selectedWidget={selectedWidget}
+          onUpdate={handleAttributePanelUpdate}
+        />
       </div>
     </div>
   );

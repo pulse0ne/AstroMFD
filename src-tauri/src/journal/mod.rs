@@ -9,7 +9,7 @@ use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tokio::sync::mpsc::Sender;
 use tokio::sync::Mutex;
 use anyhow::Result;
-use log::{debug, error, info, trace};
+use log::{error, info, trace};
 use regex::Regex;
 use crate::journal::bounded_fifo_vec::BoundedFifoVec;
 

@@ -1,5 +1,4 @@
 use std::{env, fs};
-use std::path::PathBuf;
 use chrono::Local;
 use log4rs::append::Append;
 use log4rs::append::console::ConsoleAppender;
@@ -9,7 +8,7 @@ use log4rs::append::rolling_file::policy::compound::trigger::size::SizeTrigger;
 use log4rs::append::rolling_file::RollingFileAppender;
 use log4rs::Config;
 use log4rs::config::{Appender, Root};
-use log::{debug, info, LevelFilter};
+use log::{debug, LevelFilter};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 

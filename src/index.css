@@ -17,21 +17,6 @@
 
     --border-light: 1px solid rgba(255, 255, 255, 0.2);
 
-    /* gg colors */
-    /*--gg-color1: #09090b; !* background *!*/
-    /*--gg-color2: #0f0f11; !* elevation *!*/
-    /*--gg-color3: #1b1b1d; !* panels *!*/
-    /*--gg-color4: #1e533a; !* button border *!*/
-    /*--gg-color5: #10201a; !* button color? (probably transparency) *!*/
-
-    /* gg forge colors */
-    /*--gg-forge-color1: #101219; !* editor background *!*/
-    /*--gg-forge-color2: #232630; !* elevation *!*/
-    /*--gg-forge-color3: #2a2e3a; !* panels *!*/
-    /*--gg-forge-color4: #339865; !* buttons *!*/
-    /*--gg-forge-color5: #fd5947; !* clear buttons *!*/
-    /*************/
-
     color-scheme: normal;
     color: var(--text-color-light-hex);
     background-color: var(--editor-background-color-hex);
@@ -40,6 +25,13 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("assets/Inter-VariableFont_opsz,wght.ttf")
+        format("truetype-variations");
+    font-weight: 100 900;
 }
 
 body {
@@ -53,6 +45,8 @@ html {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
 }
 
 * {
@@ -99,6 +93,8 @@ a, a:visited {
     color: var(--gradient-stop1);
     text-decoration: none;
 }
+
+h1, h2, h3, h4, h5 { margin: 0; }
 
 button {
     background-image: linear-gradient(to bottom right, var(--gradient-stop1), var(--gradient-stop2));

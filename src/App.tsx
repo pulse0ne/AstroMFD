@@ -4,28 +4,28 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 
 /*--------------------
   TODO:
+- Update model to be able to pick vjoy button that is pressed
 - Implement AttributesPanel
-- Implement Panel
-- Implement Label
 - Develop out Editor
 - Need to add Send Back/Forward (controls widget ordering)
 - Global key handler for deleting/nudging/etc.
-- Develop Screen selector
+- Develop Screen selector (react router)
 - Persisting/loading Screen Sets
-- Label and Panel editor implementations
 - Client rendering/navigation
 - Send updates to clients
 - Dynamic Font loading (hook front-end up to it via font loading API)
 - Improved error-handling in Rust code
+- Startup flow...how to handle Journal Path?
 - Undo/Redo
-- Duplication
-- Sync viewport size button (when clients are attached)
+- Duplication of widgets
+- Include pre-built SVGs for button shapes
+- Support custom images/svgs via folder
 - Nav triggers (open screen on specified event)
 - Custom images/svgs
 - Audio/haptic feedback?
-- Better UI theme
-- Pane themes?
+- Screen themes?
 - Multiselect?
+- Turn ED-specific stuff into "plugin" that can be enabled/disabled
 ---------------------*/
 
 function App() {
