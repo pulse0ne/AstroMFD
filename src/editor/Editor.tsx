@@ -12,7 +12,7 @@ import {
 } from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
-import {AttributesPanel} from "./AttributesPanel.tsx";
+import {AttributesPanel} from "./attributes-panel/AttributesPanel.tsx";
 import {Toolbar} from "./Toolbar.tsx";
 import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
 

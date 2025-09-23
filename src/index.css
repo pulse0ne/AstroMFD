@@ -96,6 +96,8 @@ a, a:visited {
 
 h1, h2, h3, h4, h5 { margin: 0; }
 
+h5 { font-size: 1em; }
+
 button {
     background-image: linear-gradient(to bottom right, var(--gradient-stop1), var(--gradient-stop2));
     color: var(--text-color-light-hex);
