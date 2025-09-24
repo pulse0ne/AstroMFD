@@ -88,7 +88,7 @@ export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChan
       }}>
 
         <input
-          style={{ width: 50 }}
+          style={{ width: 56 }}
           value={dimensions.width}
           type="number"
           min={0}
@@ -96,7 +96,7 @@ export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChan
         />
         <MdClose size={12} />
         <input
-          style={{ width: 50 }}
+          style={{ width: 56 }}
           value={dimensions.height}
           type="number"
           min={0}

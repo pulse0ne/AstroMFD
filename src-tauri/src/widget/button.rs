@@ -23,6 +23,8 @@ pub struct ButtonAttributes {
     #[serde(flatten)]
     pub widget: WidgetBase,
     pub button_type: ButtonType,
+    pub vjoy_button: u8,
+    // TODO: duration?
     pub nav_target: Option<String>,
     pub text: TextAttributes,
     pub pressed: PressedOverrides,

@@ -41,7 +41,10 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
 
   const handleTextAttrChange = (attr: TextAttributes) => {
     console.log(attr);
-    // TODO
+    // TODO: handle pressed state
+    if (selectedWidget?.type === "button") {
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }));
+    }
   };
 
   return (

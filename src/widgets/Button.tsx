@@ -35,6 +35,13 @@ export function Button({
     return attr.pressed.text[key] ?? attr.text[key];
   }, [state, attr]);
 
+  const extractFontName = () => {
+    if (state === "primary") {
+      return attr.text.font?.name;
+    }
+    return attr.text.font?.name ?? attr.text.font?.name;
+  };
+
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
     onUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height });
@@ -130,7 +137,7 @@ export function Button({
           verticalAlign={extractTextAttr("verticalAlignment")}
           align={extractTextAttr("horizontalAlignment")}
           text={extractTextAttr("text") ?? undefined}
-          fontFamily={extractTextAttr("font") ?? undefined}
+          fontFamily={extractFontName() ?? undefined}
           fontSize={extractTextAttr("fontSize")}
           fill={extractTextAttr("fontColor") ?? undefined}
         />

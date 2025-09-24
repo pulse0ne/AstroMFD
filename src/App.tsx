@@ -4,7 +4,6 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 
 /*--------------------
   TODO:
-- Update model to be able to pick vjoy button that is pressed
 - Implement AttributesPanel
 - Develop out Editor
 - Need to add Send Back/Forward (controls widget ordering)
@@ -27,6 +26,7 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 - Multiselect?
 - README
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled
+- Alternative input methods? virtual keyboard (enigo)?
 ---------------------*/
 
 function App() {

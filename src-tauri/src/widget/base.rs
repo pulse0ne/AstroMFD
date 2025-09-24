@@ -20,9 +20,16 @@ pub enum HorizontalAlignment {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct FontSpec {
+    pub name: String,
+    pub postscript_name: String,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TextAttributes {
     pub text: Option<String>,
-    pub font: Option<String>,
+    pub font: Option<FontSpec>,
     pub font_size: f64,
     pub font_color: Option<String>,
     pub horizontal_alignment: HorizontalAlignment,

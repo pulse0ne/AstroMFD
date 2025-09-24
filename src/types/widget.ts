@@ -1,8 +1,9 @@
 import { v4 as uuid } from "uuid";
+import {FontSpec} from "./fonts.ts";
 
 export type TextAttributes = {
   text: string | null;
-  font: string | null;
+  font: FontSpec | null;
   fontSize: number;
   fontColor: string | null;
   horizontalAlignment: "left" | "center" | "right";
@@ -40,6 +41,7 @@ export type ButtonType = "action" | "navigation" | "toggle";
 
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
+  vjoyButton: number; // TODO: duration?
   navTarget: string | null;
   text: TextAttributes;
   pressed: {
@@ -85,6 +87,7 @@ export function createButton(): ButtonAttributes {
     id: uuid(),
     type: "button",
     buttonType: "action",
+    vjoyButton: 1,
     navTarget: null,
     shape: {
       size: { width: 200, height: 100 },

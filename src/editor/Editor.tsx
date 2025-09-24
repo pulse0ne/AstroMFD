@@ -21,6 +21,7 @@ import "./styles.css";
 const TEST: ButtonAttributes = {
   id: "1",
   type: "button",
+  vjoyButton: 1,
   buttonType: "action",
   navTarget: null,
   shape: {
@@ -165,7 +166,7 @@ export default function Editor({  }: EditorProps) {
   const selectedWidget = selectedItem === null ? null : widgets[selectedItem];
 
   return (
-    <div className="editor-container fill-y" onContextMenu={(e) => e.preventDefault()}>
+    <div className="editor-container fill-y">
       <Toolbar
         dimensions={workspaceSize}
         onAddWidget={handleWidgetAdded}
@@ -176,7 +177,7 @@ export default function Editor({  }: EditorProps) {
         <div className="fill-y" style={{ background: "var(--toolbar-color-hex)", borderRight: "var(--border-light)" }}>
           TODO: Screens
         </div>
-        <div className="flex-grow no-overflow">
+        <div className="flex-grow no-overflow" onContextMenu={(e) => e.preventDefault()}>
           <div className="stage-container fill-y" ref={stageContainerRef}>
             <Stage
               ref={stageRef}

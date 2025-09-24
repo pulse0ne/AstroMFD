@@ -11,6 +11,10 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
     onUpdate(Object.assign({}, shapeAttr, { [key]: value }));
   };
 
+  const handleNumericalChange = (key: "strokeWidth"|"cornerRadius", value: number) => {
+    onUpdate(Object.assign({}, shapeAttr, { [key]: value }));
+  };
+
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
@@ -32,13 +36,23 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
       </div>
       <div className="row align-center gap-16">
         <span style={{ width: 100 }}>Stroke Width:</span>
-        {/* TODO: handle change */}
-        <input type="number" min={0} style={{width: 75}} value={shapeAttr.strokeWidth}/>
+        <input
+          type="number"
+          min={0}
+          style={{width: 75}}
+          value={shapeAttr.strokeWidth}
+          onChange={(evt) => handleNumericalChange("strokeWidth", Number.parseInt(evt.target.value))}
+        />
       </div>
       <div className="row align-center gap-16">
         <span style={{ width: 100 }}>Corner Radius:</span>
-        {/* TODO: handle change */}
-        <input type="number" min={0} style={{ width: 75 }} value={shapeAttr.cornerRadius}/>
+        <input
+          type="number"
+          min={0}
+          style={{ width: 75 }}
+          value={shapeAttr.cornerRadius}
+          onChange={(evt) => handleNumericalChange("cornerRadius", Number.parseInt(evt.target.value))}
+        />
       </div>
     </div>
   );

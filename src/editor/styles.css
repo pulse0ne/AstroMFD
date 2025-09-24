@@ -80,3 +80,7 @@
 .color-picker .react-colorful__last-control {
     margin-top: 8px;
 }
+
+.text-textarea {
+    height: 48px;
+}

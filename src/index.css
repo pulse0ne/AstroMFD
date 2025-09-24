@@ -108,7 +108,9 @@ button {
     cursor: pointer;
 }
 
-input {
+input,
+select,
+textarea {
     background: var(--editor-background-color-hex);
     border: var(--border-light);
     border-radius: 4px;
