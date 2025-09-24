@@ -39,9 +39,14 @@ export type WidgetBase<W extends WidgetType> = {
 
 export type ButtonType = "action" | "navigation" | "toggle";
 
+export type ButtonAction = {
+  button: number;
+  duration: number;
+};
+
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
-  vjoyButton: number; // TODO: duration?
+  vjoyButton: ButtonAction;
   navTarget: string | null;
   text: TextAttributes;
   pressed: {
@@ -87,7 +92,7 @@ export function createButton(): ButtonAttributes {
     id: uuid(),
     type: "button",
     buttonType: "action",
-    vjoyButton: 1,
+    vjoyButton: { button: 1, duration: 100 },
     navTarget: null,
     shape: {
       size: { width: 200, height: 100 },
@@ -149,6 +154,17 @@ export function createPanel(): PanelAttributes {
       cornerRadius: 0
     }
   };
+}
+
+export function findNextAvailableButton(widgets: Widget[]): number {
+  const unavailable = widgets
+    .filter(w => w.type === "button")
+    .map(w => w.vjoyButton.button);
+  let i = 1;
+  while(unavailable.includes(i)) {
+    ++i;
+  }
+  return i;
 }
 
 export type ScreenSetValidationResult = {

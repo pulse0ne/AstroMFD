@@ -5,6 +5,7 @@ import {Position, ShapeAttributes, Size, TextAttributes, Widget} from "../../typ
 import {SizePositionSection} from "./SizePositionSection.tsx";
 import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";
+import {ButtonSpecificsSection} from "./ButtonSpecificsSection.tsx";
 
 export type AttributesPanelProps = {
   selectedWidget: Widget | null;
@@ -48,7 +49,7 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
   };
 
   return (
-    <div className="attributes-panel fill-y">
+    <div className="attributes-panel fill-y" style={{ overflowY: "auto" }}>
       {!selectedWidget && (
         <div className="row justify-center align-center fill-y">
           <div>No selection</div>
@@ -56,6 +57,11 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       )}
       {selectedWidget?.type === "button" && (
         <div className="fill-y">
+          <ButtonSpecificsSection
+            attr={selectedWidget}
+            screens={{}}
+            onUpdate={onUpdate}
+          />
           <SizePositionSection
             size={selectedWidget.shape.size}
             position={selectedWidget.shape.position}

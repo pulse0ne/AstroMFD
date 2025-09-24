@@ -1,5 +1,6 @@
 import {ShapeAttributes} from "../../types/widget.ts";
 import {ColorSwatch} from "./ColorSwatch.tsx";
+import {useRecentColors} from "../../hooks/useRecentColors.ts";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -7,6 +8,8 @@ export type ShapeSectionProps = {
 };
 
 export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
+  const { recentColors, addRecentColor } = useRecentColors();
+
   const handleColorChange = (key: "fill"|"stroke", value: string) => {
     onUpdate(Object.assign({}, shapeAttr, { [key]: value }));
   };
@@ -22,16 +25,18 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
         <span style={{ width: 50 }}>Fill:</span>
         <ColorSwatch
           color={shapeAttr.fill ?? undefined}
+          recents={recentColors}
           onUpdate={c => handleColorChange("fill", c)}
-          onAddRecentColor={c => console.log(c)}
+          onAddRecentColor={addRecentColor}
         />
       </div>
       <div className="row align-center gap-16">
         <span style={{ width: 50 }}>Stroke:</span>
         <ColorSwatch
           color={shapeAttr.stroke ?? undefined}
+          recents={recentColors}
           onUpdate={c => handleColorChange("stroke", c)}
-          onAddRecentColor={c => console.log(c)}
+          onAddRecentColor={addRecentColor}
         />
       </div>
       <div className="row align-center gap-16">

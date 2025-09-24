@@ -1,14 +1,11 @@
 import {Layer, Rect, Stage} from "react-konva";
 import {useEffect, useRef, useState} from "react";
 import {
-  ButtonAttributes,
-  ScreenSet,
+  findNextAvailableButton,
   Position,
+  Screen,
   Size,
-  Widget,
-  PanelAttributes,
-  createPanel,
-  LabelAttributes, createLabel
+  Widget
 } from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
@@ -18,49 +15,17 @@ import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
 
 import "./styles.css";
 
-const TEST: ButtonAttributes = {
-  id: "1",
-  type: "button",
-  vjoyButton: 1,
-  buttonType: "action",
-  navTarget: null,
-  shape: {
-    size: {width: 200, height: 100},
-    position: {x: 200, y: 200},
-    fill: "rgb(56, 30, 83)",
-    stroke: "rgb(130, 51, 152)",
-    strokeWidth: 1,
-    cornerRadius: 8
-  },
-  text: {
-    text: "Button",
-    font: null,
-    fontSize: 16,
-    fontColor: "white",
-    horizontalAlignment: "center",
-    verticalAlignment: "middle"
-  },
-  pressed: {
-    shape: {},
-    text: {}
-  }
-};
-
-const TEST_PANEL: PanelAttributes = createPanel();
-const TEST_LABEL: LabelAttributes = createLabel();
-
 const SCALE_FACTOR = 1.05;
 
 export type EditorProps = {
-  screenSet?: ScreenSet;
+  screen: Screen;
+  onUpdate: (screen: Screen) => void;
+  size: Size;
+  onResize: (size: Size) => void;
 };
 
-export default function Editor({  }: EditorProps) {
-  const [ widgets, setWidgets ] = useState([TEST_PANEL, TEST_LABEL, TEST, Object.assign({}, JSON.parse(JSON.stringify(TEST)) as ButtonAttributes, { id: "2", shape: { ...TEST.shape, position: { x: 200, y: 400 } } })]);
-  // const [ widgets, setWidgets ] = useState()
-
-  const [ selectedItem, setSelectedItem ] = useState<number|null>(null);
-  const [ workspaceSize, setWorkspaceSize ] = useState<Size>({ width: 1200, height: 800 });
+export default function Editor({ screen, onUpdate, size, onResize }: EditorProps) {
+  const [ selectedWidgetIndex, setSelectedWidgetIndex ] = useState<number|null>(null);
   const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
   const [ stagePosition, setStagePosition ] = useState<Position>({ x: 600, y: 400 });
   const [ stageScale, setStageScale ] = useState<number>(1.0);
@@ -79,8 +44,8 @@ export default function Editor({  }: EditorProps) {
     handleResize();
 
     setStagePosition({
-      x: (stageContainerRef.current?.offsetWidth ?? 1200) / 2.0 - workspaceSize.width / 2.0,
-      y: (stageContainerRef.current?.offsetHeight ?? 800) / 2.0 - workspaceSize.height / 2.0
+      x: (stageContainerRef.current?.offsetWidth ?? 1200) / 2.0 - size.width / 2.0,
+      y: (stageContainerRef.current?.offsetHeight ?? 800) / 2.0 - size.height / 2.0
     });
 
     console.log("registering resize listener");
@@ -90,22 +55,23 @@ export default function Editor({  }: EditorProps) {
       console.log("unregistering resize listener");
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [size]);
+
+  // TODO: attach global keybinds in useEffect (clear them on return)
 
   const handleUpdate = ({ x, y, width, height }: Size & Position) => {
-    if (selectedItem === null) return;
-    const widget = widgets[selectedItem];
+    if (selectedWidgetIndex === null) return;
+    const widget = screen.widgets[selectedWidgetIndex];
     widget.shape.size = { width, height };
     widget.shape.position = { x, y };
-    setWidgets(ov => {
-      ov.splice(selectedItem, 1, widget);
-      return [...ov];
-    });
+    const widgets = [...screen.widgets];
+    widgets.splice(selectedWidgetIndex, 1, widget);
+    onUpdate({ ...screen, widgets });
   };
 
   const handleDeselect = (evt: KonvaEventObject<MouseEvent>) => {
     if (evt.target instanceof Konva.Stage || evt.target.id() === "bg") {
-      setSelectedItem(null);
+      setSelectedWidgetIndex(null);
     }
   };
 
@@ -142,8 +108,16 @@ export default function Editor({  }: EditorProps) {
   };
 
   const handleWidgetAdded = (widget: Widget) => {
-    console.log(widget);
-    // TODO
+    if (widget.type === "button") {
+      widget.vjoyButton.button = findNextAvailableButton(screen.widgets);
+    }
+    const newWidgets = [...screen.widgets, widget];
+    onUpdate({ ...screen, widgets: newWidgets });
+
+    // TODO: revisit this hack
+    setTimeout(() => {
+      setSelectedWidgetIndex(newWidgets.length - 1);
+    }, 0);
   };
 
   const handleScreenAdded = () => {
@@ -151,24 +125,22 @@ export default function Editor({  }: EditorProps) {
   };
 
   const handleDimensionsChange = (size: Size) => {
-    console.log(size);
-    setWorkspaceSize(size);
+    onResize(size);
   };
 
   const handleAttributePanelUpdate = (widget: Widget) => {
-    if (!selectedItem) return;
-    setWidgets(ov => {
-      ov[selectedItem] = widget;
-      return [...ov];
-    });
+    if (!selectedWidgetIndex) return;
+    const widgets = [...screen.widgets];
+    widgets[selectedWidgetIndex] = widget;
+    onUpdate({ ...screen, widgets });
   };
 
-  const selectedWidget = selectedItem === null ? null : widgets[selectedItem];
+  const selectedWidget = selectedWidgetIndex === null ? null : screen.widgets[selectedWidgetIndex];
 
   return (
     <div className="editor-container fill-y">
       <Toolbar
-        dimensions={workspaceSize}
+        dimensions={size}
         onAddWidget={handleWidgetAdded}
         onAddScreen={handleScreenAdded}
         onDimensionsChange={handleDimensionsChange}
@@ -177,7 +149,8 @@ export default function Editor({  }: EditorProps) {
         <div className="fill-y" style={{ background: "var(--toolbar-color-hex)", borderRight: "var(--border-light)" }}>
           TODO: Screens
         </div>
-        <div className="flex-grow no-overflow" onContextMenu={(e) => e.preventDefault()}>
+        <div className="flex-grow no-overflow relative" onContextMenu={(e) => e.preventDefault()}>
+          {/*<div style={{ position: "absolute" }} className="fill scanlines"></div>*/}
           <div className="stage-container fill-y" ref={stageContainerRef}>
             <Stage
               ref={stageRef}
@@ -197,19 +170,19 @@ export default function Editor({  }: EditorProps) {
                   id="bg"
                   x={0}
                   y={0}
-                  width={workspaceSize.width}
-                  height={workspaceSize.height}
+                  width={size.width}
+                  height={size.height}
                   fill="#000"
                 />
               </Layer>
               <Layer>
-                {widgets.map(((widget, ix) => (
+                {screen.widgets.map(((widget, ix) => (
                   <WidgetRenderer
                     key={widget.id}
                     widget={widget}
-                    onSelect={() => setSelectedItem(ix)}
+                    onSelect={() => setSelectedWidgetIndex(ix)}
                     onUpdate={handleUpdate}
-                    isSelected={ix === selectedItem}
+                    isSelected={ix === selectedWidgetIndex}
                     state="primary"
                   />
                 )))}

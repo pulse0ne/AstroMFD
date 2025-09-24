@@ -26,7 +26,7 @@ export function SizePositionSection({size, position, onSizeChange, onPositionCha
   };
 
   return (
-    <div className="attribute-section col gap-16">
+    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SIZE / POSITION</h5>
       <div className="row gap-4">
         <div className="flex-grow row">

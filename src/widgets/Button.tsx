@@ -111,6 +111,7 @@ export function Button({
   return (
     <>
       <Group
+        id={attr.id}
         ref={groupRef}
         x={attr.shape.position.x}
         y={attr.shape.position.y}

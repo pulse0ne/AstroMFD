@@ -1,11 +1,17 @@
 import StatusBar from "./statusbar/StatusBar.tsx";
 import Editor from "./editor/Editor.tsx";
 import {DevicesProvider} from "./hooks/useDevices.tsx";
+import {createScreen, Screen, Size} from "./types/widget.ts";
+import {useState} from "react";
 
 /*--------------------
   TODO:
+- Split out Toolbar, ScreenSelector, and Editor
+- Handle deletions of widgets
+- Rename screens/screen sets
 - Implement AttributesPanel
 - Develop out Editor
+- Add shadow/glow effects
 - Need to add Send Back/Forward (controls widget ordering)
 - Global key handler for deleting/nudging/etc.
 - Develop Screen selector (react router)
@@ -26,15 +32,23 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 - Multiselect?
 - README
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled
-- Alternative input methods? virtual keyboard (enigo)?
+- Explore alternative input methods? virtual keyboard (enigo)?
 ---------------------*/
 
 function App() {
+  const [ screen, setScreen ] = useState<Screen>(createScreen(1));
+  const [ size, setSize ] = useState<Size>({ width: 1200, height: 800 });
+
   return (
     <main>
       <DevicesProvider>
         <div className="main-container">
-          <Editor />
+          <Editor
+            screen={screen}
+            onUpdate={setScreen}
+            size={size}
+            onResize={setSize}
+          />
         </div>
         <StatusBar />
       </DevicesProvider>
