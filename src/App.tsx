@@ -25,6 +25,7 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 - Audio/haptic feedback?
 - Screen themes?
 - Multiselect?
+- README
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled
 ---------------------*/
 
