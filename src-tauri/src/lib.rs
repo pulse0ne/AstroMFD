@@ -6,17 +6,20 @@ mod fonts;
 mod vjoystick;
 mod journal;
 mod widget;
+mod locations;
 
+use std::fs;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use local_ip_address::local_ip;
 use log::{debug, error, info};
+use tauri::{AppHandle, Emitter};
 use tokio::sync::Mutex;
 use crate::journal::Journal;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
-use crate::widget::screen_set::{ScreenSize, ScreenSet};
+use crate::widget::screen_set::{ScreenSize, ScreenSet, Screen};
 
 #[tauri::command]
 async fn get_mobile_client_server_address() -> String {
@@ -34,11 +37,37 @@ async fn get_screen_set_by_id(id: String) -> Result<ScreenSet, String> {
     let screen_set = ScreenSet {
         id,
         name: "Test".to_string(),
-        screens: vec!(),
+        screens: vec!(
+            Screen {
+                id: "123".to_string(),
+                name: "TestScreen".to_string(),
+                background_color: "black".to_string(),
+                widgets: vec![],
+            }
+        ),
         size: ScreenSize { width: 1200, height: 800 }
     };
     Ok(screen_set)
 }
+
+#[tauri::command]
+async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -> Result<(), String> {
+    debug!("saving screen img for {}", id);
+    let file_path = dirs::data_dir()
+        .unwrap_or_default()
+        .join("elite-control")
+        .join("thumbs")
+        .join(format!("{}.png", id));
+    if let Err(e) = fs::write(file_path, data) {
+        return Err(e.to_string());
+    };
+    if let Err(e) = app_handle.emit("screen-image-updated", id) {
+        return Err(e.to_string());
+    };
+    Ok(())
+}
+
+// TODO: command for handling fetching of screen images (singular and all)
 
 pub async fn run() {
     tauri::Builder::default()
@@ -48,8 +77,11 @@ pub async fn run() {
                 get_mobile_client_server_address,
                 list_system_fonts,
                 get_screen_set_by_id,
+                save_screen_img,
             ])
         .setup(move |app| {
+            locations::initialize();
+            
             let (mobile_tx, mobile_rx) = tokio::sync::mpsc::channel::<MobileEvent>(32);
             let (server_tx, _) = tokio::sync::broadcast::channel::<ServerEvent>(32);
 

@@ -66,9 +66,11 @@ html {
 .flex-grow-3 { flex-grow: 3; }
 .flex-grow-4 { flex-grow: 4; }
 .flex-auto { flex: auto; }
+.flex-shrink { flex-shrink: 1; }
 .justify-center { justify-content: center; }
 .justify-space-between { justify-content: space-between; }
 .align-center { align-items: center; }
+.align-stretch { align-items: stretch; }
 .gap-4 { gap: 4px; }
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
@@ -124,11 +126,6 @@ input:focus {
     border-color: var(--gradient-stop1);
 }
 
-.main-container {
-    flex-grow: 1;
-    overflow: hidden;
-}
-
 .popup-content {
     border: var(--border-light);
     overflow: hidden;
@@ -166,7 +163,7 @@ input:focus {
 }
 
 
-/*** experiment ***/
+/*** experimental ***/
 /*.scanlines {*/
 /*    position: relative;*/
 /*    overflow: hidden;*/

@@ -1,8 +1,5 @@
 import StatusBar from "./statusbar/StatusBar.tsx";
-import Editor from "./editor/Editor.tsx";
 import {DevicesProvider} from "./hooks/useDevices.tsx";
-import {createScreen, Screen, Size} from "./types/widget.ts";
-import {useState} from "react";
 import {MemoryRouter, Route, Routes, useNavigate} from "react-router";
 import {Creator} from "./Creator.tsx";
 
@@ -38,27 +35,20 @@ import {Creator} from "./Creator.tsx";
 ---------------------*/
 
 function App() {
-  // const [ screen, setScreen ] = useState<Screen>(createScreen(1));
-  // const [ size, setSize ] = useState<Size>({ width: 1200, height: 800 });
-
   return (
     <main>
       <DevicesProvider>
-        <div className="main-container">
-          {/*<Editor*/}
-          {/*  screen={screen}*/}
-          {/*  onUpdate={setScreen}*/}
-          {/*  size={size}*/}
-          {/*  onResize={setSize}*/}
-          {/*/>*/}
-          <MemoryRouter>
-            <Routes>
-              <Route path="/" element={<Dummy />} />
-              <Route path="/creator/:screenSetId" element={<Creator />} />
-            </Routes>
-          </MemoryRouter>
+        <div className="fill col no-overflow">
+          <div className="flex-grow col">
+            <MemoryRouter>
+              <Routes>
+                <Route path="/" element={<Dummy />} />
+                <Route path="/creator/:screenSetId" element={<Creator />} />
+              </Routes>
+            </MemoryRouter>
+          </div>
+          <StatusBar />
         </div>
-        <StatusBar />
       </DevicesProvider>
     </main>
   );

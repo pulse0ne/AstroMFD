@@ -1,4 +1,11 @@
-import {createButton, createLabel, createPanel, Size, Widget} from "../types/widget.ts";
+import {
+  createButton,
+  createLabel,
+  createPanel,
+  createScreen,
+  findNextAvailableButton,
+  Widget
+} from "../types/widget.ts";
 import {
   MdAdd,
   MdArrowBackIos,
@@ -9,24 +16,25 @@ import {ChangeEvent, PropsWithChildren, useState} from "react";
 import Popup from "reactjs-popup";
 import {useDevices} from "../hooks/useDevices.tsx";
 import {ClientInfo} from "../types/websocket.ts";
+import {useECStore} from "../store";
+import {useNavigate} from "react-router";
 
-export type ToolbarProps = {
-  dimensions: Size;
-  onAddWidget: (widget: Widget) => void;
-  onAddScreen: () => void;
-  onDimensionsChange: (size: Size) => void;
-};
-
-export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChange }: ToolbarProps) {
+export function Toolbar() {
   const [ addPopupOpen, setAddPopupOpen ] = useState(false);
   const [ syncPopupOpen, setSyncPopupOpen ] = useState(false);
+  const screenSet = useECStore((state) => state.screenSet);
+  const addScreen = useECStore((state) => state.addScreen);
+  const addWidget = useECStore((state) => state.addWidget);
+  const updateSize = useECStore((state) => state.updateSize);
+  const widgets = useECStore((state) => state.getActiveScreen()?.widgets);
+  const navigate = useNavigate();
   const { devices } = useDevices();
 
   const handleWidthChange = (evt: ChangeEvent<HTMLInputElement>) => {
     console.log(evt.target.value);
     const width = Number.parseInt(evt.target.value);
     if (!isNaN(width)) {
-      onDimensionsChange({ ...dimensions, width });
+      updateSize({ width, height: screenSet?.size?.height ?? 800 });
     }
   };
 
@@ -34,30 +42,42 @@ export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChan
     console.log(evt.target.value);
     const height = Number.parseInt(evt.target.value);
     if (!isNaN(height)) {
-      onDimensionsChange({ ...dimensions, height });
+      updateSize({ width: screenSet?.size?.width ?? 1200, height });
     }
   };
 
   const handleDeviceSync = (device: ClientInfo) => {
     const width = device.viewportWidth;
     const height = device.viewportHeight;
-    onDimensionsChange({ width, height });
+    updateSize({ width, height });
     setSyncPopupOpen(false);
   };
 
   const handleAddScreen = () => {
     setAddPopupOpen(false);
-    onAddScreen();
+    if (screenSet?.screens?.length) {
+      addScreen(createScreen(screenSet.screens.length + 1));
+    }
   };
 
   const handleAddWidget = (createWidgetFn: () => Widget)=> {
     setAddPopupOpen(false);
-    onAddWidget(createWidgetFn());
+    const newWidget = createWidgetFn();
+    if (newWidget.type === "button") {
+      newWidget.vjoyButton.button = findNextAvailableButton(widgets ?? []);
+    }
+    addWidget(createWidgetFn());
   };
+
+  const goBack = () => {
+    navigate("/");
+  };
+
+  // console.log("render Toolbar");
 
   return (
     <div className="toolbar relative">
-      <MdArrowBackIos style={{ marginRight: 16 }}/>
+      <MdArrowBackIos className="pointer" style={{ marginRight: 16 }} onClick={goBack} />
       <Popup
         open={addPopupOpen}
         closeOnDocumentClick
@@ -89,7 +109,7 @@ export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChan
 
         <input
           style={{ width: 56 }}
-          value={dimensions.width}
+          value={screenSet?.size?.width ?? 1200}
           type="number"
           min={0}
           onChange={handleWidthChange}
@@ -97,7 +117,7 @@ export function Toolbar({ dimensions, onAddWidget, onAddScreen, onDimensionsChan
         <MdClose size={12} />
         <input
           style={{ width: 56 }}
-          value={dimensions.height}
+          value={screenSet?.size?.height ?? 800}
           type="number"
           min={0}
           onChange={handleHeightChange}

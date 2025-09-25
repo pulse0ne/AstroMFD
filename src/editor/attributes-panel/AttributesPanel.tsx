@@ -23,12 +23,16 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed for button
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
+    } else if (selectedWidget?.type === "label") {
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
     }
   };
 
   const handlePositionChange = (position: Position) => {
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed for button
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
+    } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
     }
   };
@@ -37,6 +41,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed state
       onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
+    } else if (selectedWidget?.type === "label") {
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
     }
   }
 
@@ -44,6 +50,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
     console.log(attr);
     // TODO: handle pressed state
     if (selectedWidget?.type === "button") {
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }));
+    } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { text: attr }));
     }
   };
@@ -76,6 +84,39 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
             textAttr={selectedWidget.text}
             onUpdate={handleTextAttrChange}
             fonts={fonts}
+          />
+        </div>
+      )}
+      {selectedWidget?.type === "label" && (
+        <div className="fill-y">
+          <SizePositionSection
+            size={selectedWidget.shape.size}
+            position={selectedWidget.shape.position}
+            onSizeChange={handleSizeChange}
+            onPositionChange={handlePositionChange}
+          />
+          <ShapeSection
+            shapeAttr={selectedWidget.shape}
+            onUpdate={handleShapeAttrChange}
+          />
+          <TextSection
+            textAttr={selectedWidget.text}
+            onUpdate={handleTextAttrChange}
+            fonts={fonts}
+          />
+        </div>
+      )}
+      {selectedWidget?.type === "panel" && (
+        <div className="fill-y">
+          <SizePositionSection
+            size={selectedWidget.shape.size}
+            position={selectedWidget.shape.position}
+            onSizeChange={handleSizeChange}
+            onPositionChange={handlePositionChange}
+          />
+          <ShapeSection
+            shapeAttr={selectedWidget.shape}
+            onUpdate={handleShapeAttrChange}
           />
         </div>
       )}

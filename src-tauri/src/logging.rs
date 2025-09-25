@@ -1,4 +1,4 @@
-use std::{env, fs};
+use std::{env};
 use chrono::Local;
 use log4rs::append::Append;
 use log4rs::append::console::ConsoleAppender;
@@ -52,11 +52,8 @@ impl LogMessage {
 
 fn make_rolling_file_appender() -> RollingFileAppender {
     let data_dir = dirs::data_local_dir().unwrap_or_default();
-    let ec_dir = data_dir.join("elite-control");
+    let logs_dir = data_dir.join("elite-control").join("logs");
     
-    if !ec_dir.exists() {
-        let _ = fs::create_dir(&ec_dir);
-    }
     
     let trigger = SizeTrigger::new(10 * 1024 * 1024);
 
@@ -67,7 +64,7 @@ fn make_rolling_file_appender() -> RollingFileAppender {
     let policy = CompoundPolicy::new(Box::new(trigger), Box::new(roller));
     
     RollingFileAppender::builder()
-        .build(ec_dir.join("elite-control.log"), Box::new(policy))
+        .build(logs_dir.join("elite-control.log"), Box::new(policy))
         .unwrap()
 }
 

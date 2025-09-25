@@ -1,14 +1,13 @@
-.editor-container {
-    display: flex;
-    flex-direction: column;
-}
-
 .attributes-panel {
     background-color: var(--panel-color-hex);
     width: 320px;
     min-width: 320px;
     padding: 12px;
     border-left: var(--border-light);
+}
+
+.screen-selector {
+    min-width: 100px;
 }
 
 .stage-container {
