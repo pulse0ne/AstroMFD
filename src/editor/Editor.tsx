@@ -107,26 +107,26 @@ export default function Editor({ screen, onUpdate, size, onResize }: EditorProps
     });
   };
 
-  const handleWidgetAdded = (widget: Widget) => {
-    if (widget.type === "button") {
-      widget.vjoyButton.button = findNextAvailableButton(screen.widgets);
-    }
-    const newWidgets = [...screen.widgets, widget];
-    onUpdate({ ...screen, widgets: newWidgets });
-
-    // TODO: revisit this hack
-    setTimeout(() => {
-      setSelectedWidgetIndex(newWidgets.length - 1);
-    }, 0);
-  };
-
-  const handleScreenAdded = () => {
-    // TODO
-  };
-
-  const handleDimensionsChange = (size: Size) => {
-    onResize(size);
-  };
+  // const handleWidgetAdded = (widget: Widget) => {
+  //   if (widget.type === "button") {
+  //     widget.vjoyButton.button = findNextAvailableButton(screen.widgets);
+  //   }
+  //   const newWidgets = [...screen.widgets, widget];
+  //   onUpdate({ ...screen, widgets: newWidgets });
+  //
+  //   // TODO: revisit this hack
+  //   setTimeout(() => {
+  //     setSelectedWidgetIndex(newWidgets.length - 1);
+  //   }, 0);
+  // };
+  //
+  // const handleScreenAdded = () => {
+  //   // TODO
+  // };
+  //
+  // const handleDimensionsChange = (size: Size) => {
+  //   onResize(size);
+  // };
 
   const handleAttributePanelUpdate = (widget: Widget) => {
     if (!selectedWidgetIndex) return;
@@ -139,12 +139,12 @@ export default function Editor({ screen, onUpdate, size, onResize }: EditorProps
 
   return (
     <div className="editor-container fill-y">
-      <Toolbar
-        dimensions={size}
-        onAddWidget={handleWidgetAdded}
-        onAddScreen={handleScreenAdded}
-        onDimensionsChange={handleDimensionsChange}
-      />
+      {/*<Toolbar*/}
+      {/*  dimensions={size}*/}
+      {/*  onAddWidget={handleWidgetAdded}*/}
+      {/*  onAddScreen={handleScreenAdded}*/}
+      {/*  onDimensionsChange={handleDimensionsChange}*/}
+      {/*/>*/}
       <div className="row fill no-overflow">
         <div className="fill-y" style={{ background: "var(--toolbar-color-hex)", borderRight: "var(--border-light)" }}>
           TODO: Screens

@@ -11,11 +11,12 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use local_ip_address::local_ip;
-use log::{error, info};
+use log::{debug, error, info};
 use tokio::sync::Mutex;
 use crate::journal::Journal;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
+use crate::widget::screen_set::{ScreenSize, ScreenSet};
 
 #[tauri::command]
 async fn get_mobile_client_server_address() -> String {
@@ -27,10 +28,27 @@ async fn list_system_fonts() -> Vec<fonts::FontSpec> {
     fonts::list_fonts()
 }
 
+#[tauri::command]
+async fn get_screen_set_by_id(id: String) -> Result<ScreenSet, String> {
+    debug!("loading screen set {}", id);
+    let screen_set = ScreenSet {
+        id,
+        name: "Test".to_string(),
+        screens: vec!(),
+        size: ScreenSize { width: 1200, height: 800 }
+    };
+    Ok(screen_set)
+}
+
 pub async fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![get_mobile_client_server_address, list_system_fonts])
+        .invoke_handler(
+            tauri::generate_handler![
+                get_mobile_client_server_address,
+                list_system_fonts,
+                get_screen_set_by_id,
+            ])
         .setup(move |app| {
             let (mobile_tx, mobile_rx) = tokio::sync::mpsc::channel::<MobileEvent>(32);
             let (server_tx, _) = tokio::sync::broadcast::channel::<ServerEvent>(32);

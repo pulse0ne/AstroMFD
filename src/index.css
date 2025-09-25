@@ -134,6 +134,37 @@ input:focus {
     overflow: hidden;
 }
 
+.loader {
+    width: 50px;
+    aspect-ratio: 1;
+    display: grid;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: var(--text-color-light-hex) #0000;
+    animation: spin 1s infinite linear;
+}
+.loader::before,
+.loader::after {
+    content: "";
+    grid-area: 1/1;
+    margin: 2px;
+    border: inherit;
+    border-radius: 50%;
+}
+.loader::before {
+    border-color: var(--gradient-stop1) #0000;
+    animation: inherit;
+    animation-duration: .5s;
+    animation-direction: reverse;
+}
+.loader::after {
+    margin: 8px;
+}
+@keyframes spin {
+    100%{transform: rotate(1turn)}
+}
+
 
 /*** experiment ***/
 /*.scanlines {*/

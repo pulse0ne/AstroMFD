@@ -3,7 +3,7 @@ use crate::widget::Widget;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PaneSize {
+pub struct ScreenSize {
     pub width: u64,
     pub height: u64,
 }
@@ -22,6 +22,6 @@ pub struct Screen {
 pub struct ScreenSet {
     pub id: String,
     pub name: String,
-    pub size: PaneSize,
+    pub size: ScreenSize,
     pub screens: Vec<Screen>,
 }

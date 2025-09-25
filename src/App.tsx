@@ -3,6 +3,8 @@ import Editor from "./editor/Editor.tsx";
 import {DevicesProvider} from "./hooks/useDevices.tsx";
 import {createScreen, Screen, Size} from "./types/widget.ts";
 import {useState} from "react";
+import {MemoryRouter, Route, Routes, useNavigate} from "react-router";
+import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
@@ -36,24 +38,35 @@ import {useState} from "react";
 ---------------------*/
 
 function App() {
-  const [ screen, setScreen ] = useState<Screen>(createScreen(1));
-  const [ size, setSize ] = useState<Size>({ width: 1200, height: 800 });
+  // const [ screen, setScreen ] = useState<Screen>(createScreen(1));
+  // const [ size, setSize ] = useState<Size>({ width: 1200, height: 800 });
 
   return (
     <main>
       <DevicesProvider>
         <div className="main-container">
-          <Editor
-            screen={screen}
-            onUpdate={setScreen}
-            size={size}
-            onResize={setSize}
-          />
+          {/*<Editor*/}
+          {/*  screen={screen}*/}
+          {/*  onUpdate={setScreen}*/}
+          {/*  size={size}*/}
+          {/*  onResize={setSize}*/}
+          {/*/>*/}
+          <MemoryRouter>
+            <Routes>
+              <Route path="/" element={<Dummy />} />
+              <Route path="/creator/:screenSetId" element={<Creator />} />
+            </Routes>
+          </MemoryRouter>
         </div>
         <StatusBar />
       </DevicesProvider>
     </main>
   );
 }
+
+const Dummy = () => {
+  const nav = useNavigate();
+  return <button onClick={() => nav("/creator/1")}>Creator</button>
+};
 
 export default App;
