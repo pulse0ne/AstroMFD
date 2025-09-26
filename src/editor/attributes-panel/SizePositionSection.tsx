@@ -1,4 +1,11 @@
 import {Position, Size} from "../../types/widget.ts";
+import {
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdKeyboardDoubleArrowDown,
+  MdKeyboardDoubleArrowUp
+} from "react-icons/md";
+import {useECStore} from "../../store";
 
 export type SizePositionSectionProps = {
   size: Size;
@@ -8,6 +15,10 @@ export type SizePositionSectionProps = {
 };
 
 export function SizePositionSection({size, position, onSizeChange, onPositionChange}: SizePositionSectionProps) {
+  const sendForward = useECStore(state => state.sendForward);
+  const sendBackward = useECStore(state => state.sendBackward);
+  const sendToFront = useECStore(state => state.sendToFront);
+  const sendToBack = useECStore(state => state.sendToBack);
 
   const handleSizeChange = (key: keyof Size, value: number) => {
     if (key === "width") {
@@ -65,6 +76,39 @@ export function SizePositionSection({size, position, onSizeChange, onPositionCha
             style={{width: 100}}
             value={position.y}
             onChange={(event) => handlePositionChange("y", Number.parseFloat(event.target.value))}
+          />
+        </div>
+      </div>
+      <div className="row align-center">
+        <span>Ordering:</span>
+        <div className="flex-grow row align-center justify-space-around" style={{ padding: "0 24px" }}>
+          <MdKeyboardDoubleArrowUp
+            size={24}
+            style={{ color: "var(--gradient-stop1)" }}
+            className="pointer"
+            onClick={sendToFront}
+            title="Send To Front"
+          />
+          <MdKeyboardArrowUp
+            size={24}
+            style={{ color: "var(--gradient-stop1)" }}
+            className="pointer"
+            onClick={sendForward}
+            title="Send Forward"
+          />
+          <MdKeyboardArrowDown
+            size={24}
+            style={{ color: "var(--gradient-stop1)" }}
+            className="pointer"
+            onClick={sendBackward}
+            title="Send Backward"
+          />
+          <MdKeyboardDoubleArrowDown
+            size={24}
+            style={{ color: "var(--gradient-stop1)" }}
+            className="pointer"
+            onClick={sendToBack}
+            title="Send To Back"
           />
         </div>
       </div>

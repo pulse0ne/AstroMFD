@@ -19,11 +19,13 @@ const SCALE_FACTOR = 1.05;
 export default function Editor() {
   const activeScreen = useECStore(state => state.getActiveScreen());
   const activeWidget = useECStore(state => state.getActiveWidget());
+  const removeActiveWidget = useECStore(state => state.deleteActiveWidget);
   const selectWidget = useECStore(state => state.setActiveWidgetIndex);
   const unselectWidget = useECStore(state => state.unsetActiveWidgetIndex);
   const activeWidgetIndex = useECStore(state => state.activeWidgetIndex);
   const updateWidget = useECStore(state => state.updateWidget);
   const size = useECStore(state => state.screenSet?.size);
+  const nudgeWidget = useECStore(state => state.nudge);
 
   const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
   const [ stagePosition, setStagePosition ] = useState<Position>({ x: 600, y: 400 });
@@ -59,6 +61,50 @@ export default function Editor() {
   }, [activeScreen, size]);
 
   useEffect(() => {
+    if (activeWidgetIndex === null) return;
+
+    const handler = (e: KeyboardEvent) => {
+      const tagName = (e.target as HTMLElement).tagName;
+      if (tagName === "INPUT" || tagName === "TEXTAREA") {
+        return;
+      }
+
+      const amount = e.ctrlKey ? 10 : 1;
+
+      switch (e.key) {
+        case "ArrowUp":
+          e.preventDefault();
+          nudgeWidget(0, -1 * amount);
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          nudgeWidget(0, 1 * amount);
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          nudgeWidget(-1 * amount, 0);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          nudgeWidget(1 * amount, 0);
+          break;
+        case "Delete":
+        case "Backspace":
+          e.preventDefault();
+          removeActiveWidget();
+          break;
+      }
+    };
+
+    console.log("registering key handlers");
+    window.addEventListener("keydown", handler);
+    return () => {
+      console.log("removing key handlers");
+      window.removeEventListener("keydown", handler);
+    };
+  }, [activeWidgetIndex, removeActiveWidget]);
+
+  useEffect(() => {
     function handleResize() {
       console.log('handling resize');
       setStageSize({
@@ -82,8 +128,6 @@ export default function Editor() {
       window.removeEventListener("resize", handleResize);
     };
   }, [size]);
-
-  // TODO: attach global keybinds in useEffect (clear them on return)
 
   const handleUpdate = ({ x, y, width, height }: Size & Position) => {
     if (activeWidget) {

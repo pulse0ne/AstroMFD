@@ -8,6 +8,8 @@ export type WidgetSlice = {
   setActiveWidgetIndex: (index: number) => void;
   unsetActiveWidgetIndex: () => void;
   updateWidget: (widget: Widget) => void;
+  nudge: (x: number, y: number) => void;
+  deleteActiveWidget: () => void;
 
   // accessors
   getActiveWidget: () => Widget | null;
@@ -22,7 +24,10 @@ export type ScreenSlice = {
   unsetActiveScreenIndex: () => void;
   updateScreen: (screen: Screen) => void;
   addWidget: (widget: Widget) => void;
-  deleteWidget: (id: string) => void;
+  sendForward: () => void;
+  sendBackward: () => void;
+  sendToFront: () => void;
+  sendToBack: () => void;
 
   // accessors
   getActiveScreen: () => Screen | null;

@@ -53,7 +53,7 @@ async fn get_screen_set_by_id(id: String) -> Result<ScreenSet, String> {
 #[tauri::command]
 async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -> Result<(), String> {
     debug!("saving screen img for {}", id);
-    let file_path = dirs::data_dir()
+    let file_path = dirs::data_local_dir()
         .unwrap_or_default()
         .join("elite-control")
         .join("thumbs")

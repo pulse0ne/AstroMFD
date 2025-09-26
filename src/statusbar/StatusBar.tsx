@@ -15,6 +15,8 @@ export default function StatusBar() {
   const [ modal, setModal ] = useState<ModalType|null>(null);
   const { devices } = useDevices();
 
+  console.log(devices);
+
   useEffect(() => {
       invoke<string>("get_mobile_client_server_address").then(v => setServerIp(v));
   }, []);

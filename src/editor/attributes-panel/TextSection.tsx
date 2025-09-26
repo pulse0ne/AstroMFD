@@ -1,6 +1,6 @@
 import {TextAttributes} from "../../types/widget.ts";
 import {FontSpec} from "../../types/fonts.ts";
-import {useEffect, useMemo} from "react";
+import {ChangeEvent, useMemo} from "react";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {
   MdAlignHorizontalCenter,
@@ -38,6 +38,13 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
     }
   };
 
+  const handleFontSizeChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const value = Number.parseInt(evt.target.value);
+    if (!isNaN(value)) {
+      onUpdate(Object.assign({}, textAttr, { fontSize: value }));
+    }
+  };
+
   const handleAlignmentChange = (value: TextAttributes["horizontalAlignment"] | TextAttributes["verticalAlignment"]) => {
     if (["left", "center", "right"].includes(value)) {
       onUpdate(Object.assign({}, textAttr, { horizontalAlignment: value }));
@@ -45,10 +52,6 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
       onUpdate(Object.assign({}, textAttr, { verticalAlignment: value }));
     }
   };
-
-  useEffect(() => {
-    console.log(textAttr);
-  }, [textAttr]);
 
   return (
     <div className="attribute-section col gap-16" style={{paddingTop: 16}}>
@@ -88,6 +91,10 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
           onUpdate={(color) => handleStringValueChange("fontColor", color)}
           onAddRecentColor={addRecentColor}
         />
+      </div>
+      <div className="row align-center gap-16">
+        <span>Size:</span>
+        <input type="number" min={5} value={textAttr.fontSize} onChange={handleFontSizeChange} />
       </div>
       <div className="row align-center gap-16">
         <span style={{ width: 140 }}>Horizontal Alignment:</span>

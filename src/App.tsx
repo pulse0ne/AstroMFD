@@ -5,29 +5,24 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Split out Toolbar, ScreenSelector, and Editor
-- Handle deletions of widgets
-- Rename screens/screen sets
-- Implement AttributesPanel
-- Develop out Editor
-- Add shadow/glow effects
-- Need to add Send Back/Forward (controls widget ordering)
-- Global key handler for deleting/nudging/etc.
-- Develop Screen selector (react router)
-- Persisting/loading Screen Sets
-- Client rendering/navigation
-- Send updates to clients
-- Dynamic Font loading (hook front-end up to it via font loading API)
-- Improved error-handling in Rust code
-- Startup flow...how to handle Journal Path?
+- Fix height problems when resizing
 - Undo/Redo
 - Duplication of widgets
+- Deletion of screens
+- Renaming of screens/screen sets
+- Add shadow/glow effects to shapes/text
+- Develop ScreenSet selector (react router)
+- Persisting/loading ScreenSets
+- Client rendering/navigation
+- Send updates to mobile clients
+- Dynamic Font loading (hook mobile UI up to it via font loading API)
+- Improved error-handling in Rust code
+- Startup flow...how to handle Journal Path? other config?
 - Include pre-built SVGs for button shapes
-- Support custom images/svgs via folder
-- Nav triggers (open screen on specified event)
-- Custom images/svgs
+- Nav triggers (open screen on specified journal event)
+- Support custom images/svgs via folder (or "upload"?)
 - Audio/haptic feedback?
-- Screen themes?
+- Color themes?
 - Multiselect?
 - README
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled

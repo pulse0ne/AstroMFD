@@ -148,7 +148,7 @@ export function createPanel(): PanelAttributes {
     shape: {
       size: { width: 250, height: 150 },
       position: { x: 100, y: 100 },
-      fill: "gray",
+      fill: "rgba(53, 64, 79, 1)",
       stroke: null,
       strokeWidth: 0,
       cornerRadius: 0

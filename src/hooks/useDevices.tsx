@@ -10,6 +10,8 @@ export function DevicesProvider({ children }: PropsWithChildren<{}>) {
   const [ devices, setDevices ] = useState<DevicesContextValue>({ devices: [] });
   const { lastEvent, unListen } = useTauriListen<ClientInfo[]>("clients-updated-event");
 
+  console.log(lastEvent);
+
   useEffect(() => {
     if (lastEvent) {
       lastEvent.sort((a, b) => a.ipAddr.localeCompare(b.ipAddr));
@@ -19,7 +21,7 @@ export function DevicesProvider({ children }: PropsWithChildren<{}>) {
 
   useEffect(() => {
     return () => {
-      unListen();
+      unListen().then(r => r());
     };
   }, []);
 

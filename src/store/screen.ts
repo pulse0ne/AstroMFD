@@ -1,6 +1,26 @@
 import {StateCreator} from "zustand/vanilla";
 import {RootState, ScreenSlice} from "./types.ts";
 import {Screen, Widget} from "../types/widget.ts";
+import {Draft} from "immer";
+
+function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
+  screenSet: NonNullable<RootState["screenSet"]>;
+  activeScreenIndex: number;
+  activeWidgetIndex: number;
+} {
+  return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
+}
+
+function moveWidget(state: Draft<RootState>, to: number) {
+  if (!canModifyWidget(state)) return;
+  const widgets = state.screenSet.screens[state.activeScreenIndex].widgets;
+  if (to < 0 || to >= widgets.length) return;
+
+  const [widget] = widgets.splice(state.activeWidgetIndex, 1);
+  widgets.splice(to, 0, widget);
+
+  state.activeWidgetIndex = to;
+}
 
 export const createScreenSlice: StateCreator<
   RootState,
@@ -39,12 +59,28 @@ export const createScreenSlice: StateCreator<
       }
     });
   },
-  deleteWidget: (id: string) => {
+  sendForward: () => {
     set((state) => {
-      if (state.screenSet && state.activeScreenIndex !== null) {
-        state.screenSet.screens[state.activeScreenIndex].widgets = state.screenSet.screens[state.activeScreenIndex].widgets.filter(w => w.id !== id);
-        state.activeWidgetIndex = null;
-      }
+      if (!canModifyWidget(state)) return;
+      moveWidget(state, state.activeWidgetIndex + 1);
+    });
+  },
+  sendBackward: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      moveWidget(state, state.activeWidgetIndex - 1);
+    });
+  },
+  sendToFront: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      moveWidget(state, state.screenSet.screens[state.activeScreenIndex].widgets.length - 1);
+    });
+  },
+  sendToBack: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      moveWidget(state, 0);
     });
   },
 

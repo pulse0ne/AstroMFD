@@ -69,6 +69,7 @@ html {
 .flex-shrink { flex-shrink: 1; }
 .justify-center { justify-content: center; }
 .justify-space-between { justify-content: space-between; }
+.justify-space-around { justify-content: space-around; }
 .align-center { align-items: center; }
 .align-stretch { align-items: stretch; }
 .gap-4 { gap: 4px; }

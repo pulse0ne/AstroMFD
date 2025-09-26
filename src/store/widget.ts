@@ -1,6 +1,15 @@
 import {StateCreator} from "zustand/vanilla";
 import {RootState, WidgetSlice} from "./types.ts";
 import {Widget} from "../types/widget.ts";
+import { Draft } from "immer";
+
+function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
+  screenSet: NonNullable<RootState["screenSet"]>;
+  activeScreenIndex: number;
+  activeWidgetIndex: number;
+} {
+  return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
+}
 
 export const createWidgetSlice: StateCreator<
   RootState,
@@ -24,9 +33,25 @@ export const createWidgetSlice: StateCreator<
   },
   updateWidget: (widget: Widget) => {
     set((state) => {
-      if (state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null) {
+      if (canModifyWidget(state)) {
         state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex] = widget;
       }
+    });
+  },
+  nudge: (byX, byY) => {
+    set((state) => {
+      if (canModifyWidget(state)) {
+        const current = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position;
+        state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position = { x: current.x + byX, y: current.y + byY };
+      }
+    });
+  },
+  deleteActiveWidget: () => {
+    set((state) => {
+      if (canModifyWidget(state)) {
+        state.screenSet.screens[state.activeScreenIndex].widgets.splice(state.activeWidgetIndex, 1);
+      }
+      state.activeWidgetIndex = null;
     });
   },
 

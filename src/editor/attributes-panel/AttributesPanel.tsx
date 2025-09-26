@@ -25,6 +25,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
     } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
+    } else if (selectedWidget?.type === "panel") {
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
     }
   };
 
@@ -34,6 +36,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
     } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
+    } else if (selectedWidget?.type === "panel") {
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
     }
   };
 
@@ -42,6 +46,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       // TODO: handle pressed state
       onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
     } else if (selectedWidget?.type === "label") {
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
+    } else if (selectedWidget?.type === "panel") {
       onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
     }
   }
@@ -64,7 +70,7 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
         </div>
       )}
       {selectedWidget?.type === "button" && (
-        <div className="fill-y">
+        <div>
           <ButtonSpecificsSection
             attr={selectedWidget}
             screens={{}}
@@ -88,7 +94,7 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
         </div>
       )}
       {selectedWidget?.type === "label" && (
-        <div className="fill-y">
+        <div>
           <SizePositionSection
             size={selectedWidget.shape.size}
             position={selectedWidget.shape.position}
@@ -107,7 +113,7 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
         </div>
       )}
       {selectedWidget?.type === "panel" && (
-        <div className="fill-y">
+        <div>
           <SizePositionSection
             size={selectedWidget.shape.size}
             position={selectedWidget.shape.position}
