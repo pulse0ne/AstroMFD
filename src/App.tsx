@@ -5,7 +5,6 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Fix height problems when resizing
 - Undo/Redo
 - Duplication of widgets
 - Deletion of screens
@@ -34,7 +33,7 @@ function App() {
     <main>
       <DevicesProvider>
         <div className="fill col no-overflow">
-          <div className="flex-grow col">
+          <div className="flex-grow col no-overflow">
             <MemoryRouter>
               <Routes>
                 <Route path="/" element={<Dummy />} />

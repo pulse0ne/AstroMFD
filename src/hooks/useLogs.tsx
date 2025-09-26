@@ -29,7 +29,7 @@ export function LogsProvider({ children }: PropsWithChildren<{}>) {
 
   useEffect(() => {
     return () => {
-      unListen().then(r => r());
+      unListen.then(r => r());
     };
   }, []);
 

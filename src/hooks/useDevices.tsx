@@ -21,7 +21,7 @@ export function DevicesProvider({ children }: PropsWithChildren<{}>) {
 
   useEffect(() => {
     return () => {
-      unListen().then(r => r());
+      unListen.then(r => r());
     };
   }, []);
 

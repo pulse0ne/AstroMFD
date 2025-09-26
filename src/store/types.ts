@@ -1,4 +1,5 @@
 import {Screen, ScreenSet, Size, Widget} from "../types/widget.ts";
+import {History} from "./history.ts";
 
 export type WidgetSlice = {
   // state
@@ -45,4 +46,17 @@ export type ScreenSetSlice = {
   deleteScreen: (id: string) => void;
 };
 
-export type RootState = WidgetSlice & ScreenSlice & ScreenSetSlice;
+export type HistorySlice = {
+  // state
+  histories: Record<string, History>;
+
+  // mutators
+  undo: () => void;
+  redo: () => void;
+
+  // accessors
+  hasUndos: () => boolean;
+  hasRedos: () => boolean;
+};
+
+export type RootState = WidgetSlice & ScreenSlice & ScreenSetSlice & HistorySlice;
