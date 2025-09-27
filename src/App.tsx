@@ -9,6 +9,7 @@ import {Creator} from "./Creator.tsx";
 - Duplication of widgets
 - Deletion of screens
 - Renaming of screens/screen sets
+- Pressed state for buttons
 - Add shadow/glow effects to shapes/text
 - Develop ScreenSet selector (react router)
 - Persisting/loading ScreenSets

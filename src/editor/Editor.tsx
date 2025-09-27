@@ -180,6 +180,8 @@ export default function Editor() {
     }
   };
 
+  console.log(useECStore.getState().screenSet);
+
   return (
     <div className="row no-overflow">
       <div className="flex-grow no-overflow relative" onContextMenu={(e) => e.preventDefault()}>

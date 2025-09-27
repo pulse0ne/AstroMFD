@@ -1,11 +1,68 @@
 import {useAppWebsocket, WebsocketProvider} from "./websocket/WebsocketContext.tsx";
 import ConnectionOverlay from "./ConnectionOverlay.tsx";
-import {useEffect} from "react";
+import {type CSSProperties, Fragment, useEffect, useState} from "react";
+import type {ScreenSet} from "./types.ts";
+import {Button} from "./widgets/Button.tsx";
+
+const TEST: ScreenSet = {
+  "id": "1",
+  "name": "Test",
+  "size": {
+    "width": 1875,
+    "height": 958
+  },
+  "screens": [
+    {
+      "id": "123",
+      "name": "TestScreen",
+      "backgroundColor": "black",
+      "widgets": [
+        {
+          "id": "badef9af-4a2b-4324-a92d-8f8c01535f2d",
+          "type": "button",
+          "buttonType": "action",
+          "vjoyButton": {
+            "button": 1,
+            "duration": 100
+          },
+          "navTarget": null,
+          "shape": {
+            "size": {
+              "width": 200,
+              "height": 100
+            },
+            "position": {
+              "x": 10.0,
+              "y": 12.0
+            },
+            "fill": "rgb(56, 30, 83)",
+            "stroke": "rgb(130, 51, 152)",
+            "strokeWidth": 1,
+            "cornerRadius": 8
+          },
+          "text": {
+            "text": "Button",
+            "font": null,
+            "fontSize": 16,
+            "fontColor": "white",
+            "horizontalAlignment": "center",
+            "verticalAlignment": "middle"
+          },
+          "pressed": {
+            "shape": {},
+            "text": {}
+          }
+        }
+      ]
+    }
+  ]
+};
 
 function App() {
   return (
     <WebsocketProvider>
-      <Dummy />
+      {/*<Dummy />*/}
+      <Dummy2 />
       <ConnectionOverlay />
       <ViewportReporter />
     </WebsocketProvider>
@@ -51,31 +108,60 @@ function ViewportReporter() {
   return <></>;
 }
 
-function Dummy() {
-  const { sendMessage, lastMessage } = useAppWebsocket();
-  useEffect(() => {
-    const variableMap: Record<string, any> = {};
-    // console.log(lastMessage);
-    if (lastMessage?.hasOwnProperty("allJournalEntries")) {
-      // console.log(lastMessage.allJournalEntries.entries);
-      lastMessage.allJournalEntries.entries.forEach((entry: string) => {
-        // console.log(entry);
-        const payload = JSON.parse(entry);
-        const eventType = payload.event;
-        Object.entries(payload).forEach(([field, value]) => {
-          const valueType = typeof value;
-          if (valueType !== "object") {
-            const key = `${eventType}.${field}`;
-            variableMap[key] = value;
-          }
-        });
-        console.log(payload);
-      });
-    }
+function Dummy2() {
+  const [screenSet] = useState<ScreenSet>(TEST);
+  const [activeScreenIndex] = useState(0);
+  const { sendMessage } = useAppWebsocket();
 
-    console.log(variableMap);
-  }, [lastMessage]);
-  return <button onClick={() => sendMessage({ press: { button: 1, duration: 100 }})}>Test</button>
+  const bgStyle: CSSProperties = {
+    position: "relative",
+    backgroundColor: screenSet.screens[activeScreenIndex].backgroundColor,
+    width: screenSet.size.width,
+    height: screenSet.size.height,
+  };
+
+  const handlePress = (button: number, duration: number) => {
+    sendMessage({ press: { button, duration }});
+  };
+
+  return (
+    <div style={bgStyle}>
+      {screenSet.screens[activeScreenIndex].widgets.map(widget => (
+        <Fragment key={widget.id}>
+          {widget.type === "button" && (
+            <Button attr={widget} onPress={handlePress} />
+          )}
+        </Fragment>
+      ))}
+    </div>
+  );
 }
+
+// function Dummy() {
+//   const { sendMessage, lastMessage } = useAppWebsocket();
+//   useEffect(() => {
+//     const variableMap: Record<string, any> = {};
+//     // console.log(lastMessage);
+//     if (lastMessage?.hasOwnProperty("allJournalEntries")) {
+//       // console.log(lastMessage.allJournalEntries.entries);
+//       lastMessage.allJournalEntries.entries.forEach((entry: string) => {
+//         // console.log(entry);
+//         const payload = JSON.parse(entry);
+//         const eventType = payload.event;
+//         Object.entries(payload).forEach(([field, value]) => {
+//           const valueType = typeof value;
+//           if (valueType !== "object") {
+//             const key = `${eventType}.${field}`;
+//             variableMap[key] = value;
+//           }
+//         });
+//         console.log(payload);
+//       });
+//     }
+//
+//     console.log(variableMap);
+//   }, [lastMessage]);
+//   return <button onClick={() => sendMessage({ press: { button: 1, duration: 100 }})}>Test</button>
+// }
 
 export default App;
