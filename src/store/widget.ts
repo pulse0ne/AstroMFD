@@ -2,6 +2,8 @@ import {StateCreator} from "zustand/vanilla";
 import {RootState, WidgetSlice} from "./types.ts";
 import {Widget} from "../types/widget.ts";
 import { Draft } from "immer";
+import {UndoableCommand} from "./UndoableCommand.ts";
+import {fastCopy} from "../utils/fastCopy.ts";
 
 function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
   screenSet: NonNullable<RootState["screenSet"]>;
@@ -62,3 +64,7 @@ export const createWidgetSlice: StateCreator<
     return screenSet?.screens[activeScreenIndex]?.widgets[activeWidgetIndex] ?? null;
   },
 });
+
+function updateWidgetCommand(state: Draft<RootState>): UndoableCommand {
+  const pre = fastCopy();
+}
