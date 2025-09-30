@@ -2,6 +2,7 @@ import {StateCreator} from "zustand/vanilla";
 import {RootState, ScreenSlice} from "./types.ts";
 import {Screen, Widget} from "../types/widget.ts";
 import {Draft} from "immer";
+import {UndoableCommand} from "./command.ts";
 
 function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
   screenSet: NonNullable<RootState["screenSet"]>;
@@ -11,7 +12,21 @@ function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
   return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
 }
 
+function makeAddWidgetCommand(widget: Widget, screenIndex: number): UndoableCommand {
+  const id = widget.id;
+  return {
+    type: "widget.add",
+    do: (state) => {
+      state.screenSet!.screens[screenIndex].widgets.push(widget);
+    },
+    undo: (state) => {
+      state.screenSet!.screens[screenIndex].widgets = state.screenSet!.screens[screenIndex].widgets.filter(w => w.id !== id);
+    }
+  };
+}
+
 function moveWidget(state: Draft<RootState>, to: number) {
+  // TODO: undo/redo commands
   if (!canModifyWidget(state)) return;
   const widgets = state.screenSet.screens[state.activeScreenIndex].widgets;
   if (to < 0 || to >= widgets.length) return;
@@ -45,16 +60,19 @@ export const createScreenSlice: StateCreator<
   updateScreen: (screen: Screen) => {
     set((state) => {
       if (state.screenSet && state.activeScreenIndex !== null) {
+        // TODO: undo/redo command
         state.screenSet.screens[state.activeScreenIndex] = screen;
       }
     });
   },
   addWidget: (widget: Widget) => {
     set((state) => {
-      console.log("here", state);
       if (state.screenSet && state.activeScreenIndex !== null) {
-        console.log("2");
-        state.screenSet.screens[state.activeScreenIndex].widgets.push(widget);
+        const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
+        cmd.do(state);
+
+        state.addCommand(cmd);
+
         state.activeWidgetIndex = state.screenSet.screens[state.activeScreenIndex].widgets.length - 1;
       }
     });

@@ -5,8 +5,10 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Undo/Redo
-- Duplication of widgets
+- Fix horizontal resizing again
+- Fix ghost client problem
+- Undo/Redo (screen/screenSet commands)
+- Duplication of widgets (hook functions up to store & controls)
 - Deletion of screens
 - Renaming of screens/screen sets
 - Pressed state for buttons

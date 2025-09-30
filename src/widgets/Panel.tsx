@@ -11,13 +11,20 @@ export type PanelProps = WidgetPropsBase & {
 
 // TODO: Support images/svg shapes
 
-export function Panel({ attr, onSelect, onUpdate, isSelected }: PanelProps) {
+export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSelected }: PanelProps) {
   const groupRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height });
+    onCommitUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height }, "widget.shape.position");
+  };
+
+  const handleDragging = (evt: KonvaEventObject<DragEvent>) => {
+    const { x, y } = evt.target.position();
+    const width = evt.target.width();
+    const height = evt.target.height();
+    onEphemeralUpdate({ x, y, width, height });
   };
 
   const handleTransform = () => {
@@ -30,7 +37,7 @@ export function Panel({ attr, onSelect, onUpdate, isSelected }: PanelProps) {
     const newWidth = node.width() * scaleX;
     const newHeight = node.height() * scaleY;
 
-    onUpdate({
+    onEphemeralUpdate({
       x: node.x(),
       y: node.y(),
       width: newWidth,
@@ -53,12 +60,12 @@ export function Panel({ attr, onSelect, onUpdate, isSelected }: PanelProps) {
     node.width(newWidth);
     node.height(newHeight);
 
-    onUpdate({
+    onCommitUpdate({
       x: node.x(),
       y: node.y(),
       width: newWidth,
       height: newHeight,
-    });
+    }, "widget.shape.size");
   };
 
   const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
@@ -71,7 +78,7 @@ export function Panel({ attr, onSelect, onUpdate, isSelected }: PanelProps) {
       trRef.current.nodes([groupRef.current]);
       trRef.current.getLayer().batchDraw();
     }
-  }, [isSelected]);
+  }, [isSelected, attr]);
 
   return (
     <>
@@ -84,6 +91,7 @@ export function Panel({ attr, onSelect, onUpdate, isSelected }: PanelProps) {
         draggable
         onMouseDown={handleSelect}
         onDragEnd={handleReposition}
+        onDragMove={handleDragging}
         onTransform={handleTransform}
         onTransformEnd={handleTransformEnd}
       >

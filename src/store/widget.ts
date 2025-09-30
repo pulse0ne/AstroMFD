@@ -2,7 +2,7 @@ import {StateCreator} from "zustand/vanilla";
 import {RootState, WidgetSlice} from "./types.ts";
 import {Widget} from "../types/widget.ts";
 import { Draft } from "immer";
-import {UndoableCommand} from "./UndoableCommand.ts";
+import {UndoableCommand} from "./command.ts";
 import {fastCopy} from "../utils/fastCopy.ts";
 
 function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
@@ -11,6 +11,32 @@ function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
   activeWidgetIndex: number;
 } {
   return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
+}
+
+function makeCommand(command: string, widget: Widget, state: Draft<RootState>, screenIndex: number, widgetIndex: number): UndoableCommand {
+  const originalWidget = fastCopy(state.screenSet!.screens[screenIndex].widgets[widgetIndex]);
+  return {
+    type: command,
+    do: (state) => {
+      state.screenSet!.screens[screenIndex].widgets[widgetIndex] = widget;
+    },
+    undo: (state) => {
+      state.screenSet!.screens[screenIndex].widgets[widgetIndex] = originalWidget;
+    }
+  };
+}
+
+function makeDeleteWidgetCommand(widget: Widget, screenIndex: number, widgetIndex: number): UndoableCommand {
+  const originalWidget = fastCopy(widget);
+  return {
+    type: "widget.delete",
+    do: (state) => {
+      state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 1);
+    },
+    undo: (state) => {
+      state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 0, originalWidget);
+    }
+  };
 }
 
 export const createWidgetSlice: StateCreator<
@@ -33,10 +59,13 @@ export const createWidgetSlice: StateCreator<
       state.activeWidgetIndex = null;
     });
   },
-  updateWidget: (widget: Widget) => {
+  updateWidget: (widget: Widget, changeType: string) => {
     set((state) => {
       if (canModifyWidget(state)) {
-        state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex] = widget;
+        const cmd = makeCommand(changeType, widget, state, state.activeScreenIndex, state.activeWidgetIndex);
+        cmd.do(state);
+
+        state.addCommand(cmd);
       }
     });
   },
@@ -44,14 +73,23 @@ export const createWidgetSlice: StateCreator<
     set((state) => {
       if (canModifyWidget(state)) {
         const current = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position;
-        state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position = { x: current.x + byX, y: current.y + byY };
+        const copy = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+        copy.shape.position = { x: current.x + byX, y: current.y + byY };
+        const cmd = makeCommand("widget.shape.position", copy, state, state.activeScreenIndex, state.activeWidgetIndex);
+        cmd.do(state);
+
+        state.addCommand(cmd);
       }
     });
   },
   deleteActiveWidget: () => {
     set((state) => {
       if (canModifyWidget(state)) {
-        state.screenSet.screens[state.activeScreenIndex].widgets.splice(state.activeWidgetIndex, 1);
+        const widget = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex];
+        const cmd = makeDeleteWidgetCommand(widget, state.activeScreenIndex, state.activeWidgetIndex);
+        cmd.do(state);
+
+        state.addCommand(cmd);
       }
       state.activeWidgetIndex = null;
     });
@@ -64,7 +102,3 @@ export const createWidgetSlice: StateCreator<
     return screenSet?.screens[activeScreenIndex]?.widgets[activeWidgetIndex] ?? null;
   },
 });
-
-function updateWidgetCommand(state: Draft<RootState>): UndoableCommand {
-  const pre = fastCopy();
-}

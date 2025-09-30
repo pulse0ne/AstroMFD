@@ -15,7 +15,8 @@ export function Button({
   attr,
   state,
   onSelect,
-  onUpdate,
+  onCommitUpdate,
+  onEphemeralUpdate,
   isSelected = false
 }: ButtonProps) {
   const groupRef = useRef<Konva.Group | null>(null);
@@ -44,7 +45,7 @@ export function Button({
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height });
+    onCommitUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height }, "widget.shape.position");
   };
 
   const handleTransform = () => {
@@ -57,7 +58,9 @@ export function Button({
     const newWidth = node.width() * scaleX;
     const newHeight = node.height() * scaleY;
 
-    onUpdate({
+    // TODO: find a way to fix the silly Text stretching
+
+    onEphemeralUpdate({
       x: node.x(),
       y: node.y(),
       width: newWidth,
@@ -80,12 +83,12 @@ export function Button({
     node.width(newWidth);
     node.height(newHeight);
 
-    onUpdate({
+    onCommitUpdate({
       x: node.x(),
       y: node.y(),
       width: newWidth,
       height: newHeight,
-    });
+    }, "widget.shape.size");
   };
 
   const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
@@ -97,7 +100,7 @@ export function Button({
     const { x, y } = evt.target.position();
     const width = evt.target.width();
     const height = evt.target.height();
-    onUpdate({ x, y, width, height });
+    onEphemeralUpdate({ x, y, width, height });
   };
 
   useEffect(() => {
@@ -105,7 +108,7 @@ export function Button({
       trRef.current?.nodes([groupRef.current]);
       trRef.current?.getLayer()?.batchDraw();
     }
-  }, [isSelected]);
+  }, [isSelected, attr]);
 
   // TODO: icon/image support
   return (

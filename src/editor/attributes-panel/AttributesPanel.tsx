@@ -7,12 +7,25 @@ import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";
 import {ButtonSpecificsSection} from "./ButtonSpecificsSection.tsx";
 
+function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
+  if (ephemeralShapeState) {
+    if (attrType === "size") {
+      const { width, height } = ephemeralShapeState;
+      return { width, height };
+    }
+    const { x, y } = ephemeralShapeState;
+    return { x, y };
+  }
+  return selectedWidget.shape[attrType];
+}
+
 export type AttributesPanelProps = {
+  ephemeralShapeState: (Size & Position) | null;
   selectedWidget: Widget | null;
-  onUpdate: (updated: Widget) => void;
+  onUpdate: (updated: Widget, type: string) => void;
 };
 
-export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelProps) {
+export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate }: AttributesPanelProps) {
   const [ fonts, setFonts ] = useState<FontSpec[]>([]);
 
   useEffect(() => {
@@ -22,33 +35,33 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
   const handleSizeChange = (size: Size) => {
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed for button
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
     }
   };
 
   const handlePositionChange = (position: Position) => {
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed for button
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
     }
   };
 
   const handleShapeAttrChange = (attr: ShapeAttributes) =>  {
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed state
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }));
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
     }
   }
 
@@ -56,11 +69,14 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
     console.log(attr);
     // TODO: handle pressed state
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }));
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }), "widget.text");
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }));
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }), "widget.text");
     }
   };
+
+  const size = selectedWidget ? extractShapeAttr("size", ephemeralShapeState, selectedWidget) as Size : null;
+  const position = selectedWidget ? extractShapeAttr("position", ephemeralShapeState, selectedWidget) as Position : null;
 
   return (
     <div className="attributes-panel fill-y" style={{ overflowY: "auto" }}>
@@ -74,11 +90,11 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
           <ButtonSpecificsSection
             attr={selectedWidget}
             screens={{}}
-            onUpdate={onUpdate}
+            onUpdate={(widget, type) => onUpdate(widget, type)}
           />
           <SizePositionSection
-            size={selectedWidget.shape.size}
-            position={selectedWidget.shape.position}
+            size={size!}
+            position={position!}
             onSizeChange={handleSizeChange}
             onPositionChange={handlePositionChange}
           />
@@ -96,8 +112,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       {selectedWidget?.type === "label" && (
         <div>
           <SizePositionSection
-            size={selectedWidget.shape.size}
-            position={selectedWidget.shape.position}
+            size={size!}
+            position={position!}
             onSizeChange={handleSizeChange}
             onPositionChange={handlePositionChange}
           />
@@ -115,8 +131,8 @@ export function AttributesPanel({ selectedWidget, onUpdate }: AttributesPanelPro
       {selectedWidget?.type === "panel" && (
         <div>
           <SizePositionSection
-            size={selectedWidget.shape.size}
-            position={selectedWidget.shape.position}
+            size={size!}
+            position={position!}
             onSizeChange={handleSizeChange}
             onPositionChange={handlePositionChange}
           />

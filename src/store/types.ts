@@ -1,5 +1,6 @@
 import {Screen, ScreenSet, Size, Widget} from "../types/widget.ts";
 import {History} from "./history.ts";
+import {UndoableCommand} from "./command.ts";
 
 export type WidgetSlice = {
   // state
@@ -8,7 +9,7 @@ export type WidgetSlice = {
   // mutators
   setActiveWidgetIndex: (index: number) => void;
   unsetActiveWidgetIndex: () => void;
-  updateWidget: (widget: Widget) => void;
+  updateWidget: (widget: Widget, changeType: string) => void;
   nudge: (x: number, y: number) => void;
   deleteActiveWidget: () => void;
 
@@ -51,6 +52,7 @@ export type HistorySlice = {
   histories: Record<string, History>;
 
   // mutators
+  addCommand: (cmd: UndoableCommand) => void;
   undo: () => void;
   redo: () => void;
 

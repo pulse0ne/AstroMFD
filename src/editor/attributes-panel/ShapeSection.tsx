@@ -4,18 +4,18 @@ import {useRecentColors} from "../../hooks/useRecentColors.ts";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
-  onUpdate: (attr: ShapeAttributes) => void;
+  onUpdate: (attr: ShapeAttributes, type: string) => void;
 };
 
 export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
   const { recentColors, addRecentColor } = useRecentColors();
 
   const handleColorChange = (key: "fill"|"stroke", value: string) => {
-    onUpdate(Object.assign({}, shapeAttr, { [key]: value }));
+    onUpdate(Object.assign({}, shapeAttr, { [key]: value }), `widget.shape.${key}`);
   };
 
   const handleNumericalChange = (key: "strokeWidth"|"cornerRadius", value: number) => {
-    onUpdate(Object.assign({}, shapeAttr, { [key]: value }));
+    onUpdate(Object.assign({}, shapeAttr, { [key]: value }), `widget.shape.${key}`);
   };
 
   return (

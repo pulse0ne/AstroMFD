@@ -26,6 +26,7 @@ export const createScreenSetSlice: StateCreator<
     });
   },
   updateSize: (size) => {
+    // TODO: undo/redo
     set((state) => {
       if (state.screenSet) {
         state.screenSet.size = size;
@@ -42,6 +43,8 @@ export const createScreenSetSlice: StateCreator<
   },
   deleteScreen: (id: string) => {
     set((state) => {
+      // TODO: undo/redo
+      // TODO: remove history for screen? maybe not so we have it in case the screen deletion gets undone
       if (state.screenSet) {
         state.screenSet.screens = state.screenSet.screens.filter(s => s.id !== id);
         state.activeScreenIndex = null;

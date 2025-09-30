@@ -2,6 +2,7 @@ import {Position, Size} from "../types/widget.ts";
 
 export type WidgetPropsBase = {
   onSelect: (multi: boolean) => void;
-  onUpdate: (sizePos: Size & Position) => void;
+  onCommitUpdate: (sizePos: Size & Position, type: string) => void;
+  onEphemeralUpdate: (sizePos: Size & Position) => void;
   isSelected: boolean;
 };

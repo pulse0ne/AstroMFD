@@ -5,17 +5,17 @@ type ScreenIdToName = Record<string, string>;
 export type ButtonSpecificsSectionProps = {
   attr: ButtonAttributes;
   screens: ScreenIdToName;
-  onUpdate: (attr: ButtonAttributes) => void;
+  onUpdate: (attr: ButtonAttributes, type: string) => void;
 };
 
 export function ButtonSpecificsSection({ attr, screens, onUpdate }: ButtonSpecificsSectionProps) {
 
   const handleButtonTypeChange = (value: ButtonType) => {
-    onUpdate(Object.assign({}, attr, { buttonType: value }));
+    onUpdate(Object.assign({}, attr, { buttonType: value }), "widget.button.type");
   };
 
   const handleVjoyButtonChange = (key: keyof ButtonAction, value: number) => {
-    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, [key]: value }}));
+    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, [key]: value }}), "widget.button.button");
   };
 
   return (

@@ -27,6 +27,7 @@ export default function Editor() {
   const size = useECStore(state => state.screenSet?.size);
   const nudgeWidget = useECStore(state => state.nudge);
 
+  const [ ephemeralShapeState, setEphemeralShapeState ] = useState<(Size & Position) | null>(null);
   const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
   const [ stagePosition, setStagePosition ] = useState<Position>({ x: 600, y: 400 });
   const [ stageScale, setStageScale ] = useState<number>(1.0);
@@ -129,9 +130,16 @@ export default function Editor() {
     };
   }, [size]);
 
-  const handleUpdate = ({ x, y, width, height }: Size & Position) => {
+  const handleUpdate = ({ x, y, width, height }: Size & Position, type: string) => {
     if (activeWidget) {
-      updateWidget({ ...activeWidget, shape: { ...activeWidget.shape, size: { width, height }, position: { x, y } }});
+      setEphemeralShapeState(null);
+      updateWidget({ ...activeWidget, shape: { ...activeWidget.shape, size: { width, height }, position: { x, y } }}, type);
+    }
+  };
+
+  const handleEphemeralUpdate = (ephState: Size & Position) => {
+    if (activeWidget) {
+      setEphemeralShapeState(ephState);
     }
   };
 
@@ -174,13 +182,11 @@ export default function Editor() {
     });
   };
 
-  const handleAttributePanelUpdate = (widget: Widget) => {
+  const handleAttributePanelUpdate = (widget: Widget, type: string) => {
     if (activeWidget) {
-      updateWidget(widget);
+      updateWidget(widget, type);
     }
   };
-
-  console.log(useECStore.getState().screenSet);
 
   return (
     <div className="row no-overflow">
@@ -214,7 +220,8 @@ export default function Editor() {
                   key={widget.id}
                   widget={widget}
                   onSelect={() => selectWidget(ix)}
-                  onUpdate={handleUpdate}
+                  onCommitUpdate={handleUpdate}
+                  onEphemeralUpdate={handleEphemeralUpdate}
                   isSelected={ix === activeWidgetIndex}
                   state="primary"
                 />
@@ -224,6 +231,7 @@ export default function Editor() {
         </div>
       </div>
       <AttributesPanel
+        ephemeralShapeState={ephemeralShapeState}
         selectedWidget={activeWidget}
         onUpdate={handleAttributePanelUpdate}
       />

@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import {FontSpec} from "./fonts.ts";
+import {fastCopy} from "../utils/fastCopy.ts";
 
 export type TextAttributes = {
   text: string | null;
@@ -87,6 +88,15 @@ export function createScreen(screenNum: number = 1): Screen {
   };
 }
 
+export function duplicateScreen(screen: Screen): Screen {
+  const copy = fastCopy(screen);
+  copy.widgets = copy.widgets.map(w => {
+    w.id = uuid();
+    return w;
+  });
+  return Object.assign({}, copy, { id: uuid() });
+}
+
 export function createButton(): ButtonAttributes {
   return {
     id: uuid(),
@@ -154,6 +164,10 @@ export function createPanel(): PanelAttributes {
       cornerRadius: 0
     }
   };
+}
+
+export function duplicateWidget(widget: Widget): Widget {
+  return Object.assign({}, fastCopy(widget), { id: uuid() });
 }
 
 export function findNextAvailableButton(widgets: Widget[]): number {
