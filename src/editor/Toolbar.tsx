@@ -31,7 +31,6 @@ export function Toolbar() {
   const { devices } = useDevices();
 
   const handleWidthChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    console.log(evt.target.value);
     const width = Number.parseInt(evt.target.value);
     if (!isNaN(width)) {
       updateSize({ width, height: screenSet?.size?.height ?? 800 });
@@ -39,7 +38,6 @@ export function Toolbar() {
   };
 
   const handleHeightChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    console.log(evt.target.value);
     const height = Number.parseInt(evt.target.value);
     if (!isNaN(height)) {
       updateSize({ width: screenSet?.size?.width ?? 1200, height });
@@ -73,30 +71,30 @@ export function Toolbar() {
     navigate("/");
   };
 
-  // console.log("render Toolbar");
-
   return (
-    <div className="toolbar relative">
-      <MdArrowBackIos className="pointer" style={{ marginRight: 16 }} onClick={goBack} />
-      <Popup
-        open={addPopupOpen}
-        closeOnDocumentClick
-        onOpen={() => setAddPopupOpen(true)}
-        onClose={() => setAddPopupOpen(false)}
-        arrow={false}
-        contentStyle={{ background: "var(--toolbar-color-hex)" }}
-        trigger={
-          <button style={{paddingLeft: 12}}>
-            <div className="row align-center" style={{gap: 4}}><MdAdd size={15}/> Add</div>
-          </button>
-        }
-      >
-        <AddWidgetMenuItem onClick={() => handleAddWidget(createButton)}>Button</AddWidgetMenuItem>
-        <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
-        <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
-        <div style={{borderBottom: "var(--border-light)"}}></div>
-        <AddWidgetMenuItem onClick={handleAddScreen}>Screen</AddWidgetMenuItem>
-      </Popup>
+    <div className="toolbar row align-center justify-space-between relative">
+      <div className="row align-center">
+        <MdArrowBackIos className="pointer" style={{ marginRight: 16 }} onClick={goBack} />
+        <Popup
+          open={addPopupOpen}
+          closeOnDocumentClick
+          onOpen={() => setAddPopupOpen(true)}
+          onClose={() => setAddPopupOpen(false)}
+          arrow={false}
+          contentStyle={{ background: "var(--toolbar-color-hex)" }}
+          trigger={
+            <button style={{paddingLeft: 12}}>
+              <div className="row align-center" style={{gap: 4}}><MdAdd size={15}/> Add</div>
+            </button>
+          }
+        >
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createButton)}>Button</AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
+          <div style={{borderBottom: "var(--border-light)"}}></div>
+          <AddWidgetMenuItem onClick={handleAddScreen}>Screen</AddWidgetMenuItem>
+        </Popup>
+      </div>
       <div
         className="fill-y row align-center"
         style={{
@@ -145,7 +143,6 @@ export function Toolbar() {
             </div>
           ))}
         </Popup>
-
       </div>
     </div>
   );

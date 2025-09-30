@@ -49,16 +49,12 @@ export type ScreenSetSlice = {
 
 export type HistorySlice = {
   // state
-  histories: Record<string, History>;
+  histories: Map<string, History>;
 
   // mutators
   addCommand: (cmd: UndoableCommand) => void;
   undo: () => void;
   redo: () => void;
-
-  // accessors
-  hasUndos: () => boolean;
-  hasRedos: () => boolean;
 };
 
 export type RootState = WidgetSlice & ScreenSlice & ScreenSetSlice & HistorySlice;

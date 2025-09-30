@@ -20,45 +20,39 @@ export const createHistorySlice: StateCreator<
   HistorySlice
 > = (set, get) => ({
   // state
-  histories: {},
+  histories: new Map(),
 
   // mutators
   addCommand: (cmd: UndoableCommand) => {
-    const { screenSet, activeScreenIndex, histories } = get();
-    if (!screenSet || activeScreenIndex === null) return;
-    const screenId =  screenSet.screens[activeScreenIndex].id;
-    let history: History;
-    if (!histories[screenId]) {
-      history = createHistory();
-      set((state) => {
-        state.histories[screenId] = history;
-      });
-    } else {
-      history = histories[screenId];
-    }
-    set((state) => {
-      // TODO: coalescing?
-      while (state.histories[screenId].past.length > HISTORY_LIMIT) {
-        state.histories[screenId].past.shift();
+    set((state ) => {
+      if (!state.screenSet || state.activeScreenIndex === null) return;
+      const screenId = state.screenSet.screens[state.activeScreenIndex].id;
+      if (!state.histories.get(screenId)) {
+        // state.histories.get(screenId) = createHistory();
+        state.histories.set(screenId, createHistory());
       }
-      state.histories[screenId].past.push(cmd);
+      while (state.histories.get(screenId)!.past.length > HISTORY_LIMIT) {
+        state.histories.get(screenId)!.past.shift();
+      }
+      state.histories.get(screenId)!.past.push(cmd);
     });
+    // console.log(get().histories);
   },
   undo: () => {
     const { screenSet, activeScreenIndex, histories } = get();
     if (!screenSet || activeScreenIndex === null) return;
     const screenId =  screenSet.screens[activeScreenIndex].id;
-    const history = histories[screenId];
+    const history = histories.get(screenId);
     if (history) {
       const cmd = history.past.pop();
       if (cmd) {
         set((state) => {
           cmd.undo(state);
 
-          while (state.histories[screenId].future.length > HISTORY_LIMIT) {
-            state.histories[screenId].future.shift();
+          while (state.histories.get(screenId)!.future.length > HISTORY_LIMIT) {
+            state.histories.get(screenId)!.future.shift();
           }
-          state.histories[screenId].future.push(cmd);
+          state.histories.get(screenId)!.future.push(cmd);
         });
       }
     }
@@ -67,33 +61,19 @@ export const createHistorySlice: StateCreator<
     const { screenSet, activeScreenIndex, histories } = get();
     if (!screenSet || activeScreenIndex === null) return;
     const screenId =  screenSet.screens[activeScreenIndex].id;
-    const history = histories[screenId];
+    const history = histories.get(screenId);
     if (history) {
       const cmd = history.future.pop();
       if (cmd) {
         set((state) => {
           cmd.do(state);
 
-          while (state.histories[screenId].past.length > HISTORY_LIMIT) {
-            state.histories[screenId].past.shift();
+          while (state.histories.get(screenId)!.past.length > HISTORY_LIMIT) {
+            state.histories.get(screenId)!.past.shift();
           }
-          state.histories[screenId].past.push(cmd);
+          state.histories.get(screenId)!.past.push(cmd);
         });
       }
     }
-  },
-
-  // accessors
-  hasUndos: () => {
-    const { screenSet, activeScreenIndex, histories } = get();
-    if (!screenSet || activeScreenIndex === null) return false;
-    const activeScreenId = screenSet.screens[activeScreenIndex].id;
-    return (histories[activeScreenId]?.past?.length ?? 0) > 0;
-  },
-  hasRedos: () => {
-    const { screenSet, activeScreenIndex, histories } = get();
-    if (!screenSet || activeScreenIndex === null) return false;
-    const activeScreenId = screenSet.screens[activeScreenIndex].id;
-    return (histories[activeScreenId]?.future?.length ?? 0) > 0;
   },
 });

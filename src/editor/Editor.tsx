@@ -189,7 +189,7 @@ export default function Editor() {
   };
 
   return (
-    <div className="row no-overflow">
+    <div className="row flex-grow no-overflow">
       <div className="flex-grow no-overflow relative" onContextMenu={(e) => e.preventDefault()}>
         {/*<div style={{ position: "absolute" }} className="fill scanlines"></div>*/}
         <div className="stage-container fill-y" ref={stageContainerRef}>

@@ -66,12 +66,13 @@ export const createScreenSlice: StateCreator<
     });
   },
   addWidget: (widget: Widget) => {
+    const addCommand = get().addCommand;
     set((state) => {
       if (state.screenSet && state.activeScreenIndex !== null) {
         const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
         cmd.do(state);
 
-        state.addCommand(cmd);
+        addCommand(cmd);
 
         state.activeWidgetIndex = state.screenSet.screens[state.activeScreenIndex].widgets.length - 1;
       }

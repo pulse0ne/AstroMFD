@@ -5,7 +5,7 @@ export function ScreenSelector() {
   const { lastEvent, unListen } = useTauriListen<string>("screen-image-updated");
   useEffect(() => {
     return () => {
-      unListen();
+      unListen.then(r => r());
     };
   }, []);
 

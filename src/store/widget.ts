@@ -60,16 +60,19 @@ export const createWidgetSlice: StateCreator<
     });
   },
   updateWidget: (widget: Widget, changeType: string) => {
+    const addCommand = get().addCommand;
     set((state) => {
       if (canModifyWidget(state)) {
         const cmd = makeCommand(changeType, widget, state, state.activeScreenIndex, state.activeWidgetIndex);
         cmd.do(state);
 
-        state.addCommand(cmd);
+        console.log("adding command");
+        addCommand(cmd);
       }
     });
   },
   nudge: (byX, byY) => {
+    const addCommand = get().addCommand;
     set((state) => {
       if (canModifyWidget(state)) {
         const current = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position;
@@ -78,18 +81,19 @@ export const createWidgetSlice: StateCreator<
         const cmd = makeCommand("widget.shape.position", copy, state, state.activeScreenIndex, state.activeWidgetIndex);
         cmd.do(state);
 
-        state.addCommand(cmd);
+        addCommand(cmd);
       }
     });
   },
   deleteActiveWidget: () => {
+    const addCommand = get().addCommand;
     set((state) => {
       if (canModifyWidget(state)) {
         const widget = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex];
         const cmd = makeDeleteWidgetCommand(widget, state.activeScreenIndex, state.activeWidgetIndex);
         cmd.do(state);
 
-        state.addCommand(cmd);
+        addCommand(cmd);
       }
       state.activeWidgetIndex = null;
     });

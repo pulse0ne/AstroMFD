@@ -6,6 +6,10 @@ import {SizePositionSection} from "./SizePositionSection.tsx";
 import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";
 import {ButtonSpecificsSection} from "./ButtonSpecificsSection.tsx";
+import {MdRedo, MdUndo} from "react-icons/md";
+import {IconType} from "react-icons";
+import {useECStore} from "../../store";
+import {RootState} from "../../store/types.ts";
 
 function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
   if (ephemeralShapeState) {
@@ -19,6 +23,19 @@ function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Siz
   return selectedWidget.shape[attrType];
 }
 
+const hasUndosSelector = (state: RootState) => {
+  console.log(state.histories);
+    // console.log("checking for undos", screenSet, activeScreenIndex, histories);
+    if (!state.screenSet || state.activeScreenIndex === null) return false;
+    const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
+    return (state.histories.get(activeScreenId)?.past?.length ?? 0) > 0;
+};
+const hasRedosSelector = (state: RootState) => {
+  if (!state.screenSet || state.activeScreenIndex === null) return false;
+  const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
+  return (state.histories.get(activeScreenId)?.future?.length ?? 0) > 0;
+};
+
 export type AttributesPanelProps = {
   ephemeralShapeState: (Size & Position) | null;
   selectedWidget: Widget | null;
@@ -27,6 +44,11 @@ export type AttributesPanelProps = {
 
 export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate }: AttributesPanelProps) {
   const [ fonts, setFonts ] = useState<FontSpec[]>([]);
+  const hasUndos = useECStore(hasUndosSelector);
+  const hasRedos = useECStore(hasRedosSelector);
+  const undo = useECStore(state => state.undo);
+  const redo = useECStore(state => state.redo);
+  // const histories = useECStore(state => state.histories);
 
   useEffect(() => {
     invoke<FontSpec[]>("list_system_fonts").then(fonts => setFonts(fonts));
@@ -79,9 +101,16 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
   const position = selectedWidget ? extractShapeAttr("position", ephemeralShapeState, selectedWidget) as Position : null;
 
   return (
-    <div className="attributes-panel fill-y" style={{ overflowY: "auto" }}>
+    <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
+      <div
+        className="row gap-16 align-center justify-center"
+        style={{ borderBottom: "var(--border-light)", paddingBottom: 8 }}
+      >
+        <UndoRedoButton type="undo" disabled={!hasUndos} onClick={undo} />
+        <UndoRedoButton type="redo" disabled={!hasRedos} onClick={redo} />
+      </div>
       {!selectedWidget && (
-        <div className="row justify-center align-center fill-y">
+        <div className="flex-grow row justify-center align-center">
           <div>No selection</div>
         </div>
       )}
@@ -143,5 +172,32 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
         </div>
       )}
     </div>
+  );
+}
+
+type UndoRedoButtonProps = {
+  type: "undo"|"redo";
+  onClick: () => void;
+  disabled: boolean;
+};
+
+function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
+  const Icon: IconType = type === "undo" ? MdUndo : MdRedo;
+
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  };
+
+  return (
+    <Icon
+      size={20}
+      onClick={handleClick}
+      style={{
+        cursor: disabled ? undefined : "pointer",
+        color: disabled ? "#666" : "var(--gradient-stop1)"
+      }}
+    />
   );
 }
