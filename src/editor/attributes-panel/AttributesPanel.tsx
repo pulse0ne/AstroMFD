@@ -74,23 +74,23 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
     }
   };
 
-  const handleShapeAttrChange = (attr: ShapeAttributes) =>  {
+  const handleShapeAttrChange = (attr: ShapeAttributes, type: string) =>  {
     if (selectedWidget?.type === "button") {
       // TODO: handle pressed state
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), "widget.shape");
+      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
     }
   }
 
-  const handleTextAttrChange = (attr: TextAttributes) => {
+  const handleTextAttrChange = (attr: TextAttributes, type: string) => {
     // TODO: handle pressed state
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }), "widget.text");
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }), "widget.text");
+      onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
     }
   };
 

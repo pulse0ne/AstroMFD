@@ -12,7 +12,7 @@ import {useRecentColors} from "../../hooks/useRecentColors.ts";
 
 export type TextSectionProps = {
   textAttr: TextAttributes;
-  onUpdate: (attr: TextAttributes) => void;
+  onUpdate: (attr: TextAttributes, type: string) => void;
   fonts: FontSpec[];
 };
 
@@ -27,29 +27,28 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
   }, [fonts]);
 
   const handleStringValueChange = (key: "text"|"fontColor", value: string) => {
-    console.log(key, value);
-    onUpdate(Object.assign({}, textAttr, { [key]: value }));
+    onUpdate(Object.assign({}, textAttr, { [key]: value }), `widget.text.${key}`);
   };
 
   const handleFontValueChange = (value: string) => {
     const fontSpec = fontMap[value];
     if (fontSpec) {
-      onUpdate(Object.assign({}, textAttr, { font: fontSpec }));
+      onUpdate(Object.assign({}, textAttr, { font: fontSpec }), "widget.text.font");
     }
   };
 
   const handleFontSizeChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const value = Number.parseInt(evt.target.value);
     if (!isNaN(value)) {
-      onUpdate(Object.assign({}, textAttr, { fontSize: value }));
+      onUpdate(Object.assign({}, textAttr, { fontSize: value }), "widget.text.fontSize");
     }
   };
 
   const handleAlignmentChange = (value: TextAttributes["horizontalAlignment"] | TextAttributes["verticalAlignment"]) => {
     if (["left", "center", "right"].includes(value)) {
-      onUpdate(Object.assign({}, textAttr, { horizontalAlignment: value }));
+      onUpdate(Object.assign({}, textAttr, { horizontalAlignment: value }), "widget.text.alignment");
     } else {
-      onUpdate(Object.assign({}, textAttr, { verticalAlignment: value }));
+      onUpdate(Object.assign({}, textAttr, { verticalAlignment: value }), "widget.text.alignment");
     }
   };
 

@@ -5,9 +5,10 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
+- Confirmation modal for screen deletions
+- Reassess all accessors: replace with selectors on consumer side
 - Fix undo/redo weirdness
 - Fix ghost client problem
-- Undo/Redo (screen/screenSet commands)
 - Duplication of widgets (hook functions up to store & controls)
 - Deletion of screens
 - Renaming of screens/screen sets

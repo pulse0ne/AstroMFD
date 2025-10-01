@@ -12,27 +12,58 @@ function canModifyWidget(state: RootState): state is RootState & {
   return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
 }
 
-function makeCommand(command: string, widget: Widget, originalWidget: Widget, screenIndex: number, widgetIndex: number): UndoableCommand {
+function makeCommand(command: string, widget: Widget, originalWidget: Widget, screenId: string): UndoableCommand {
+  const widgetId = widget.id;
   return {
     type: command,
+    targetId: widgetId,
     do: (state) => {
-      state.screenSet!.screens[screenIndex].widgets[widgetIndex] = widget;
+      // state.screenSet!.screens[screenIndex].widgets[widgetIndex] = widget;
+      const screen = state.screenSet!.screens.find(s => s.id === screenId);
+      if (!screen) return;
+
+      const widgetIndex = screen.widgets.findIndex(w => w.id === widgetId);
+      if (widgetIndex < 0) return;
+
+      screen.widgets.splice(widgetIndex, 1, widget);
     },
     undo: (state) => {
-      state.screenSet!.screens[screenIndex].widgets[widgetIndex] = originalWidget;
+      // state.screenSet!.screens[screenIndex].widgets[widgetIndex] = originalWidget;
+      const screen = state.screenSet!.screens.find(s => s.id === screenId);
+      if (!screen) return;
+
+      const widgetIndex = screen.widgets.findIndex(w => w.id === widgetId);
+      if (widgetIndex < 0) return;
+
+      screen.widgets.splice(widgetIndex, 1, originalWidget);
     }
   };
 }
 
-function makeDeleteWidgetCommand(widget: Widget, screenIndex: number, widgetIndex: number): UndoableCommand {
+function makeDeleteWidgetCommand(widget: Widget, screenId: string, originalWidgetIndex: number): UndoableCommand {
   const originalWidget = fastCopy(widget);
+  const widgetId = originalWidget.id;
   return {
     type: "widget.delete",
+    targetId: widgetId,
     do: (state) => {
-      state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 1);
+      // state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 1);
+      const screen = state.screenSet!.screens.find(i => i.id === screenId);
+      if (!screen) return;
+
+      const widgetIndex = screen.widgets.findIndex(w => w.id === widgetId);
+      if (widgetIndex < 0) return;
+
+      screen.widgets.splice(widgetIndex, 1);
+      state.activeWidgetIndex = null;
     },
     undo: (state) => {
-      state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 0, originalWidget);
+      // state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 0, originalWidget);
+      const screen = state.screenSet!.screens.find(s => s.id === screenId);
+      if (!screen) return;
+
+      const insertAt = Math.max(0, Math.min(originalWidgetIndex, screen.widgets.length));
+      screen.widgets.splice(insertAt, 0, originalWidget);
     }
   };
 }
@@ -60,13 +91,13 @@ export const createWidgetSlice: StateCreator<
   updateWidget: (widget: Widget, changeType: string) => {
     const state = get();
     if (canModifyWidget(state)) {
-      const originalWidget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const screen = state.screenSet.screens[state.activeScreenIndex];
+      const originalWidget = fastCopy(screen.widgets[state.activeWidgetIndex]);
       const cmd = makeCommand(
         changeType,
         widget,
         originalWidget,
-        state.activeScreenIndex,
-        state.activeWidgetIndex
+        screen.id
       );
       state.executeCommand(cmd);
     }
@@ -74,15 +105,15 @@ export const createWidgetSlice: StateCreator<
   nudge: (byX, byY) => {
     const state = get();
     if (canModifyWidget(state)) {
-      const originalWidget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const screen = state.screenSet.screens[state.activeScreenIndex];
+      const originalWidget = fastCopy(screen.widgets[state.activeWidgetIndex]);
       const copy = fastCopy(originalWidget);
       copy.shape.position = { x: copy.shape.position.x + byX, y: copy.shape.position.y + byY };
       const cmd = makeCommand(
         "widget.shape.position",
         copy,
         originalWidget,
-        state.activeScreenIndex,
-        state.activeWidgetIndex
+        screen.id
       );
       state.executeCommand(cmd);
     }
@@ -90,10 +121,11 @@ export const createWidgetSlice: StateCreator<
   deleteActiveWidget: () => {
     const state = get();
     if (canModifyWidget(state)) {
-      const widget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const screen = state.screenSet.screens[state.activeScreenIndex];
+      const widget = fastCopy(screen.widgets[state.activeWidgetIndex]);
       const cmd = makeDeleteWidgetCommand(
         widget,
-        state.activeScreenIndex,
+        screen.id,
         state.activeWidgetIndex
       );
       state.executeCommand(cmd);

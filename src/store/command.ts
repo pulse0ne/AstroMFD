@@ -8,6 +8,7 @@ export type ScreenState = {
 
 export type UndoableCommand = {
   type: string;
+  targetId?: string;
   do: (state: Draft<RootState>) => void;
   undo: (state: Draft<RootState>) => void;
 };

@@ -38,7 +38,6 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
     const data = event.clipboardData;
     if (data) {
       const text = data.getData("text");
-      console.log(text);
       if (text) {
         const match = text.match(RE);
         if (match) {
@@ -53,7 +52,6 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
         } else {
           const parsed = Number.parseInt(text);
           if (!isNaN(parsed)) {
-            console.log(parsed);
             const newColor: RGBA = {...rgba, [component]: clamp(parsed)};
             onUpdate(rgbaString(newColor));
           }

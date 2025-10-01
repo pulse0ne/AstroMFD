@@ -1,7 +1,6 @@
 import {StateCreator} from "zustand/vanilla";
 import {RootState, ScreenSlice} from "./types.ts";
 import {Screen, Widget} from "../types/widget.ts";
-import {Draft} from "immer";
 import {UndoableCommand} from "./command.ts";
 
 function canModifyWidget(state: RootState): state is RootState & {
@@ -16,6 +15,7 @@ function makeAddWidgetCommand(widget: Widget, screenIndex: number): UndoableComm
   const id = widget.id;
   return {
     type: "widget.add",
+    targetId: id,
     do: (state) => {
       state.screenSet!.screens[screenIndex].widgets.push(widget);
     },
@@ -25,16 +25,27 @@ function makeAddWidgetCommand(widget: Widget, screenIndex: number): UndoableComm
   };
 }
 
-function moveWidget(state: Draft<RootState>, to: number) {
-  // TODO: undo/redo commands
-  if (!canModifyWidget(state)) return;
-  const widgets = state.screenSet.screens[state.activeScreenIndex].widgets;
-  if (to < 0 || to >= widgets.length) return;
-
-  const [widget] = widgets.splice(state.activeWidgetIndex, 1);
-  widgets.splice(to, 0, widget);
-
-  state.activeWidgetIndex = to;
+function makeReorderWidgetCommand(widgetId: string, from: number, to: number, screenIndex: number): UndoableCommand {
+  return {
+    type: "widget.reorder",
+    targetId: widgetId,
+    do: (state) => {
+      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const currentIndex = widgets.findIndex(w => w.id === widgetId);
+      if (currentIndex < 0) return;
+      const [widget] = widgets.splice(currentIndex, 1);
+      widgets.splice(to, 0, widget);
+      state.activeWidgetIndex = to;
+    },
+    undo: (state) => {
+      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const currentIndex = widgets.findIndex(w => w.id === widgetId);
+      if (currentIndex < 0) return;
+      const [widget] = widgets.splice(currentIndex, 1);
+      widgets.splice(from, 0, widget);
+      state.activeWidgetIndex = from;
+    }
+  };
 }
 
 export const createScreenSlice: StateCreator<
@@ -60,7 +71,6 @@ export const createScreenSlice: StateCreator<
   updateScreen: (screen: Screen) => {
     set((state) => {
       if (state.screenSet && state.activeScreenIndex !== null) {
-        // TODO: undo/redo command
         state.screenSet.screens[state.activeScreenIndex] = screen;
       }
     });
@@ -82,25 +92,49 @@ export const createScreenSlice: StateCreator<
   sendForward: () => {
     set((state) => {
       if (!canModifyWidget(state)) return;
-      moveWidget(state, state.activeWidgetIndex + 1);
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = from + 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
     });
   },
   sendBackward: () => {
     set(state => {
       if (!canModifyWidget(state)) return;
-      moveWidget(state, state.activeWidgetIndex - 1);
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = from - 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
     });
   },
   sendToFront: () => {
     set(state => {
       if (!canModifyWidget(state)) return;
-      moveWidget(state, state.screenSet.screens[state.activeScreenIndex].widgets.length - 1);
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = screen.widgets.length - 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
     });
   },
   sendToBack: () => {
     set(state => {
       if (!canModifyWidget(state)) return;
-      moveWidget(state, 0);
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = 0;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
     });
   },
 

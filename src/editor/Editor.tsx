@@ -107,7 +107,6 @@ export default function Editor() {
 
   useEffect(() => {
     function handleResize() {
-      console.log('handling resize');
       setStageSize({
         width: stageContainerRef.current?.offsetWidth ?? 1200,
         height: stageContainerRef.current?.offsetHeight ?? 800

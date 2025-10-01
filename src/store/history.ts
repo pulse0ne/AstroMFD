@@ -4,6 +4,12 @@ import {UndoableCommand} from "./command.ts";
 
 const HISTORY_LIMIT = 50;
 
+const COALESCE_TYPES = [
+  "widget.shape.color",
+  "widget.text.fontColor",
+  "widget.text.text"
+];
+
 export type History = {
   past: UndoableCommand[];
   future: UndoableCommand[];
@@ -28,19 +34,27 @@ export const createHistorySlice: StateCreator<
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
 
+      // console.log(cmd.type);
+      cmd.do(state);
+
       const histories = new Map(state.histories);
       let history = histories.get(screenId);
       if (!history) {
         history = createHistory();
         histories.set(screenId, history);
       }
-      while (histories.get(screenId)!.past.length > HISTORY_LIMIT) {
-        history.past.shift();
-      }
-      history.past.push(cmd);
-      history.future = [];
 
-      cmd.do(state);
+      const lastCmd = history.past.length ? history.past[history.past.length - 1] : null;
+
+      if (lastCmd && COALESCE_TYPES.includes(cmd.type) && lastCmd.type === cmd.type && lastCmd.targetId === cmd.targetId) {
+        history.past[history.past.length - 1] = cmd;
+      } else {
+        while (histories.get(screenId)!.past.length > HISTORY_LIMIT) {
+          history.past.shift();
+        }
+        history.past.push(cmd);
+      }
+      history.future = [];
 
       state.histories = histories;
     });
@@ -55,10 +69,9 @@ export const createHistorySlice: StateCreator<
       const lastIndex = history.past.length - 1;
       const cmd = history.past[lastIndex];
 
-      history.past = history.past.slice(0, lastIndex);
-
       cmd.undo(state);
 
+      history.past = history.past.slice(0, lastIndex);
       history.future = [...history.future, cmd];
     });
   },
@@ -72,10 +85,9 @@ export const createHistorySlice: StateCreator<
       const lastIndex = history.future.length - 1;
       const cmd = history.future[lastIndex];
 
+      cmd.do(state);
+
       history.future = history.future.slice(0, lastIndex);
-
-      cmd.undo(state);
-
       history.past = [...history.past, cmd];
     });
   },
