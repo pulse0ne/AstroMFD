@@ -18,7 +18,6 @@ function makeCommand(command: string, widget: Widget, originalWidget: Widget, sc
     type: command,
     targetId: widgetId,
     do: (state) => {
-      // state.screenSet!.screens[screenIndex].widgets[widgetIndex] = widget;
       const screen = state.screenSet!.screens.find(s => s.id === screenId);
       if (!screen) return;
 
@@ -28,7 +27,6 @@ function makeCommand(command: string, widget: Widget, originalWidget: Widget, sc
       screen.widgets.splice(widgetIndex, 1, widget);
     },
     undo: (state) => {
-      // state.screenSet!.screens[screenIndex].widgets[widgetIndex] = originalWidget;
       const screen = state.screenSet!.screens.find(s => s.id === screenId);
       if (!screen) return;
 
@@ -47,7 +45,6 @@ function makeDeleteWidgetCommand(widget: Widget, screenId: string, originalWidge
     type: "widget.delete",
     targetId: widgetId,
     do: (state) => {
-      // state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 1);
       const screen = state.screenSet!.screens.find(i => i.id === screenId);
       if (!screen) return;
 
@@ -58,12 +55,48 @@ function makeDeleteWidgetCommand(widget: Widget, screenId: string, originalWidge
       state.activeWidgetIndex = null;
     },
     undo: (state) => {
-      // state.screenSet!.screens[screenIndex].widgets.splice(widgetIndex, 0, originalWidget);
       const screen = state.screenSet!.screens.find(s => s.id === screenId);
       if (!screen) return;
 
       const insertAt = Math.max(0, Math.min(originalWidgetIndex, screen.widgets.length));
       screen.widgets.splice(insertAt, 0, originalWidget);
+    }
+  };
+}
+
+function makeAddWidgetCommand(widget: Widget, screenIndex: number): UndoableCommand {
+  const id = widget.id;
+  return {
+    type: "widget.add",
+    targetId: id,
+    do: (state) => {
+      state.screenSet!.screens[screenIndex].widgets.push(widget);
+    },
+    undo: (state) => {
+      state.screenSet!.screens[screenIndex].widgets = state.screenSet!.screens[screenIndex].widgets.filter(w => w.id !== id);
+    }
+  };
+}
+
+function makeReorderWidgetCommand(widgetId: string, from: number, to: number, screenIndex: number): UndoableCommand {
+  return {
+    type: "widget.reorder",
+    targetId: widgetId,
+    do: (state) => {
+      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const currentIndex = widgets.findIndex(w => w.id === widgetId);
+      if (currentIndex < 0) return;
+      const [widget] = widgets.splice(currentIndex, 1);
+      widgets.splice(to, 0, widget);
+      state.activeWidgetIndex = to;
+    },
+    undo: (state) => {
+      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const currentIndex = widgets.findIndex(w => w.id === widgetId);
+      if (currentIndex < 0) return;
+      const [widget] = widgets.splice(currentIndex, 1);
+      widgets.splice(from, 0, widget);
+      state.activeWidgetIndex = from;
     }
   };
 }
@@ -134,11 +167,66 @@ export const createWidgetSlice: StateCreator<
       });
     }
   },
+  addWidget: (widget: Widget) => {
+    const state = get();
+    if (state.screenSet && state.activeScreenIndex !== null) {
+      const cmd = makeAddWidgetCommand(
+        widget,
+        state.activeScreenIndex,
+      );
+      state.executeCommand(cmd);
 
-  // accessors
-  getActiveWidget: () => {
-    const { activeScreenIndex, activeWidgetIndex, screenSet } = get();
-    if (activeScreenIndex === null || activeWidgetIndex === null) return null;
-    return screenSet?.screens[activeScreenIndex]?.widgets[activeWidgetIndex] ?? null;
+      set(state => {
+        state.activeWidgetIndex = state.screenSet!.screens[state.activeScreenIndex!].widgets.length - 1;
+      });
+    }
+  },
+  sendForward: () => {
+    set((state) => {
+      if (!canModifyWidget(state)) return;
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = from + 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
+    });
+  },
+  sendBackward: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = from - 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
+    });
+  },
+  sendToFront: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = screen.widgets.length - 1;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
+    });
+  },
+  sendToBack: () => {
+    set(state => {
+      if (!canModifyWidget(state)) return;
+      const screen = state.screenSet!.screens[state.activeScreenIndex];
+      const from = state.activeWidgetIndex;
+      const to = 0;
+      if (to >= screen.widgets.length) return;
+
+      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+      state.executeCommand(cmd);
+    });
   },
 });

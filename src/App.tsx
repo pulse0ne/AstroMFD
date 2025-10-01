@@ -7,7 +7,6 @@ import {Creator} from "./Creator.tsx";
   TODO:
 - Confirmation modal for screen deletions
 - Reassess all accessors: replace with selectors on consumer side
-- Fix undo/redo weirdness
 - Fix ghost client problem
 - Duplication of widgets (hook functions up to store & controls)
 - Deletion of screens
@@ -27,7 +26,7 @@ import {Creator} from "./Creator.tsx";
 - Audio/haptic feedback?
 - Color themes?
 - Multiselect?
-- README
+- README/wiki?
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled
 - Explore alternative input methods? virtual keyboard (enigo)?
 ---------------------*/

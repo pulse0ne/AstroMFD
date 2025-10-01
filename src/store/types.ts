@@ -12,9 +12,11 @@ export type WidgetSlice = {
   updateWidget: (widget: Widget, changeType: string) => void;
   nudge: (x: number, y: number) => void;
   deleteActiveWidget: () => void;
-
-  // accessors
-  getActiveWidget: () => Widget | null;
+  addWidget: (widget: Widget) => void;
+  sendForward: () => void;
+  sendBackward: () => void;
+  sendToFront: () => void;
+  sendToBack: () => void;
 };
 
 export type ScreenSlice = {
@@ -25,14 +27,6 @@ export type ScreenSlice = {
   setActiveScreenIndex: (index: number) => void;
   unsetActiveScreenIndex: () => void;
   updateScreen: (screen: Screen) => void;
-  addWidget: (widget: Widget) => void;
-  sendForward: () => void;
-  sendBackward: () => void;
-  sendToFront: () => void;
-  sendToBack: () => void;
-
-  // accessors
-  getActiveScreen: () => Screen | null;
 };
 
 export type ScreenSetSlice = {

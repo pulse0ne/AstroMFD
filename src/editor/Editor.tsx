@@ -13,12 +13,13 @@ import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
 import "./styles.css";
 import {useECStore} from "../store";
 import {invoke} from "@tauri-apps/api/core";
+import {activeScreenSelector, activeWidgetSelector} from "../store/selectors.ts";
 
 const SCALE_FACTOR = 1.05;
 
 export default function Editor() {
-  const activeScreen = useECStore(state => state.getActiveScreen());
-  const activeWidget = useECStore(state => state.getActiveWidget());
+  const activeScreen = useECStore(activeScreenSelector);
+  const activeWidget = useECStore(activeWidgetSelector);
   const removeActiveWidget = useECStore(state => state.deleteActiveWidget);
   const selectWidget = useECStore(state => state.setActiveWidgetIndex);
   const unselectWidget = useECStore(state => state.unsetActiveWidgetIndex);

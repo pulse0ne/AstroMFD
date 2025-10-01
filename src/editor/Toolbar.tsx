@@ -18,6 +18,7 @@ import {useDevices} from "../hooks/useDevices.tsx";
 import {ClientInfo} from "../types/websocket.ts";
 import {useECStore} from "../store";
 import {useNavigate} from "react-router";
+import {activeScreenWidgetsSelector} from "../store/selectors.ts";
 
 export function Toolbar() {
   const [ addPopupOpen, setAddPopupOpen ] = useState(false);
@@ -26,7 +27,7 @@ export function Toolbar() {
   const addScreen = useECStore((state) => state.addScreen);
   const addWidget = useECStore((state) => state.addWidget);
   const updateSize = useECStore((state) => state.updateSize);
-  const widgets = useECStore((state) => state.getActiveScreen()?.widgets);
+  const widgets = useECStore(activeScreenWidgetsSelector);
   const navigate = useNavigate();
   const { devices } = useDevices();
 

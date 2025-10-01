@@ -9,7 +9,7 @@ import {ButtonSpecificsSection} from "./ButtonSpecificsSection.tsx";
 import {MdRedo, MdUndo} from "react-icons/md";
 import {IconType} from "react-icons";
 import {useECStore} from "../../store";
-import {RootState} from "../../store/types.ts";
+import {hasRedosSelector, hasUndosSelector} from "../../store/selectors.ts";
 
 function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
   if (ephemeralShapeState) {
@@ -23,17 +23,6 @@ function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Siz
   return selectedWidget.shape[attrType];
 }
 
-const hasUndosSelector = (state: RootState) => {
-    if (!state.screenSet || state.activeScreenIndex === null) return false;
-    const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
-    return (state.histories.get(activeScreenId)?.past?.length ?? 0) > 0;
-};
-const hasRedosSelector = (state: RootState) => {
-  if (!state.screenSet || state.activeScreenIndex === null) return false;
-  const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
-  return (state.histories.get(activeScreenId)?.future?.length ?? 0) > 0;
-};
-
 export type AttributesPanelProps = {
   ephemeralShapeState: (Size & Position) | null;
   selectedWidget: Widget | null;
@@ -46,7 +35,6 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
   const hasRedos = useECStore(hasRedosSelector);
   const undo = useECStore(state => state.undo);
   const redo = useECStore(state => state.redo);
-  // const histories = useECStore(state => state.histories);
 
   useEffect(() => {
     invoke<FontSpec[]>("list_system_fonts").then(fonts => setFonts(fonts));
