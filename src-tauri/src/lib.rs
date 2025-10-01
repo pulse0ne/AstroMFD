@@ -15,6 +15,7 @@ use tokio::net::TcpListener;
 use local_ip_address::local_ip;
 use log::{debug, error, info};
 use tauri::{AppHandle, Emitter};
+use tauri::ipc::Response;
 use tokio::sync::Mutex;
 use crate::journal::Journal;
 use crate::state::{AppState, MobileEvent, ServerEvent};
@@ -67,6 +68,24 @@ async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -> Re
     Ok(())
 }
 
+#[tauri::command]
+async fn get_screen_img(id: String) -> Result<Response, String> {
+    debug!("loading screen img for {}", id);
+    let file_path = dirs::data_local_dir()
+        .unwrap_or_default()
+        .join("elite-control")
+        .join("thumbs")
+        .join(format!("{}.png", id));
+    match fs::read(file_path) {
+        Ok(data) => {
+            Ok(Response::new(data))
+        }
+        Err(e) => {
+            Err(e.to_string())
+        }
+    }
+}
+
 // TODO: command for handling fetching of screen images (singular and all)
 
 pub async fn run() {
@@ -78,6 +97,7 @@ pub async fn run() {
                 list_system_fonts,
                 get_screen_set_by_id,
                 save_screen_img,
+                get_screen_img
             ])
         .setup(move |app| {
             locations::initialize();

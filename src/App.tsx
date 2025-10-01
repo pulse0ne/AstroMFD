@@ -5,11 +5,10 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Confirmation modal for screen deletions
-- Reassess all accessors: replace with selectors on consumer side
 - Fix ghost client problem
 - Duplication of widgets (hook functions up to store & controls)
 - Deletion of screens
+- Confirmation modal for screen deletions
 - Renaming of screens/screen sets
 - Pressed state for buttons
 - Add shadow/glow effects to shapes/text
