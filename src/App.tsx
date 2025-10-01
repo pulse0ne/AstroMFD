@@ -5,7 +5,7 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Fix horizontal resizing again
+- Fix undo/redo weirdness
 - Fix ghost client problem
 - Undo/Redo (screen/screenSet commands)
 - Duplication of widgets (hook functions up to store & controls)
@@ -53,7 +53,11 @@ function App() {
 
 const Dummy = () => {
   const nav = useNavigate();
-  return <button onClick={() => nav("/creator/1")}>Creator</button>
+  return (
+    <div className="fill row no-overflow align-center justify-center">
+      <button onClick={() => nav("/creator/1")}>Creator</button>
+    </div>
+  );
 };
 
 export default App;

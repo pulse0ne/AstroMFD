@@ -4,7 +4,7 @@ import {Screen, Widget} from "../types/widget.ts";
 import {Draft} from "immer";
 import {UndoableCommand} from "./command.ts";
 
-function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
+function canModifyWidget(state: RootState): state is RootState & {
   screenSet: NonNullable<RootState["screenSet"]>;
   activeScreenIndex: number;
   activeWidgetIndex: number;
@@ -66,17 +66,18 @@ export const createScreenSlice: StateCreator<
     });
   },
   addWidget: (widget: Widget) => {
-    const addCommand = get().addCommand;
-    set((state) => {
-      if (state.screenSet && state.activeScreenIndex !== null) {
-        const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
-        cmd.do(state);
+    const state = get();
+    if (state.screenSet && state.activeScreenIndex !== null) {
+      const cmd = makeAddWidgetCommand(
+        widget,
+        state.activeScreenIndex,
+      );
+      state.executeCommand(cmd);
 
-        addCommand(cmd);
-
-        state.activeWidgetIndex = state.screenSet.screens[state.activeScreenIndex].widgets.length - 1;
-      }
-    });
+      set(state => {
+        state.activeWidgetIndex = state.screenSet!.screens[state.activeScreenIndex!].widgets.length - 1;
+      });
+    }
   },
   sendForward: () => {
     set((state) => {

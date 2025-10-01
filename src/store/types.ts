@@ -52,7 +52,7 @@ export type HistorySlice = {
   histories: Map<string, History>;
 
   // mutators
-  addCommand: (cmd: UndoableCommand) => void;
+  executeCommand: (cmd: UndoableCommand) => void;
   undo: () => void;
   redo: () => void;
 };

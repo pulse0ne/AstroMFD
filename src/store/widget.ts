@@ -1,11 +1,10 @@
 import {StateCreator} from "zustand/vanilla";
 import {RootState, WidgetSlice} from "./types.ts";
 import {Widget} from "../types/widget.ts";
-import { Draft } from "immer";
 import {UndoableCommand} from "./command.ts";
 import {fastCopy} from "../utils/fastCopy.ts";
 
-function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
+function canModifyWidget(state: RootState): state is RootState & {
   screenSet: NonNullable<RootState["screenSet"]>;
   activeScreenIndex: number;
   activeWidgetIndex: number;
@@ -13,8 +12,7 @@ function canModifyWidget(state: Draft<RootState>): state is Draft<RootState> & {
   return !!state.screenSet && state.activeScreenIndex !== null && state.activeWidgetIndex !== null;
 }
 
-function makeCommand(command: string, widget: Widget, state: Draft<RootState>, screenIndex: number, widgetIndex: number): UndoableCommand {
-  const originalWidget = fastCopy(state.screenSet!.screens[screenIndex].widgets[widgetIndex]);
+function makeCommand(command: string, widget: Widget, originalWidget: Widget, screenIndex: number, widgetIndex: number): UndoableCommand {
   return {
     type: command,
     do: (state) => {
@@ -60,43 +58,49 @@ export const createWidgetSlice: StateCreator<
     });
   },
   updateWidget: (widget: Widget, changeType: string) => {
-    const addCommand = get().addCommand;
-    set((state) => {
-      if (canModifyWidget(state)) {
-        const cmd = makeCommand(changeType, widget, state, state.activeScreenIndex, state.activeWidgetIndex);
-        cmd.do(state);
-
-        console.log("adding command");
-        addCommand(cmd);
-      }
-    });
+    const state = get();
+    if (canModifyWidget(state)) {
+      const originalWidget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const cmd = makeCommand(
+        changeType,
+        widget,
+        originalWidget,
+        state.activeScreenIndex,
+        state.activeWidgetIndex
+      );
+      state.executeCommand(cmd);
+    }
   },
   nudge: (byX, byY) => {
-    const addCommand = get().addCommand;
-    set((state) => {
-      if (canModifyWidget(state)) {
-        const current = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeScreenIndex].shape.position;
-        const copy = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
-        copy.shape.position = { x: current.x + byX, y: current.y + byY };
-        const cmd = makeCommand("widget.shape.position", copy, state, state.activeScreenIndex, state.activeWidgetIndex);
-        cmd.do(state);
-
-        addCommand(cmd);
-      }
-    });
+    const state = get();
+    if (canModifyWidget(state)) {
+      const originalWidget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const copy = fastCopy(originalWidget);
+      copy.shape.position = { x: copy.shape.position.x + byX, y: copy.shape.position.y + byY };
+      const cmd = makeCommand(
+        "widget.shape.position",
+        copy,
+        originalWidget,
+        state.activeScreenIndex,
+        state.activeWidgetIndex
+      );
+      state.executeCommand(cmd);
+    }
   },
   deleteActiveWidget: () => {
-    const addCommand = get().addCommand;
-    set((state) => {
-      if (canModifyWidget(state)) {
-        const widget = state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex];
-        const cmd = makeDeleteWidgetCommand(widget, state.activeScreenIndex, state.activeWidgetIndex);
-        cmd.do(state);
-
-        addCommand(cmd);
-      }
-      state.activeWidgetIndex = null;
-    });
+    const state = get();
+    if (canModifyWidget(state)) {
+      const widget = fastCopy(state.screenSet.screens[state.activeScreenIndex].widgets[state.activeWidgetIndex]);
+      const cmd = makeDeleteWidgetCommand(
+        widget,
+        state.activeScreenIndex,
+        state.activeWidgetIndex
+      );
+      state.executeCommand(cmd);
+      set(state => {
+        state.activeWidgetIndex = null;
+      });
+    }
   },
 
   // accessors

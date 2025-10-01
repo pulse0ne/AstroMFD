@@ -24,8 +24,6 @@ function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Siz
 }
 
 const hasUndosSelector = (state: RootState) => {
-  console.log(state.histories);
-    // console.log("checking for undos", screenSet, activeScreenIndex, histories);
     if (!state.screenSet || state.activeScreenIndex === null) return false;
     const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
     return (state.histories.get(activeScreenId)?.past?.length ?? 0) > 0;
@@ -88,7 +86,6 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
   }
 
   const handleTextAttrChange = (attr: TextAttributes) => {
-    console.log(attr);
     // TODO: handle pressed state
     if (selectedWidget?.type === "button") {
       onUpdate(Object.assign({}, selectedWidget, { text: attr }), "widget.text");

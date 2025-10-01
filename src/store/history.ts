@@ -18,62 +18,65 @@ export const createHistorySlice: StateCreator<
   [["zustand/immer", never]],
   [],
   HistorySlice
-> = (set, get) => ({
+> = (set) => ({
   // state
   histories: new Map(),
 
   // mutators
-  addCommand: (cmd: UndoableCommand) => {
+  executeCommand: (cmd: UndoableCommand) => {
     set((state ) => {
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
-      if (!state.histories.get(screenId)) {
-        // state.histories.get(screenId) = createHistory();
-        state.histories.set(screenId, createHistory());
+
+      const histories = new Map(state.histories);
+      let history = histories.get(screenId);
+      if (!history) {
+        history = createHistory();
+        histories.set(screenId, history);
       }
-      while (state.histories.get(screenId)!.past.length > HISTORY_LIMIT) {
-        state.histories.get(screenId)!.past.shift();
+      while (histories.get(screenId)!.past.length > HISTORY_LIMIT) {
+        history.past.shift();
       }
-      state.histories.get(screenId)!.past.push(cmd);
+      history.past.push(cmd);
+      history.future = [];
+
+      cmd.do(state);
+
+      state.histories = histories;
     });
-    // console.log(get().histories);
   },
   undo: () => {
-    const { screenSet, activeScreenIndex, histories } = get();
-    if (!screenSet || activeScreenIndex === null) return;
-    const screenId =  screenSet.screens[activeScreenIndex].id;
-    const history = histories.get(screenId);
-    if (history) {
-      const cmd = history.past.pop();
-      if (cmd) {
-        set((state) => {
-          cmd.undo(state);
+    set(state => {
+      if (!state.screenSet || state.activeScreenIndex === null) return;
+      const screenId = state.screenSet.screens[state.activeScreenIndex].id;
+      const history = state.histories.get(screenId);
+      if (!history || history.past.length === 0) return;
 
-          while (state.histories.get(screenId)!.future.length > HISTORY_LIMIT) {
-            state.histories.get(screenId)!.future.shift();
-          }
-          state.histories.get(screenId)!.future.push(cmd);
-        });
-      }
-    }
+      const lastIndex = history.past.length - 1;
+      const cmd = history.past[lastIndex];
+
+      history.past = history.past.slice(0, lastIndex);
+
+      cmd.undo(state);
+
+      history.future = [...history.future, cmd];
+    });
   },
   redo: () => {
-    const { screenSet, activeScreenIndex, histories } = get();
-    if (!screenSet || activeScreenIndex === null) return;
-    const screenId =  screenSet.screens[activeScreenIndex].id;
-    const history = histories.get(screenId);
-    if (history) {
-      const cmd = history.future.pop();
-      if (cmd) {
-        set((state) => {
-          cmd.do(state);
+    set(state => {
+      if (!state.screenSet || state.activeScreenIndex === null) return;
+      const screenId = state.screenSet.screens[state.activeScreenIndex].id;
+      const history = state.histories.get(screenId);
+      if (!history || history.future.length === 0) return;
 
-          while (state.histories.get(screenId)!.past.length > HISTORY_LIMIT) {
-            state.histories.get(screenId)!.past.shift();
-          }
-          state.histories.get(screenId)!.past.push(cmd);
-        });
-      }
-    }
+      const lastIndex = history.future.length - 1;
+      const cmd = history.future[lastIndex];
+
+      history.future = history.future.slice(0, lastIndex);
+
+      cmd.undo(state);
+
+      history.past = [...history.past, cmd];
+    });
   },
 });
