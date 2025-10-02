@@ -5,7 +5,6 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Fix ghost client problem
 - Duplication of widgets (hook functions up to store & controls)
 - Deletion of screens
 - Confirmation modal for screen deletions

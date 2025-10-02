@@ -86,6 +86,7 @@ function makeReorderWidgetCommand(widgetId: string, from: number, to: number, sc
       const widgets = state.screenSet!.screens[screenIndex].widgets;
       const currentIndex = widgets.findIndex(w => w.id === widgetId);
       if (currentIndex < 0) return;
+      console.log(widgetId, from, to, screenIndex);
       const [widget] = widgets.splice(currentIndex, 1);
       widgets.splice(to, 0, widget);
       state.activeWidgetIndex = to;
@@ -182,51 +183,48 @@ export const createWidgetSlice: StateCreator<
     }
   },
   sendForward: () => {
-    set((state) => {
-      if (!canModifyWidget(state)) return;
-      const screen = state.screenSet!.screens[state.activeScreenIndex];
-      const from = state.activeWidgetIndex;
-      const to = from + 1;
-      if (to >= screen.widgets.length) return;
+    const state = get();
+    if (!canModifyWidget(state)) return;
+    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const from = state.activeWidgetIndex;
+    const to = from + 1;
+    if (to >= screen.widgets.length) return;
 
-      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
-      state.executeCommand(cmd);
-    });
+    const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+    state.executeCommand(cmd);
   },
   sendBackward: () => {
-    set(state => {
-      if (!canModifyWidget(state)) return;
-      const screen = state.screenSet!.screens[state.activeScreenIndex];
-      const from = state.activeWidgetIndex;
-      const to = from - 1;
-      if (to >= screen.widgets.length) return;
+    const state = get();
+    if (!canModifyWidget(state)) return;
+    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const from = state.activeWidgetIndex;
+    const to = from - 1;
+    if (to < 0) return;
+    console.log(from, to);
 
-      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
-      state.executeCommand(cmd);
-    });
+    const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+    state.executeCommand(cmd);
   },
   sendToFront: () => {
-    set(state => {
-      if (!canModifyWidget(state)) return;
-      const screen = state.screenSet!.screens[state.activeScreenIndex];
-      const from = state.activeWidgetIndex;
-      const to = screen.widgets.length - 1;
-      if (to >= screen.widgets.length) return;
+    const state = get();
+    if (!canModifyWidget(state)) return;
+    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const from = state.activeWidgetIndex;
+    const to = screen.widgets.length - 1;
+    if (from === to) return;
 
-      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
-      state.executeCommand(cmd);
-    });
+    const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+    state.executeCommand(cmd);
   },
   sendToBack: () => {
-    set(state => {
-      if (!canModifyWidget(state)) return;
-      const screen = state.screenSet!.screens[state.activeScreenIndex];
-      const from = state.activeWidgetIndex;
-      const to = 0;
-      if (to >= screen.widgets.length) return;
+    const state = get();
+    if (!canModifyWidget(state)) return;
+    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const from = state.activeWidgetIndex;
+    const to = 0;
+    if (from === to) return;
 
-      const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
-      state.executeCommand(cmd);
-    });
+    const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
+    state.executeCommand(cmd);
   },
 });

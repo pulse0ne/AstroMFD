@@ -14,6 +14,7 @@ use std::sync::Arc;
 use tokio::net::TcpListener;
 use local_ip_address::local_ip;
 use log::{debug, error, info};
+use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 use tauri::ipc::Response;
 use tokio::sync::Mutex;
@@ -21,6 +22,11 @@ use crate::journal::Journal;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
 use crate::widget::screen_set::{ScreenSize, ScreenSet, Screen};
+
+#[derive(Serialize, Clone)]
+struct ImageUpdatedMessage {
+    id: String,
+}
 
 #[tauri::command]
 async fn get_mobile_client_server_address() -> String {
@@ -62,7 +68,7 @@ async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -> Re
     if let Err(e) = fs::write(file_path, data) {
         return Err(e.to_string());
     };
-    if let Err(e) = app_handle.emit("screen-image-updated", id) {
+    if let Err(e) = app_handle.emit("screen-image-updated", ImageUpdatedMessage { id }) {
         return Err(e.to_string());
     };
     Ok(())
@@ -86,7 +92,6 @@ async fn get_screen_img(id: String) -> Result<Response, String> {
     }
 }
 
-// TODO: command for handling fetching of screen images (singular and all)
 
 pub async fn run() {
     tauri::Builder::default()

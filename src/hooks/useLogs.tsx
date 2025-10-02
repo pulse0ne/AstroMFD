@@ -17,21 +17,13 @@ function clamp(entries: LogEntry[]): LogEntry[] {
 
 export function LogsProvider({ children }: PropsWithChildren<{}>) {
   const [ logs, setLogs ] = useState<LogsContextValue>({ logs: [] });
-  const { lastEvent, unListen } = useTauriListen<LogEntry>("log-event");
-
-  console.log(lastEvent);
+  const { lastEvent } = useTauriListen<LogEntry>("log-event");
 
   useEffect(() => {
     if (lastEvent) {
       setLogs(ov => ({ logs: clamp([...ov.logs, lastEvent]) }));
     }
   }, [lastEvent]);
-
-  useEffect(() => {
-    return () => {
-      unListen.then(r => r());
-    };
-  }, []);
 
   return (
     <LogsContext.Provider value={logs}>

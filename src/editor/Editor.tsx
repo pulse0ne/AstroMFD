@@ -1,4 +1,4 @@
-import {Layer, Rect, Stage} from "react-konva";
+import {Group, Layer, Rect, Stage} from "react-konva";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {
   Position,
@@ -34,18 +34,18 @@ export default function Editor() {
   const [ stageScale, setStageScale ] = useState<number>(1.0);
   const stageContainerRef = useRef<HTMLDivElement|null>(null);
   const stageRef = useRef<Konva.Stage>(null);
-  const contentLayerRef = useRef<Konva.Layer>(null);
+  const contentGroupRef = useRef<Konva.Group>(null);
 
   const workspaceSize = useMemo(() => size ?? { width: 1200, height: 800 }, [size]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (activeScreen && contentLayerRef.current) {
-        contentLayerRef.current.toBlob({
-          x: stagePosition.x,
-          y: stagePosition.y,
-          width: workspaceSize.width,
-          height: workspaceSize.height,
+      if (activeScreen && contentGroupRef.current) {
+        contentGroupRef.current.toBlob({
+          // x: stagePosition.x,
+          // y: stagePosition.y,
+          width: workspaceSize.width * stageScale,
+          height: workspaceSize.height * stageScale,
           pixelRatio: 0.25
         }).then(res => {
             const blob = res as Blob;
@@ -206,26 +206,28 @@ export default function Editor() {
             onDragEnd={handleStageDrag}
             onWheel={handleWheel}
           >
-            <Layer ref={contentLayerRef}>
-              <Rect
-                id="bg"
-                x={0}
-                y={0}
-                width={workspaceSize.width}
-                height={workspaceSize.height}
-                fill="#000"
-              />
-              {activeScreen?.widgets.map(((widget, ix) => (
-                <WidgetRenderer
-                  key={widget.id}
-                  widget={widget}
-                  onSelect={() => selectWidget(ix)}
-                  onCommitUpdate={handleUpdate}
-                  onEphemeralUpdate={handleEphemeralUpdate}
-                  isSelected={ix === activeWidgetIndex}
-                  state="primary"
+            <Layer>
+              <Group ref={contentGroupRef}>
+                <Rect
+                  id="bg"
+                  x={0}
+                  y={0}
+                  width={workspaceSize.width}
+                  height={workspaceSize.height}
+                  fill="#000"
                 />
-              )))}
+                {activeScreen?.widgets.map(((widget, ix) => (
+                  <WidgetRenderer
+                    key={widget.id}
+                    widget={widget}
+                    onSelect={() => selectWidget(ix)}
+                    onCommitUpdate={handleUpdate}
+                    onEphemeralUpdate={handleEphemeralUpdate}
+                    isSelected={ix === activeWidgetIndex}
+                    state="primary"
+                  />
+                )))}
+              </Group>
             </Layer>
           </Stage>
         </div>

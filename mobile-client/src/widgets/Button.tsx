@@ -35,16 +35,15 @@ export function Button({ attr, onPress }: ButtonProps) {
   const textContainerStyle: CSSProperties = {
     width: "100%",
     height: "100%",
-    justifyItems: vAlignmentMap[attr.text.verticalAlignment],
-    alignContent: hAlignmentMap[attr.text.horizontalAlignment],
+    display: "flex",
+    justifyContent: vAlignmentMap[attr.text.verticalAlignment],
+    alignItems: hAlignmentMap[attr.text.horizontalAlignment],
   };
 
   const textStyle: CSSProperties = {
     color: attr.text.fontColor ?? undefined,
     fontFamily: attr.text.font?.name,
     fontSize: attr.text.fontSize,
-    // justifySelf: hAlignmentMap[attr.text.horizontalAlignment],
-    // alignSelf: vAlignmentMap[attr.text.verticalAlignment],
   };
 
   const handlePress = useCallback(() => {
