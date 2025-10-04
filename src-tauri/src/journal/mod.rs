@@ -7,13 +7,53 @@ use std::sync::{Arc, LazyLock};
 use std::sync::mpsc as std_mpsc;
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tokio::sync::mpsc::Sender;
-use tokio::sync::Mutex;
+use tokio::sync::{broadcast, Mutex};
 use anyhow::Result;
 use log::{error, info, trace};
 use regex::Regex;
 use crate::journal::bounded_fifo_vec::BoundedFifoVec;
+use crate::state::ServerEvent;
 
 static JOURNAL_RE: LazyLock<Regex, fn() -> Regex> = LazyLock::new(|| Regex::new(r#"Journal\.\d{4}-\d{2}-\d{2}T\d+?\.\d+?\.log"#).unwrap());
+
+pub struct JournalHandle {
+    pub(crate) journal: Arc<Mutex<Journal>>,
+    pub(crate) watcher: Option<RecommendedWatcher>,
+}
+
+impl JournalHandle {
+    pub async fn start(
+        dir: PathBuf,
+        server_tx: broadcast::Sender<ServerEvent>,
+    ) -> Result<Self> {
+        let journal = Arc::new(Mutex::new(Journal::new(dir)));
+
+        // Tokio mpsc channel
+        let (tx, mut rx) = tokio::sync::mpsc::channel::<Vec<String>>(100);
+
+        // Start watching journal
+        let watcher = watch_journal(journal.clone(), tx.clone()).await?;
+
+        // Forward entries from mpsc::Receiver -> broadcast::Sender
+        tokio::spawn({
+            let server_tx = server_tx.clone();
+            async move {
+                while let Some(entries) = rx.recv().await {
+                    let _ = server_tx.send(ServerEvent::NewJournalEntries { entries });
+                }
+            }
+        });
+
+        Ok(Self {
+            journal,
+            watcher: Some(watcher),
+        })
+    }
+
+    pub fn stop(&mut self) {
+        self.watcher = None; // dropping watcher stops notify
+    }
+}
 
 #[derive(Clone)]
 pub struct Journal {
@@ -69,6 +109,74 @@ impl Journal {
     }
 }
 
+// pub async fn watch_journal(
+//     journal: Arc<Mutex<Journal>>,
+//     tx: Sender<Vec<String>>,
+// ) -> Result<RecommendedWatcher> {
+//     let journal_dir_path = journal.lock().await.journal_dir_path.clone();
+//     info!("watching journal dir: {}", journal_dir_path.display());
+// 
+//     let (sync_tx, sync_rx) = std_mpsc::channel::<PathBuf>();
+// 
+//     {
+//         let journal = Arc::clone(&journal);
+//         let tx = tx.clone();
+//         tokio::task::spawn_blocking(move || {
+//             for changed_file_path in sync_rx.iter() {
+//                 let journal = Arc::clone(&journal);
+//                 let tx = tx.clone();
+//                 
+//                 tokio::spawn(async move {
+//                     let journal = Arc::clone(&journal);
+//                     let tx = tx.clone();
+//                     tokio::spawn(async move {
+//                         let mut journal = journal.lock().await;
+//                         if let Some(current_journal) = &journal.journal_path {
+//                             if *current_journal != changed_file_path {
+//                                 journal.change_path(changed_file_path);
+//                             }
+//                             let entries = journal.read();
+//                             if !entries.is_empty() {
+//                                 let _ = tx.send(entries.clone()).await;
+//                             }
+//                         }
+//                     });
+//                 });
+//             }
+//         });
+//     }
+//     
+//     let mut watcher = notify::recommended_watcher(move |res: notify::Result<Event>| {
+//         match res {
+//             Ok(event) => {
+//                 match event.kind {
+//                     EventKind::Modify(_) | EventKind::Create(_) => {
+//                         let mut relevant_paths = event.paths
+//                             .into_iter()
+//                             .filter(|path| {
+//                                 path.file_name()
+//                                     .map_or(false, |name| JOURNAL_RE.is_match(name.to_str().unwrap()))
+//                             })
+//                             .collect::<Vec<PathBuf>>();
+//                         if !relevant_paths.is_empty() {
+//                             relevant_paths.sort_by(|a, b| b.file_name().cmp(&a.file_name()));
+//                             let most_recent_journal = relevant_paths.first().unwrap();
+//                             let _ = sync_tx.send(most_recent_journal.clone());
+//                         }
+//                     },
+//                     _ => {
+//                         trace!("got a file change we don't care about: {:?}", event);
+//                     }
+//                 }
+//             }
+//             Err(e) => error!("watch error: {:?}", e),
+//         }
+//     })?;
+// 
+//     watcher.watch(&journal_dir_path, RecursiveMode::NonRecursive)?;
+//     Ok(watcher)
+// }
+
 pub async fn watch_journal(
     journal: Arc<Mutex<Journal>>,
     tx: Sender<Vec<String>>,
@@ -78,55 +186,55 @@ pub async fn watch_journal(
 
     let (sync_tx, sync_rx) = std_mpsc::channel::<PathBuf>();
 
-    {
-        let journal = Arc::clone(&journal);
-        let tx = tx.clone();
-        tokio::task::spawn_blocking(move || {
-            for changed_file_path in sync_rx.iter() {
-                let journal = Arc::clone(&journal);
-                let tx = tx.clone();
-                
-                tokio::spawn(async move {
-                    let journal = Arc::clone(&journal);
-                    let tx = tx.clone();
-                    tokio::spawn(async move {
-                        let mut journal = journal.lock().await;
-                        if let Some(current_journal) = &journal.journal_path {
-                            if *current_journal != changed_file_path {
-                                journal.change_path(changed_file_path);
-                            }
-                            let entries = journal.read();
-                            if !entries.is_empty() {
-                                let _ = tx.send(entries.clone()).await;
-                            }
-                        }
-                    });
-                });
+    // Spawn a single async task to process file change events
+    let journal_clone = Arc::clone(&journal);
+    let tx_clone = tx.clone();
+    tokio::spawn(async move {
+        while let Ok(changed_file_path) = sync_rx.recv() {
+            let mut journal = journal_clone.lock().await;
+
+            // If new file is different, reset offset + switch
+            if journal
+                .journal_path
+                .as_ref()
+                .map(|p| p != &changed_file_path)
+                .unwrap_or(true)
+            {
+                journal.change_path(changed_file_path);
             }
-        });
-    }
-    
+
+            let entries = journal.read();
+            if !entries.is_empty() {
+                if let Err(e) = tx_clone.send(entries.clone()).await {
+                    error!("failed to forward journal entries: {}", e);
+                }
+            }
+        }
+    });
+
+    // Create notify watcher
     let mut watcher = notify::recommended_watcher(move |res: notify::Result<Event>| {
         match res {
             Ok(event) => {
-                match event.kind {
-                    EventKind::Modify(_) | EventKind::Create(_) => {
-                        let mut relevant_paths = event.paths
-                            .into_iter()
-                            .filter(|path| {
-                                path.file_name()
-                                    .map_or(false, |name| JOURNAL_RE.is_match(name.to_str().unwrap()))
-                            })
-                            .collect::<Vec<PathBuf>>();
-                        if !relevant_paths.is_empty() {
-                            relevant_paths.sort_by(|a, b| b.file_name().cmp(&a.file_name()));
-                            let most_recent_journal = relevant_paths.first().unwrap();
-                            let _ = sync_tx.send(most_recent_journal.clone());
-                        }
-                    },
-                    _ => {
-                        trace!("got a file change we don't care about: {:?}", event);
+                if matches!(event.kind, EventKind::Modify(_) | EventKind::Create(_)) {
+                    let mut relevant_paths: Vec<PathBuf> = event
+                        .paths
+                        .into_iter()
+                        .filter(|path| {
+                            path.file_name()
+                                .and_then(|name| name.to_str())
+                                .map_or(false, |name| JOURNAL_RE.is_match(name))
+                        })
+                        .collect();
+
+                    if !relevant_paths.is_empty() {
+                        // sort newest first
+                        relevant_paths.sort_by(|a, b| b.file_name().cmp(&a.file_name()));
+                        let most_recent = relevant_paths.first().unwrap().clone();
+                        let _ = sync_tx.send(most_recent);
                     }
+                } else {
+                    trace!("ignoring file event: {:?}", event.kind);
                 }
             }
             Err(e) => error!("watch error: {:?}", e),

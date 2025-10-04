@@ -2,7 +2,7 @@ use std::net::IpAddr;
 use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::{broadcast, mpsc, Mutex};
-use crate::journal::Journal;
+use crate::journal::{Journal, JournalHandle};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -33,5 +33,6 @@ pub struct AppState {
     pub server_tx: broadcast::Sender<ServerEvent>,
     pub app_handle: tauri::AppHandle,
     pub mobile_clients: Arc<Mutex<Vec<MobileClient>>>,
-    pub journal: Arc<Mutex<Journal>>,
+    // pub journal: Arc<Mutex<Journal>>,
+    pub journal: Arc<Mutex<Option<JournalHandle>>>,
 }

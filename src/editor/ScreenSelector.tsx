@@ -64,7 +64,8 @@ export function ScreenSelector() {
                 width: 64,
                 height: 64,
                 border: "var(--border-light)",
-                borderColor: ix === activeScreenIndex ? "var(--gradient-stop1)" : undefined
+                borderColor: ix === activeScreenIndex ? "var(--gradient-stop1)" : undefined,
+                backgroundColor: "black"
               }}
               onClick={() => setActiveScreenIndex(ix)}
             >

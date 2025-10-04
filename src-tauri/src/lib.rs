@@ -10,15 +10,16 @@ mod locations;
 
 use std::fs;
 use std::net::SocketAddr;
+use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use local_ip_address::local_ip;
-use log::{debug, error, info};
+use log::{debug, info};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 use tauri::ipc::Response;
 use tokio::sync::Mutex;
-use crate::journal::Journal;
+use crate::journal::JournalHandle;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
 use crate::widget::screen_set::{ScreenSize, ScreenSet, Screen};
@@ -92,6 +93,27 @@ async fn get_screen_img(id: String) -> Result<Response, String> {
     }
 }
 
+#[tauri::command]
+async fn set_journal_path(state: tauri::State<'_, AppState>, path: Option<String>) -> Result<(), String> {
+    let mut journal_opt = state.journal.lock().await;
+
+    // stop if running
+    if let Some(handle) = journal_opt.as_mut() {
+        handle.stop();
+        *journal_opt = None;
+    }
+
+    // if a path is provided, restart
+    if let Some(path) = path {
+        let handle = JournalHandle::start(PathBuf::from(path),state.server_tx.clone())
+            .await
+            .map_err(|e| e.to_string())?;
+        *journal_opt = Some(handle);
+    }
+
+    Ok(())
+}
+
 
 pub async fn run() {
     tauri::Builder::default()
@@ -102,7 +124,8 @@ pub async fn run() {
                 list_system_fonts,
                 get_screen_set_by_id,
                 save_screen_img,
-                get_screen_img
+                get_screen_img,
+                set_journal_path,
             ])
         .setup(move |app| {
             locations::initialize();
@@ -115,31 +138,31 @@ pub async fn run() {
             logging::setup_logging(app_handle.clone());
 
             // TODO: find a good way of getting this from config or UI
-            let journal = Arc::new(Mutex::new(Journal::new("../../")));
-
+            // TODO: load settings first to get journal settings
+            
             let state = AppState {
                 mobile_tx,
                 server_tx: server_tx.clone(),
                 app_handle: app_handle.clone(),
                 mobile_clients: Arc::new(Mutex::new(vec![])),
-                journal: journal.clone(),
+                journal: Arc::new(Mutex::new(None)),
             };
 
-            let (tx, mut rx) = tokio::sync::mpsc::channel(100);
-            tokio::spawn({
-                let journal = journal.clone();
-                let server_tx = server_tx.clone();
-                async move {
-                    if let Err(e) = journal::watch_journal(journal, tx).await {
-                        error!("Failed to watch journal: {}", e);
-                    };
-
-                    while let Some(entries) = rx.recv().await {
-                        info!("Got new entries: {:?}", entries);
-                        let _ = server_tx.send(ServerEvent::NewJournalEntries { entries });
-                    }
-                }
-            });
+            // let (tx, mut rx) = tokio::sync::mpsc::channel(100);
+            // tokio::spawn({
+            //     let journal = journal.clone();
+            //     let server_tx = server_tx.clone();
+            //     async move {
+            //         if let Err(e) = journal::watch_journal(journal, tx).await {
+            //             error!("Failed to watch journal: {}", e);
+            //         };
+            // 
+            //         while let Some(entries) = rx.recv().await {
+            //             info!("Got new entries: {:?}", entries);
+            //             let _ = server_tx.send(ServerEvent::NewJournalEntries { entries });
+            //         }
+            //     }
+            // });
 
             tokio::spawn(vjoy_worker(mobile_rx, server_tx.clone()));
             
