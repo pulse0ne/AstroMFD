@@ -95,6 +95,7 @@ export default function Editor() {
           e.preventDefault();
           removeActiveWidget();
           break;
+        // TODO: ctrl-c, ctrl-v, ctrl-x, ctrl-z
       }
     };
 

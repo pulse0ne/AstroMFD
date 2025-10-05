@@ -1,9 +1,31 @@
+use std::path::PathBuf;
+
+pub fn data_dir() -> PathBuf {
+    dirs::data_local_dir().unwrap_or_default()
+}
+
+pub fn ec_root() -> PathBuf {
+    data_dir().join("elite-control")
+}
+
+pub fn log_dir() -> PathBuf {
+    ec_root().join("logs")
+}
+
+pub fn screen_img_dir() -> PathBuf {
+    ec_root().join("thumbs")
+}
+
+pub fn save_dir() -> PathBuf {
+    ec_root().join("screen-sets")
+}
+
 pub fn initialize() {
-    let data_dir = dirs::data_local_dir().unwrap_or_default();
-    let ec_root = data_dir.join("elite-control");
-    let log_dir = ec_root.join("logs");
-    let screen_img_dir = ec_root.join("thumbs");
-    let dirs = vec![ec_root, log_dir, screen_img_dir];
+    let ec_root = ec_root();
+    let log_dir = log_dir();
+    let screen_img_dir = screen_img_dir();
+    let save_dir = save_dir();
+    let dirs = vec![ec_root, log_dir, screen_img_dir, save_dir];
     
     dirs.iter().for_each(|dir| {
         if !dir.exists() {

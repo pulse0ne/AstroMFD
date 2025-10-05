@@ -56,9 +56,8 @@ export function ScreenSelector() {
       </div>
       <div className="flex-x flex-grow col align-center gap-16" style={{ /*overflowY: "scroll"*/ }}>
         {screenSet?.screens?.map(((screen, ix) => (
-          <div className="col align-center">
+          <div className="col align-center" key={screen.id}>
             <div
-              key={screen.id}
               className="pointer"
               style={{
                 width: 64,

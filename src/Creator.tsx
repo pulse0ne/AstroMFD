@@ -20,7 +20,8 @@ export function Creator() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       console.log("changed...need to save");
-      // TODO: call invoke
+      invoke("save_screen_set", { screenSet })
+        .catch(e => console.error(e));
     }, 5000);
 
     return () => {
@@ -29,6 +30,7 @@ export function Creator() {
   }, [screenSet]);
 
   // console.log("render Creator");
+  console.log(screenSet);
 
   return (
     <div className="creator flex-grow col">

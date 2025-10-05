@@ -7,126 +7,20 @@ mod vjoystick;
 mod journal;
 mod widget;
 mod locations;
+mod commands;
 
-use std::fs;
 use std::net::SocketAddr;
-use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::net::TcpListener;
-use local_ip_address::local_ip;
-use log::{debug, info};
-use serde::Serialize;
-use tauri::{AppHandle, Emitter};
-use tauri::ipc::Response;
+use log::info;
 use tokio::sync::Mutex;
-use crate::journal::JournalHandle;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
-use crate::widget::screen_set::{ScreenSize, ScreenSet, Screen};
-
-#[derive(Serialize, Clone)]
-struct ImageUpdatedMessage {
-    id: String,
-}
-
-#[tauri::command]
-async fn get_mobile_client_server_address() -> String {
-    local_ip().unwrap().to_string()
-}
-
-#[tauri::command]
-async fn list_system_fonts() -> Vec<fonts::FontSpec> {
-    fonts::list_fonts()
-}
-
-#[tauri::command]
-async fn get_screen_set_by_id(id: String) -> Result<ScreenSet, String> {
-    debug!("loading screen set {}", id);
-    let screen_set = ScreenSet {
-        id,
-        name: "Test".to_string(),
-        screens: vec!(
-            Screen {
-                id: "123".to_string(),
-                name: "TestScreen".to_string(),
-                background_color: "black".to_string(),
-                widgets: vec![],
-            }
-        ),
-        size: ScreenSize { width: 1200, height: 800 }
-    };
-    Ok(screen_set)
-}
-
-#[tauri::command]
-async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -> Result<(), String> {
-    debug!("saving screen img for {}", id);
-    let file_path = dirs::data_local_dir()
-        .unwrap_or_default()
-        .join("elite-control")
-        .join("thumbs")
-        .join(format!("{}.png", id));
-    if let Err(e) = fs::write(file_path, data) {
-        return Err(e.to_string());
-    };
-    if let Err(e) = app_handle.emit("screen-image-updated", ImageUpdatedMessage { id }) {
-        return Err(e.to_string());
-    };
-    Ok(())
-}
-
-#[tauri::command]
-async fn get_screen_img(id: String) -> Result<Response, String> {
-    debug!("loading screen img for {}", id);
-    let file_path = dirs::data_local_dir()
-        .unwrap_or_default()
-        .join("elite-control")
-        .join("thumbs")
-        .join(format!("{}.png", id));
-    match fs::read(file_path) {
-        Ok(data) => {
-            Ok(Response::new(data))
-        }
-        Err(e) => {
-            Err(e.to_string())
-        }
-    }
-}
-
-#[tauri::command]
-async fn set_journal_path(state: tauri::State<'_, AppState>, path: Option<String>) -> Result<(), String> {
-    let mut journal_opt = state.journal.lock().await;
-
-    // stop if running
-    if let Some(handle) = journal_opt.as_mut() {
-        handle.stop();
-        *journal_opt = None;
-    }
-
-    // if a path is provided, restart
-    if let Some(path) = path {
-        let handle = JournalHandle::start(PathBuf::from(path),state.server_tx.clone())
-            .await
-            .map_err(|e| e.to_string())?;
-        *journal_opt = Some(handle);
-    }
-
-    Ok(())
-}
-
 
 pub async fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(
-            tauri::generate_handler![
-                get_mobile_client_server_address,
-                list_system_fonts,
-                get_screen_set_by_id,
-                save_screen_img,
-                get_screen_img,
-                set_journal_path,
-            ])
+        .invoke_handler(commands::command_handlers())
         .setup(move |app| {
             locations::initialize();
             
@@ -137,7 +31,6 @@ pub async fn run() {
 
             logging::setup_logging(app_handle.clone());
 
-            // TODO: find a good way of getting this from config or UI
             // TODO: load settings first to get journal settings
             
             let state = AppState {
@@ -147,22 +40,6 @@ pub async fn run() {
                 mobile_clients: Arc::new(Mutex::new(vec![])),
                 journal: Arc::new(Mutex::new(None)),
             };
-
-            // let (tx, mut rx) = tokio::sync::mpsc::channel(100);
-            // tokio::spawn({
-            //     let journal = journal.clone();
-            //     let server_tx = server_tx.clone();
-            //     async move {
-            //         if let Err(e) = journal::watch_journal(journal, tx).await {
-            //             error!("Failed to watch journal: {}", e);
-            //         };
-            // 
-            //         while let Some(entries) = rx.recv().await {
-            //             info!("Got new entries: {:?}", entries);
-            //             let _ = server_tx.send(ServerEvent::NewJournalEntries { entries });
-            //         }
-            //     }
-            // });
 
             tokio::spawn(vjoy_worker(mobile_rx, server_tx.clone()));
             

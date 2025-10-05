@@ -2,7 +2,7 @@ use std::net::IpAddr;
 use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::{broadcast, mpsc, Mutex};
-use crate::journal::{Journal, JournalHandle};
+use crate::journal::JournalHandle;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]

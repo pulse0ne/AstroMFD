@@ -2,11 +2,12 @@ import StatusBar from "./statusbar/StatusBar.tsx";
 import {DevicesProvider} from "./hooks/useDevices.tsx";
 import {MemoryRouter, Route, Routes, useNavigate} from "react-router";
 import {Creator} from "./Creator.tsx";
+import {invoke} from "@tauri-apps/api/core";
 
 /*--------------------
   TODO:
 - Duplication of widgets (hook functions up to store & controls)
-- Deletion of screens
+- Deletion of screens (delete screen thumb file too)
 - Confirmation modal for screen deletions
 - Renaming of screens/screen sets
 - Pressed state for buttons
@@ -28,6 +29,8 @@ import {Creator} from "./Creator.tsx";
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled
 - Explore alternative input methods? virtual keyboard (enigo)?
 ---------------------*/
+
+invoke("list_screen_sets").then(res => console.log(res));
 
 function App() {
   return (
