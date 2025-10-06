@@ -1,14 +1,14 @@
 use serde::{Deserialize, Serialize};
 use crate::widget::Widget;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ScreenSize {
     pub width: u64,
     pub height: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Screen {
     pub id: String,
@@ -17,7 +17,7 @@ pub struct Screen {
     pub widgets: Vec<Widget>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ScreenSet {
     pub id: String,

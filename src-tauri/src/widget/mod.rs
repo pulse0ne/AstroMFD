@@ -6,7 +6,7 @@ pub mod label;
 pub mod panel;
 pub mod screen_set;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum Widget {
     Button(button::ButtonAttributes),

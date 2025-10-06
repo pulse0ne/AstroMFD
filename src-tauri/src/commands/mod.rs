@@ -17,6 +17,7 @@ pub fn command_handlers() -> (impl Fn(Invoke) -> bool + Send + Sync + 'static) {
         screens::list_screen_sets,
         screens::get_screen_set_by_id,
         screens::save_screen_set,
+        screens::update_clients,
         screens::delete_screen_set,
     ]
 }

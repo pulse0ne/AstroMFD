@@ -3,11 +3,12 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::{broadcast, mpsc, Mutex};
 use crate::journal::JournalHandle;
+use crate::widget::screen_set::ScreenSet;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ServerEvent {
-    LayoutPushed { id: String },
+    LayoutPushed { id: String, screen_set: ScreenSet },
     AllJournalEntries { entries: Vec<String> },
     NewJournalEntries { entries: Vec<String> },
 }

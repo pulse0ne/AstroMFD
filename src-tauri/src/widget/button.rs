@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use crate::widget::base::{FontSpec, HorizontalAlignment, Position, Size, TextAttributes, VerticalAlignment, WidgetBase};
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PartialShapeAttributes {
     pub fill: Option<String>,
@@ -12,7 +12,7 @@ pub struct PartialShapeAttributes {
     pub position: Option<Position>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PartialTextAttributes {
     pub text: Option<String>,
@@ -23,7 +23,7 @@ pub struct PartialTextAttributes {
     pub vertical_alignment: Option<VerticalAlignment>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ButtonType {
     #[default]
@@ -32,21 +32,21 @@ pub enum ButtonType {
     Navigation,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PressedOverrides {
     pub shape: PartialShapeAttributes,
     pub text: PartialTextAttributes,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VJoyButtonConfig {
     pub button: u8,
     pub duration: u64,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ButtonAttributes {
     #[serde(flatten)]
