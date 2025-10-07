@@ -1,10 +1,10 @@
-import {ButtonAttributes, ShapeAttributes, TextAttributes} from "../types/widget.ts";
 import {Group, Rect, Text, Transformer} from "react-konva";
 import {KonvaEventObject} from "konva/lib/Node";
 import {useCallback, useEffect, useRef} from "react";
 import {Shape} from "konva/lib/Shape";
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
 import {Konva} from "konva/lib/_FullInternals";
+import {ButtonAttributes, ShapeAttributes, TextAttributes} from "@common/shared/models";
 
 export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;

@@ -1,5 +1,4 @@
-import {TextAttributes} from "../../types/widget.ts";
-import {FontSpec} from "../../types/fonts.ts";
+import {FontSpec, TextAttributes} from "@common/shared/models";
 import {ChangeEvent, useMemo} from "react";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {

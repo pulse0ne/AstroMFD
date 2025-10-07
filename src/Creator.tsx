@@ -1,11 +1,11 @@
 import {Toolbar} from "./editor/Toolbar.tsx";
-import {ScreenSet} from "./types/widget.ts";
 import {useParams} from "react-router";
 import {useEffect} from "react";
 import {invoke} from "@tauri-apps/api/core";
 import {useECStore} from "./store";
 import Editor from "./editor/Editor.tsx";
 import {ScreenSelector} from "./editor/ScreenSelector.tsx";
+import {ScreenSet} from "@common/shared/models";
 
 export function Creator() {
   const { screenSetId } = useParams();
@@ -29,7 +29,6 @@ export function Creator() {
     };
   }, [screenSet]);
 
-  // console.log("render Creator");
   console.log(screenSet);
 
   return (

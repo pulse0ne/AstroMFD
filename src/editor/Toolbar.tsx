@@ -1,12 +1,4 @@
 import {
-  createButton,
-  createLabel,
-  createPanel,
-  createScreen,
-  findNextAvailableButton,
-  Widget
-} from "../types/widget.ts";
-import {
   MdAdd,
   MdArrowBackIos,
   MdClose,
@@ -19,6 +11,12 @@ import {ClientInfo} from "../types/websocket.ts";
 import {useECStore} from "../store";
 import {useNavigate} from "react-router";
 import {activeScreenWidgetsSelector} from "../store/selectors.ts";
+import {Widget} from "@common/shared/models";
+import {createScreen} from "../utils/createScreen.ts";
+import {findNextAvailableButton} from "../utils/findNextAvailableButton.ts";
+import {createButton} from "../utils/createButton.ts";
+import {createLabel} from "../utils/createLabel.ts";
+import {createPanel} from "../utils/createPanel.ts";
 
 export function Toolbar() {
   const [ addPopupOpen, setAddPopupOpen ] = useState(false);

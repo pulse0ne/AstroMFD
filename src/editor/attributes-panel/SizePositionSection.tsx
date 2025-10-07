@@ -1,4 +1,4 @@
-import {Position, Size} from "../../types/widget.ts";
+import {Position, Size} from "@common/shared/models";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,

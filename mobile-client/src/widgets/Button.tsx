@@ -1,5 +1,5 @@
-import type {ButtonAttributes, TextAttributes} from "../types.ts";
 import {type CSSProperties, useCallback} from "react";
+import type {ButtonAttributes, TextAttributes} from "@common/shared/models";
 
 const hAlignmentMap: Record<TextAttributes["horizontalAlignment"], CSSProperties["justifyItems"]> = {
   left: "flex-start",

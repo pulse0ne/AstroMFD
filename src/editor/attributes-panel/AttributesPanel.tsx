@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api/core";
-import {FontSpec} from "../../types/fonts.ts";
-import {Position, ShapeAttributes, Size, TextAttributes, Widget} from "../../types/widget.ts";
+import {FontSpec, Position, ShapeAttributes, Size, TextAttributes, Widget} from "@common/shared/models";
 import {SizePositionSection} from "./SizePositionSection.tsx";
 import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";

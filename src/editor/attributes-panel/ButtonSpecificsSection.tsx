@@ -1,4 +1,4 @@
-import {ButtonAction, ButtonAttributes, ButtonType} from "../../types/widget.ts";
+import {ButtonAction, ButtonAttributes, ButtonType} from "@common/shared/models";
 
 type ScreenIdToName = Record<string, string>;
 

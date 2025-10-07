@@ -1,9 +1,9 @@
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {LabelAttributes} from "../types/widget.ts";
 import {Group, Rect, Text, Transformer} from "react-konva";
 import {useEffect, useRef} from "react";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Shape} from "konva/lib/Shape";
+import {LabelAttributes} from "@common/shared/models";
 
 export type LabelProps = WidgetPropsBase & {
   attr: LabelAttributes;

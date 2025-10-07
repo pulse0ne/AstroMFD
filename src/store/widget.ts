@@ -1,8 +1,8 @@
 import {StateCreator} from "zustand/vanilla";
 import {RootState, WidgetSlice} from "./types.ts";
-import {Widget} from "../types/widget.ts";
 import {UndoableCommand} from "./command.ts";
 import {fastCopy} from "../utils/fastCopy.ts";
+import {Widget} from "@common/shared/models";
 
 function canModifyWidget(state: RootState): state is RootState & {
   screenSet: NonNullable<RootState["screenSet"]>;

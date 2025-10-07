@@ -1,6 +1,6 @@
 import {RootState, ScreenSetSlice} from "./types.ts";
 import {StateCreator} from "zustand/vanilla";
-import {Screen} from "../types/widget.ts";
+import {Screen} from "@common/shared/models";
 
 export const createScreenSetSlice: StateCreator<
   RootState,

@@ -1,8 +1,8 @@
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
 import {Button} from "./Button.tsx";
-import {Widget} from "../types/widget.ts";
 import {Label} from "./Label.tsx";
 import {Panel} from "./Panel.tsx";
+import {Widget} from "@common/shared/models";
 
 export type WidgetRendererProps = WidgetPropsBase & {
   widget: Widget;

@@ -1,9 +1,9 @@
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {PanelAttributes} from "../types/widget.ts";
 import {useEffect, useRef} from "react";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Shape} from "konva/lib/Shape";
 import {Group, Rect, Transformer} from "react-konva";
+import {PanelAttributes} from "@common/shared/models";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;

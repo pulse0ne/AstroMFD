@@ -1,19 +1,14 @@
 import {Group, Layer, Rect, Stage} from "react-konva";
 import {useEffect, useMemo, useRef, useState} from "react";
-import {
-  Position,
-  Size,
-  Widget
-} from "../types/widget.ts";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Konva} from "konva/lib/_FullInternals";
 import {AttributesPanel} from "./attributes-panel/AttributesPanel.tsx";
 import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
-
-import "./styles.css";
 import {useECStore} from "../store";
 import {invoke} from "@tauri-apps/api/core";
 import {activeScreenSelector, activeWidgetSelector} from "../store/selectors.ts";
+import {Position, Size, Widget} from "@common/shared/models";
+import "./styles.css";
 
 const SCALE_FACTOR = 1.05;
 
@@ -42,8 +37,6 @@ export default function Editor() {
     const timeout = setTimeout(() => {
       if (activeScreen && contentGroupRef.current) {
         contentGroupRef.current.toBlob({
-          // x: stagePosition.x,
-          // y: stagePosition.y,
           width: workspaceSize.width * stageScale,
           height: workspaceSize.height * stageScale,
           pixelRatio: 0.25

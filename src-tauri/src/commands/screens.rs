@@ -1,11 +1,11 @@
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
-use log::{debug, error};
+use log::debug;
 use serde::Serialize;
 use crate::locations::save_dir;
 use crate::state::{AppState, ServerEvent};
-use crate::widget::screen_set::{ScreenSet, ScreenSize};
+use crate::widget::screen_set::ScreenSet;
 
 #[derive(Serialize, Clone)]
 pub struct ScreenSetMeta {
@@ -85,7 +85,7 @@ pub async fn update_clients(state: tauri::State<'_, AppState>, screen_set: Scree
 }
 
 #[tauri::command]
-pub async fn delete_screen_set(id: String) -> Result<(), String> {
+pub async fn delete_screen_set(_id: String) -> Result<(), String> {
     // TODO
     Ok(())
 }

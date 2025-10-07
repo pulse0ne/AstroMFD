@@ -1,8 +1,8 @@
 import {useAppWebsocket, WebsocketProvider} from "./websocket/WebsocketContext.tsx";
 import ConnectionOverlay from "./ConnectionOverlay.tsx";
 import {type CSSProperties, Fragment, useEffect, useState} from "react";
-import type {ScreenSet} from "./types.ts";
 import {Button} from "./widgets/Button.tsx";
+import type {ScreenSet} from "@common/shared/models";
 
 const TEST: ScreenSet = {
   "id": "1",
@@ -136,32 +136,5 @@ function Dummy2() {
     </div>
   );
 }
-
-// function Dummy() {
-//   const { sendMessage, lastMessage } = useAppWebsocket();
-//   useEffect(() => {
-//     const variableMap: Record<string, any> = {};
-//     // console.log(lastMessage);
-//     if (lastMessage?.hasOwnProperty("allJournalEntries")) {
-//       // console.log(lastMessage.allJournalEntries.entries);
-//       lastMessage.allJournalEntries.entries.forEach((entry: string) => {
-//         // console.log(entry);
-//         const payload = JSON.parse(entry);
-//         const eventType = payload.event;
-//         Object.entries(payload).forEach(([field, value]) => {
-//           const valueType = typeof value;
-//           if (valueType !== "object") {
-//             const key = `${eventType}.${field}`;
-//             variableMap[key] = value;
-//           }
-//         });
-//         console.log(payload);
-//       });
-//     }
-//
-//     console.log(variableMap);
-//   }, [lastMessage]);
-//   return <button onClick={() => sendMessage({ press: { button: 1, duration: 100 }})}>Test</button>
-// }
 
 export default App;

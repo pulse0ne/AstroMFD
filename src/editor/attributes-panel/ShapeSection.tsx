@@ -1,4 +1,4 @@
-import {ShapeAttributes} from "../../types/widget.ts";
+import {ShapeAttributes} from "@common/shared/models";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 

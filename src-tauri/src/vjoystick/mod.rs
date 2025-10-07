@@ -22,7 +22,7 @@ pub trait InputDevice: Send + Sync {
 
 pub async fn vjoy_worker(
     mut mobile_rx: mpsc::Receiver<MobileEvent>,
-    server_tx: broadcast::Sender<ServerEvent>
+    _server_tx: broadcast::Sender<ServerEvent>
 ) {
     let device: Arc<Mutex<dyn InputDevice>> = {
         #[cfg(target_os = "windows")]
@@ -44,6 +44,4 @@ pub async fn vjoy_worker(
             _ => {}
         }
     }
-
-    let _ = server_tx.send(ServerEvent::LayoutPushed { id: "example".into() });
 }

@@ -34,6 +34,5 @@ pub struct AppState {
     pub server_tx: broadcast::Sender<ServerEvent>,
     pub app_handle: tauri::AppHandle,
     pub mobile_clients: Arc<Mutex<Vec<MobileClient>>>,
-    // pub journal: Arc<Mutex<Journal>>,
     pub journal: Arc<Mutex<Option<JournalHandle>>>,
 }

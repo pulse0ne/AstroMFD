@@ -1,4 +1,4 @@
-import {Screen, ScreenSet, Size, Widget} from "../types/widget.ts";
+import {Screen, ScreenSet, Size, Widget} from "@common/shared/models";
 import {History} from "./history.ts";
 import {UndoableCommand} from "./command.ts";
 
