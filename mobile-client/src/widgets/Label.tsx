@@ -1,14 +1,13 @@
-import {type CSSProperties, useCallback} from "react";
-import type {ButtonAttributes} from "@common/shared/models";
+import type {LabelAttributes} from "@common/shared/models";
+import type {CSSProperties} from "react";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 
-export type ButtonProps = {
-  attr: ButtonAttributes;
-  onPress: (button: number, duration: number) => void;
-  onNavigate: (target: string) => void;
+export type LabelProps = {
+  attr: LabelAttributes;
+  // TODO: variables
 };
 
-export function Button({ attr, onPress, onNavigate }: ButtonProps) {
+export function Label({ attr }: LabelProps) {
   const shapeStyle: CSSProperties = {
     position: "absolute",
     left: attr.shape.position.x,
@@ -36,17 +35,8 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
     fontSize: attr.text.fontSize,
   };
 
-  const handlePress = useCallback(() => {
-    if (attr.buttonType === "action" || attr.buttonType === "toggle") {
-      const {button, duration} = attr.vjoyButton;
-      onPress(button, duration);
-    } else if (attr.buttonType === "navigation" && attr.navTarget) {
-      onNavigate(attr.navTarget);
-    }
-  }, [attr]);
-
   return (
-    <div style={shapeStyle} onClick={handlePress}>
+    <div style={shapeStyle}>
       {attr.text.text && (
         <div style={textContainerStyle}>
           <div style={textStyle}>{attr.text.text}</div>
