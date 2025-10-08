@@ -115,9 +115,9 @@ impl Journal {
 // ) -> Result<RecommendedWatcher> {
 //     let journal_dir_path = journal.lock().await.journal_dir_path.clone();
 //     info!("watching journal dir: {}", journal_dir_path.display());
-// 
+//
 //     let (sync_tx, sync_rx) = std_mpsc::channel::<PathBuf>();
-// 
+//
 //     {
 //         let journal = Arc::clone(&journal);
 //         let tx = tx.clone();
@@ -125,7 +125,7 @@ impl Journal {
 //             for changed_file_path in sync_rx.iter() {
 //                 let journal = Arc::clone(&journal);
 //                 let tx = tx.clone();
-//                 
+//
 //                 tokio::spawn(async move {
 //                     let journal = Arc::clone(&journal);
 //                     let tx = tx.clone();
@@ -145,7 +145,7 @@ impl Journal {
 //             }
 //         });
 //     }
-//     
+//
 //     let mut watcher = notify::recommended_watcher(move |res: notify::Result<Event>| {
 //         match res {
 //             Ok(event) => {
@@ -172,7 +172,7 @@ impl Journal {
 //             Err(e) => error!("watch error: {:?}", e),
 //         }
 //     })?;
-// 
+//
 //     watcher.watch(&journal_dir_path, RecursiveMode::NonRecursive)?;
 //     Ok(watcher)
 // }

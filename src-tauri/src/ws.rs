@@ -46,10 +46,6 @@ async fn handle_socket(
                 let _ = tx.send(Message::Text(axum::extract::ws::Utf8Bytes::from(payload))).await;
             }
         }
-        // let msg = ServerEvent::AllJournalEntries { entries: journal.entries() };
-        // if let Ok(payload) = serde_json::to_string(&msg) {
-        //     let _ = tx.send(Message::Text(axum::extract::ws::Utf8Bytes::from(payload))).await;
-        // }
     }
 
     let mut sub = state.server_tx.subscribe();

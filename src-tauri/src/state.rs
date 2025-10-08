@@ -8,8 +8,11 @@ use crate::widget::screen_set::ScreenSet;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ServerEvent {
+    #[serde(rename_all = "camelCase")]
     LayoutPushed { id: String, screen_set: ScreenSet },
+    #[serde(rename_all = "camelCase")]
     AllJournalEntries { entries: Vec<String> },
+    #[serde(rename_all = "camelCase")]
     NewJournalEntries { entries: Vec<String> },
 }
 

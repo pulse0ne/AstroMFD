@@ -7,6 +7,7 @@ export type PanelProps = {
 
 export function Panel({ attr }: PanelProps) {
   const shapeStyle: CSSProperties = {
+    pointerEvents: "none",
     position: "absolute",
     left: attr.shape.position.x,
     top: attr.shape.position.y,

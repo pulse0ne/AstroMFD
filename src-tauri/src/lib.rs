@@ -13,6 +13,7 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use log::info;
+use tauri::Manager;
 use tokio::sync::Mutex;
 use crate::state::{AppState, MobileEvent, ServerEvent};
 use crate::vjoystick::vjoy_worker;
@@ -41,14 +42,19 @@ pub async fn run() {
                 journal: Arc::new(Mutex::new(None)),
             };
 
+            app.manage(state);
+
+            let state_clone = app.state::<AppState>().inner().clone();
+
             tokio::spawn(vjoy_worker(mobile_rx, server_tx.clone()));
             
             tokio::spawn(async move {
                 let app = axum::Router::new()
                     .route("/ws", axum::routing::get(ws::ws_handler))
                     .route("/fonts/{font}", axum::routing::get(mobile_assets::font_handler))
+                    .route("/screen-sets", axum::routing::get(mobile_assets::screen_set_handler))
                     .fallback(axum::routing::get(mobile_assets::static_handler))
-                    .with_state(state);
+                    .with_state(state_clone);
 
                 info!("Serving mobile client on http://0.0.0.0:11011/");
                 let listener = TcpListener::bind("0.0.0.0:11011").await.unwrap();

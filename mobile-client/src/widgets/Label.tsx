@@ -9,6 +9,7 @@ export type LabelProps = {
 
 export function Label({ attr }: LabelProps) {
   const shapeStyle: CSSProperties = {
+    pointerEvents: "none",
     position: "absolute",
     left: attr.shape.position.x,
     top: attr.shape.position.y,

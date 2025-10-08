@@ -7,6 +7,36 @@ import Editor from "./editor/Editor.tsx";
 import {ScreenSelector} from "./editor/ScreenSelector.tsx";
 import {ScreenSet} from "@common/shared/models";
 
+function debounce <T extends (...args: any[]) => any>(
+  callback: T,
+  waitFor: number
+) {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>): void => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      callback(...args);
+      timeout = null; // Clear timeout after execution
+    }, waitFor);
+  };
+}
+
+function update(screenSet: ScreenSet) {
+  invoke("update_clients", { screenSet })
+    .catch(e => console.error(e));
+}
+
+function save(screenSet: ScreenSet) {
+  invoke("save_screen_set", { screenSet })
+    .catch(e => console.error(e));
+}
+
+const debouncedUpdate = debounce(update, 250);
+const debouncedSave = debounce(save, 5000);
+
 export function Creator() {
   const { screenSetId } = useParams();
   const screenSet = useECStore(state => state.screenSet);
@@ -18,15 +48,10 @@ export function Creator() {
   }, [screenSetId]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("changed...need to save");
-      invoke("save_screen_set", { screenSet })
-        .catch(e => console.error(e));
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
+    if (screenSet) {
+      debouncedUpdate(screenSet);
+      debouncedSave(screenSet);
+    }
   }, [screenSet]);
 
   console.log(screenSet);
