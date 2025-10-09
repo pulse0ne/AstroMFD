@@ -5,7 +5,6 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Finish shadow effects
 - Action button settings for duration == press length
 - SVG choosing/editing
 - Duplication of widgets (hook functions up to store & controls)

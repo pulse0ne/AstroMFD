@@ -110,6 +110,9 @@ export function Button({
     }
   }, [isSelected, attr]);
 
+  const textShadow = extractTextAttr("shadow");
+  const shapeShadow = extractShapeAttr("shadow");
+
   // TODO: icon/image support
   return (
     <>
@@ -134,6 +137,10 @@ export function Button({
           stroke={extractShapeAttr("stroke") ?? undefined}
           strokeWidth={extractShapeAttr("strokeWidth")}
           cornerRadius={extractShapeAttr("cornerRadius")}
+          shadowColor={shapeShadow?.color ?? undefined}
+          shadowOffsetX={shapeShadow?.xOffset ?? undefined}
+          shadowOffsetY={shapeShadow?.yOffset ?? undefined}
+          shadowBlur={shapeShadow?.strength ? shapeShadow.strength * 6 : undefined}
         />
         <Text
           width={attr.shape.size.width}
@@ -144,6 +151,10 @@ export function Button({
           fontFamily={extractFontName() ?? undefined}
           fontSize={extractTextAttr("fontSize")}
           fill={extractTextAttr("fontColor") ?? undefined}
+          shadowColor={textShadow?.color ?? undefined}
+          shadowOffsetX={textShadow?.xOffset ?? undefined}
+          shadowOffsetY={textShadow?.yOffset ?? undefined}
+          shadowBlur={textShadow?.strength ? textShadow.strength * 6 : undefined}
         />
       </Group>
       {isSelected && (

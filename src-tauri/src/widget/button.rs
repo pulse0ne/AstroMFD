@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::widget::base::{FontSpec, HorizontalAlignment, Position, Size, TextAttributes, VerticalAlignment, WidgetBase};
+use crate::widget::base::{FontSpec, HorizontalAlignment, Position, ShadowEffect, Size, TextAttributes, VerticalAlignment, WidgetBase};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -8,6 +8,7 @@ pub struct PartialShapeAttributes {
     pub stroke: Option<String>,
     pub stroke_width: Option<f64>,
     pub corner_radius: Option<f64>,
+    pub shadow: Option<ShadowEffect>,
     pub size: Option<Size>,
     pub position: Option<Position>,
 }
@@ -19,6 +20,7 @@ pub struct PartialTextAttributes {
     pub font: Option<FontSpec>,
     pub font_size: Option<f64>,
     pub font_color: Option<String>,
+    pub shadow: Option<ShadowEffect>,
     pub horizontal_alignment: Option<HorizontalAlignment>,
     pub vertical_alignment: Option<VerticalAlignment>,
 }

@@ -68,8 +68,11 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
   }
 
   const handlePressedShapeAttrChange = (attr: Partial<ShapeAttributes>, type: string) => {
+    console.log(attr);
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { pressed: { ...selectedWidget.pressed, shape: attr }}), type);
+      const pressed = Object.assign({}, selectedWidget.pressed, { shape: attr });
+      console.log(pressed);
+      onUpdate(Object.assign({}, selectedWidget, { pressed }), type);
     }
   };
 
@@ -79,7 +82,8 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
 
   const handlePressedTextAttrChange = (attr: Partial<TextAttributes>, type: string) => {
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { pressed: { ...selectedWidget.pressed, text: attr }}), type);
+      const pressed = Object.assign({}, selectedWidget.pressed, { text: attr });
+      onUpdate(Object.assign({}, selectedWidget, { pressed }), type);
     }
   };
 
@@ -88,6 +92,8 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
   const filteredScreens: ScreenIdAndName[] = screens
     .filter(screen => screen.id !== currentScreen?.id)
     .map(screen => ({ id: screen.id, name: screen.name }));
+
+  console.log(selectedWidget);
 
   return (
     <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>

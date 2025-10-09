@@ -10,6 +10,7 @@ export type ButtonProps = {
 
 export function Button({ attr, onPress, onNavigate }: ButtonProps) {
   const [ pressed, setPressed ] = useState(false);
+  console.log(attr);
 
   const shapeStyle: CSSProperties = {
     position: "absolute",
@@ -87,6 +88,6 @@ function getShadow(shadow: ShadowEffect) {
   const y = shadow.yOffset;
   const c = shadow.color;
   const s = shadow.strength;
-  const o = `${x} ${y}`;
-  return `${o} ${s} ${c}, ${o} ${s * 3} ${c}, ${o} ${s * 6} ${c}`;
+  const o = `${x}px ${y}px`;
+  return `${o} ${s}px ${c}, ${o} ${s * 3}px ${c}, ${o} ${s * 6}px ${c}`;
 }

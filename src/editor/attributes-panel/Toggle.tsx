@@ -12,7 +12,7 @@ export function Toggle({ size = 32, onToggle, value }: ToggleProps) {
   return (
     <Component
       size={size}
-      color={value ? "#6dc76d" : undefined}
+      color={value ? "var(--gradient-stop1)" : undefined}
       onClick={onToggle}
       className="pointer"
     />

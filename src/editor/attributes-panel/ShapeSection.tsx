@@ -33,9 +33,29 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
   const handleShadowToggle = () => {
     const newShadowValue: ShadowEffect | null = Boolean(shadow) ? null : { color: "#000", strength: 3, xOffset: 0, yOffset: 0 };
     if (isPressed && onUpdatePressed) {
+      console.log(Object.assign({}, pressedAttr, { shadow: newShadowValue }));
       onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadowValue }), "widget.pressed.shape.shadow");
     } else {
       onUpdate(Object.assign({}, shapeAttr, { shadow: newShadowValue }), "widget.shape.shadow");
+    }
+  };
+
+  const handleShadowValue = (key: "strength"|"xOffset"|"yOffset", value: number) => {
+    const newShadow: ShadowEffect = Object.assign({}, shadow, { [key]: value });
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadow }), `widget.pressed.shape.shadow.${key}`);
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, { shadow: newShadow }), `widget.shape.shadow.${key}`);
+    }
+  };
+
+  const handleShadowColor = (value: string) => {
+    const newShadow: ShadowEffect = Object.assign({}, shadow, { color: value });
+    console.log(shadow, newShadow, shapeAttr, pressedAttr);
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadow }), "widget.pressed.shape.shadow.color");
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, { shadow: newShadow }), "widget.shape.shadow.color");
     }
   };
 
@@ -95,8 +115,46 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           />
         </div>
         {shadow && (
-          <div>
-          {/* TODO: */}
+          <div className="col gap-16">
+            <div className="row gap-16">
+              <span>Color:</span>
+              <ColorSwatch
+                color={shadow.color}
+                recents={recentColors}
+                onUpdate={handleShadowColor}
+                onAddRecentColor={addRecentColor}
+              />
+            </div>
+            <div className="row gap-16">
+              <span>Strength:</span>
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={shadow.strength}
+                onChange={(evt) => handleShadowValue("strength", Number.parseFloat(evt.target.value))}
+              />
+            </div>
+            <div className="row gap-16">
+              <span>x Offset:</span>
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={shadow.xOffset}
+                onChange={(evt) => handleShadowValue("xOffset", Number.parseFloat(evt.target.value))}
+              />
+            </div>
+            <div className="row gap-16">
+              <span>y Offset:</span>
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={shadow.yOffset}
+                onChange={(evt) => handleShadowValue("yOffset", Number.parseFloat(evt.target.value))}
+              />
+            </div>
           </div>
         )}
       </div>
