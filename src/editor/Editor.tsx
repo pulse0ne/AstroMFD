@@ -93,10 +93,10 @@ export default function Editor() {
       }
     };
 
-    console.log("registering key handlers");
+    // console.log("registering key handlers");
     window.addEventListener("keydown", handler);
     return () => {
-      console.log("removing key handlers");
+      // console.log("removing key handlers");
       window.removeEventListener("keydown", handler);
     };
   }, [activeWidgetIndex, removeActiveWidget]);
@@ -116,11 +116,11 @@ export default function Editor() {
       y: (stageContainerRef.current?.offsetHeight ?? 800) / 2.0 - workspaceSize.height / 2.0
     });
 
-    console.log("registering resize listener");
+    // console.log("registering resize listener");
     window.addEventListener("resize", handleResize);
 
     return () => {
-      console.log("unregistering resize listener");
+      // console.log("unregistering resize listener");
       window.removeEventListener("resize", handleResize);
     };
   }, [size]);

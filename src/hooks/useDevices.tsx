@@ -11,8 +11,6 @@ export function DevicesProvider({ children }: PropsWithChildren<{}>) {
   const [ devices, setDevices ] = useState<DevicesContextValue>({ devices: [] });
   const { lastEvent } = useTauriListen<{ devices: ClientInfo[]}>("clients-updated-event");
 
-  console.log(lastEvent);
-
   useEffect(() => {
     if (lastEvent) {
       const devices = fastCopy(lastEvent.devices);

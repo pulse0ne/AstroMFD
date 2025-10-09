@@ -8,7 +8,7 @@ export default function useTauriListen<T>(eventType: string) {
     let unlisten: UnlistenFn | undefined;
 
     listen<T>(eventType, (event) => {
-      console.log(`got message (${eventType}): ${JSON.stringify(event.payload)}`);
+      // console.log(`got message (${eventType}): ${JSON.stringify(event.payload)}`);
       setLastEvent({ ...event.payload, _buster: Date.now() } as T);
     }).then((fn) => {
       unlisten = fn;

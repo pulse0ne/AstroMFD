@@ -26,25 +26,21 @@ export function ScreenSelector() {
             const url = URL.createObjectURL(blob);
             setScreenImages(ov => ({ ...ov, [s.id]: url }));
           })
-          .catch(e => console.log(e));
+          .catch(e => console.error(e));
       });
   }, [screenSet]);
 
   useEffect(() => {
-    // console.log(lastEvent);
     if (!lastEvent) return;
     const imageId = lastEvent.id;
     invoke<ArrayBuffer>("get_screen_img", { id: imageId })
       .then(buf => {
         const blob = new Blob([buf], { type: "application/octet-stream" });
         const url = URL.createObjectURL(blob);
-        console.log("here");
         setScreenImages(ov => Object.assign({}, ov, { [imageId]: url }));
       })
       .catch(e => console.error(e));
   }, [lastEvent]);
-
-  // console.log(screenImages);
 
   return (
     <div

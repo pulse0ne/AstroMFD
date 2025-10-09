@@ -1,5 +1,5 @@
 import {ButtonAction, ButtonAttributes, ButtonType} from "@common/shared/models";
-import {MdToggleOff, MdToggleOn} from "react-icons/md";
+import {Toggle} from "./Toggle.tsx";
 
 export type ScreenIdAndName = {
   id: string;
@@ -27,8 +27,6 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
   const handleNavTargetChange = (targetId: string) => {
     onUpdate(Object.assign({}, attr, { navTarget: targetId }), "widget.button.navTarget");
   };
-
-  const Toggle = isPressed ? MdToggleOn : MdToggleOff;
 
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
@@ -86,7 +84,11 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
       <div className="col gap-16">
         <div className="row align-center gap-16">
           <span>State:</span>
-          <Toggle size={32} color={isPressed ? "#6dc76d" : undefined} onClick={togglePressed} className="pointer" />
+          <Toggle
+            size={32}
+            value={isPressed}
+            onToggle={togglePressed}
+          />
           ({isPressed ? "pressed" : "default"})
         </div>
       </div>

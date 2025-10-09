@@ -1,6 +1,7 @@
-import {ShapeAttributes} from "@common/shared/models";
+import {ShadowEffect, ShapeAttributes} from "@common/shared/models";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
+import {Toggle} from "./Toggle.tsx";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -29,10 +30,20 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
     }
   };
 
+  const handleShadowToggle = () => {
+    const newShadowValue: ShadowEffect | null = Boolean(shadow) ? null : { color: "#000", strength: 3, xOffset: 0, yOffset: 0 };
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadowValue }), "widget.pressed.shape.shadow");
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, { shadow: newShadowValue }), "widget.shape.shadow");
+    }
+  };
+
   const fill = (isPressed && pressedAttr?.fill) ? pressedAttr.fill : shapeAttr.fill;
   const stroke = (isPressed && pressedAttr?.stroke) ? pressedAttr.stroke : shapeAttr.stroke;
   const strokeWidth = (isPressed && pressedAttr?.strokeWidth) ? pressedAttr.strokeWidth : shapeAttr.strokeWidth;
   const cornerRadius = (isPressed && pressedAttr?.cornerRadius) ? pressedAttr.cornerRadius : shapeAttr.cornerRadius;
+  const shadow = (isPressed && pressedAttr?.shadow) ? pressedAttr.shadow : shapeAttr.shadow;
 
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
@@ -74,6 +85,20 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           value={cornerRadius}
           onChange={(evt) => handleNumericalChange("cornerRadius", Number.parseInt(evt.target.value))}
         />
+      </div>
+      <div className="col gap-16">
+        <div className="row gap-16 align-center">
+          <span>Shadow:</span>
+          <Toggle
+            onToggle={handleShadowToggle}
+            value={Boolean(shadow)}
+          />
+        </div>
+        {shadow && (
+          <div>
+          {/* TODO: */}
+          </div>
+        )}
       </div>
     </div>
   );

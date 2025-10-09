@@ -34,7 +34,6 @@ export const createHistorySlice: StateCreator<
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
 
-      // console.log(cmd.type);
       cmd.do(state);
 
       const histories = new Map(state.histories);

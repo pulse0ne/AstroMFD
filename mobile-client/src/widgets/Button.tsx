@@ -1,5 +1,5 @@
 import {type CSSProperties, useCallback, useState} from "react";
-import type {ButtonAttributes} from "@common/shared/models";
+import type {ButtonAttributes, ShadowEffect} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 
 export type ButtonProps = {
@@ -22,6 +22,7 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
     borderStyle: "solid",
     borderColor: (pressed && attr.pressed.shape.stroke) ? attr.pressed.shape.stroke : attr.shape.stroke ?? "transparent",
     borderRadius: (pressed && attr.pressed.shape.cornerRadius) ? attr.pressed.shape.cornerRadius : attr.shape.cornerRadius,
+    boxShadow: (pressed && attr.pressed.shape.shadow) ? getShadow(attr.pressed.shape.shadow) : (attr.shape.shadow ? getShadow(attr.shape.shadow) : undefined),
   };
 
   const textContainerStyle: CSSProperties = {
@@ -36,6 +37,7 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
     color: (pressed && attr.pressed.text.fontColor) ? attr.pressed.text.fontColor : attr.text.fontColor ?? undefined,
     fontFamily: (pressed && attr.pressed.text.font?.name) ? attr.pressed.text.font.name : attr.text.font?.name,
     fontSize: (pressed && attr.pressed.text.fontSize) ? attr.pressed.text.fontSize : attr.text.fontSize,
+    textShadow: (pressed && attr.pressed.text.shadow) ? getShadow(attr.pressed.text.shadow) : (attr.text.shadow ? getShadow(attr.text.shadow) : undefined),
     userSelect: "none",
   };
 
@@ -78,4 +80,13 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
       )}
     </div>
   );
+}
+
+function getShadow(shadow: ShadowEffect) {
+  const x = shadow.xOffset;
+  const y = shadow.yOffset;
+  const c = shadow.color;
+  const s = shadow.strength;
+  const o = `${x} ${y}`;
+  return `${o} ${s} ${c}, ${o} ${s * 3} ${c}, ${o} ${s * 6} ${c}`;
 }

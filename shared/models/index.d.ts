@@ -4,11 +4,19 @@ export type FontSpec = {
   postscriptName: string;
 };
 
+export type ShadowEffect = {
+  color: string;
+  strength: number;
+  xOffset: number;
+  yOffset: number;
+};
+
 export type TextAttributes = {
   text: string | null;
   font: FontSpec | null;
   fontSize: number;
   fontColor: string | null;
+  shadow: ShadowEffect | null;
   horizontalAlignment: "left" | "center" | "right";
   verticalAlignment: "top" | "middle" | "bottom";
 };
@@ -18,6 +26,7 @@ export type ShapeAttributes = {
   stroke: string | null;
   strokeWidth: number;
   cornerRadius: number;
+  shadow: ShadowEffect | null;
   size: Size;
   position: Position;
 };

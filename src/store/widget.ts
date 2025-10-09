@@ -86,7 +86,6 @@ function makeReorderWidgetCommand(widgetId: string, from: number, to: number, sc
       const widgets = state.screenSet!.screens[screenIndex].widgets;
       const currentIndex = widgets.findIndex(w => w.id === widgetId);
       if (currentIndex < 0) return;
-      console.log(widgetId, from, to, screenIndex);
       const [widget] = widgets.splice(currentIndex, 1);
       widgets.splice(to, 0, widget);
       state.activeWidgetIndex = to;
@@ -200,7 +199,6 @@ export const createWidgetSlice: StateCreator<
     const from = state.activeWidgetIndex;
     const to = from - 1;
     if (to < 0) return;
-    console.log(from, to);
 
     const cmd = makeReorderWidgetCommand(screen.widgets[from].id, from, to, state.activeScreenIndex);
     state.executeCommand(cmd);
