@@ -11,11 +11,14 @@ import {useRecentColors} from "../../hooks/useRecentColors.ts";
 
 export type TextSectionProps = {
   textAttr: TextAttributes;
+  pressedAttr?: Partial<TextAttributes>;
+  isPressed?: boolean;
   onUpdate: (attr: TextAttributes, type: string) => void;
+  onUpdatePressed?: (attr: Partial<TextAttributes>, type: string) => void;
   fonts: FontSpec[];
 };
 
-export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
+export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate, onUpdatePressed }: TextSectionProps) {
   const { recentColors, addRecentColor } = useRecentColors();
 
   const fontMap = useMemo(() => {
@@ -26,30 +29,50 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
   }, [fonts]);
 
   const handleStringValueChange = (key: "text"|"fontColor", value: string) => {
-    onUpdate(Object.assign({}, textAttr, { [key]: value }), `widget.text.${key}`);
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, {[key]: value}), `widget.pressed.text.${key}`);
+    } else {
+      onUpdate(Object.assign({}, textAttr, {[key]: value}), `widget.text.${key}`);
+    }
   };
 
   const handleFontValueChange = (value: string) => {
     const fontSpec = fontMap[value];
     if (fontSpec) {
-      onUpdate(Object.assign({}, textAttr, { font: fontSpec }), "widget.text.font");
+      if (isPressed && onUpdatePressed) {
+        onUpdatePressed(Object.assign({}, pressedAttr, {font: fontSpec}), "widget.pressed.text.font");
+      } else {
+        onUpdate(Object.assign({}, textAttr, {font: fontSpec}), "widget.text.font");
+      }
     }
   };
 
   const handleFontSizeChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const value = Number.parseInt(evt.target.value);
     if (!isNaN(value)) {
-      onUpdate(Object.assign({}, textAttr, { fontSize: value }), "widget.text.fontSize");
+      if (isPressed && onUpdatePressed) {
+        onUpdatePressed(Object.assign({}, pressedAttr, {fontSize: value}), "widget.pressed.text.fontSize");
+      } else {
+        onUpdate(Object.assign({}, textAttr, {fontSize: value}), "widget.text.fontSize");
+      }
     }
   };
 
   const handleAlignmentChange = (value: TextAttributes["horizontalAlignment"] | TextAttributes["verticalAlignment"]) => {
-    if (["left", "center", "right"].includes(value)) {
-      onUpdate(Object.assign({}, textAttr, { horizontalAlignment: value }), "widget.text.alignment");
+    const key = ["left", "center", "right"].includes(value) ? "horizontalAlignment" : "verticalAlignment";
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { [key]: value }), "widget.pressed.text.alignment");
     } else {
-      onUpdate(Object.assign({}, textAttr, { verticalAlignment: value }), "widget.text.alignment");
+      onUpdate(Object.assign({}, textAttr, { [key]: value }), "widget.text.alignment");
     }
   };
+
+  const vAlignment = (isPressed && pressedAttr?.verticalAlignment) ? pressedAttr.verticalAlignment : textAttr.verticalAlignment;
+  const hAlignment = (isPressed && pressedAttr?.horizontalAlignment) ? pressedAttr.horizontalAlignment : textAttr.horizontalAlignment;
+  const textValue = (isPressed ? pressedAttr?.text : textAttr.text) ?? "";
+  const fontValue = (isPressed ? pressedAttr?.font?.postscriptName : textAttr.font?.postscriptName) ?? "";
+  const fontColor = (isPressed ? pressedAttr?.fontColor : textAttr.fontColor) ?? undefined;
+  const fontSize = (isPressed && pressedAttr?.fontSize) ? pressedAttr.fontSize : textAttr.fontSize;
 
   return (
     <div className="attribute-section col gap-16" style={{paddingTop: 16}}>
@@ -58,7 +81,7 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
         <span>Label:</span>
         <textarea
           className="text-textarea"
-          value={textAttr.text ?? ""}
+          value={textValue}
           onChange={(evt) => handleStringValueChange("text", evt.target.value)}
         />
       </div>
@@ -66,7 +89,7 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
         <span>Font:</span>
         <select
           id="font-select"
-          value={textAttr.font?.postscriptName ?? ""}
+          value={fontValue}
           onChange={(evt) => handleFontValueChange(evt.target.value)}
         >
           <option value=""></option>
@@ -84,7 +107,7 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
       <div className="row align-center gap-16">
         <span>Color:</span>
         <ColorSwatch
-          color={textAttr.fontColor ?? undefined}
+          color={fontColor}
           recents={recentColors}
           onUpdate={(color) => handleStringValueChange("fontColor", color)}
           onAddRecentColor={addRecentColor}
@@ -92,26 +115,31 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
       </div>
       <div className="row align-center gap-16">
         <span>Size:</span>
-        <input type="number" min={5} value={textAttr.fontSize} onChange={handleFontSizeChange} />
+        <input
+          type="number"
+          min={5}
+          value={fontSize}
+          onChange={handleFontSizeChange}
+        />
       </div>
       <div className="row align-center gap-16">
         <span style={{ width: 140 }}>Horizontal Alignment:</span>
         <MdAlignHorizontalLeft
           className="pointer"
           size={16}
-          style={{ color: textAttr.horizontalAlignment === "left" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: hAlignment === "left" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("left")}
         />
         <MdAlignHorizontalCenter
           className="pointer"
           size={16}
-          style={{ color: textAttr.horizontalAlignment === "center" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: hAlignment === "center" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("center")}
         />
         <MdAlignHorizontalRight
           className="pointer"
           size={16}
-          style={{ color: textAttr.horizontalAlignment === "right" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: hAlignment === "right" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("right")}
         />
       </div>
@@ -120,19 +148,19 @@ export function TextSection({ textAttr, fonts, onUpdate }: TextSectionProps) {
         <MdAlignVerticalTop
           className="pointer"
           size={16}
-          style={{ color: textAttr.verticalAlignment === "top" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: vAlignment === "top" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("top")}
         />
         <MdAlignVerticalCenter
           className="pointer"
           size={16}
-          style={{ color: textAttr.verticalAlignment === "middle" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: vAlignment === "middle" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("middle")}
         />
         <MdAlignVerticalBottom
           className="pointer"
           size={16}
-          style={{ color: textAttr.verticalAlignment === "bottom" ? "var(--gradient-stop1)" : undefined }}
+          style={{ color: vAlignment === "bottom" ? "var(--gradient-stop1)" : undefined }}
           onClick={() => handleAlignmentChange("bottom")}
         />
       </div>

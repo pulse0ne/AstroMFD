@@ -23,6 +23,7 @@ export default function Editor() {
   const size = useECStore(state => state.screenSet?.size);
   const nudgeWidget = useECStore(state => state.nudge);
 
+  const [ isPressed, setPressed ] = useState(false);
   const [ ephemeralShapeState, setEphemeralShapeState ] = useState<(Size & Position) | null>(null);
   const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
   const [ stagePosition, setStagePosition ] = useState<Position>({ x: 600, y: 400 });
@@ -218,7 +219,7 @@ export default function Editor() {
                     onCommitUpdate={handleUpdate}
                     onEphemeralUpdate={handleEphemeralUpdate}
                     isSelected={ix === activeWidgetIndex}
-                    state="primary"
+                    state={isPressed ? "pressed" : "primary"}
                   />
                 )))}
               </Group>
@@ -229,7 +230,9 @@ export default function Editor() {
       <AttributesPanel
         ephemeralShapeState={ephemeralShapeState}
         selectedWidget={activeWidget}
+        isPressed={isPressed}
         onUpdate={handleAttributePanelUpdate}
+        togglePressed={() => setPressed(ov => !ov)}
       />
     </div>
   );

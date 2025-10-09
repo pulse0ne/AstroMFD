@@ -54,10 +54,8 @@ export function Creator() {
     }
   }, [screenSet]);
 
-  console.log(screenSet);
-
   return (
-    <div className="creator flex-grow col">
+    <div className="creator flex-grow col no-overflow">
       {!screenSet && (
         <div className="fill row align-center justify-center">
           <div className="loader"></div>

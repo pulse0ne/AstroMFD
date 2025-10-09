@@ -2,7 +2,7 @@ import {
   MdAdd,
   MdArrowBackIos,
   MdClose,
-  MdPhoneAndroid,
+  MdPhoneAndroid, MdSync,
 } from "react-icons/md";
 import {ChangeEvent, PropsWithChildren, useState} from "react";
 import Popup from "reactjs-popup";
@@ -137,8 +137,8 @@ export function Toolbar() {
           position="bottom center"
         >
           {devices.map(device => (
-            <div className="popup-menu-item" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>
-              {device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
+            <div className="popup-menu-item row align-center gap-8" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>
+              <MdSync />{device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
             </div>
           ))}
         </Popup>

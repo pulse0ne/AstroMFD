@@ -1,4 +1,4 @@
-import {type CSSProperties, useCallback} from "react";
+import {type CSSProperties, useCallback, useState} from "react";
 import type {ButtonAttributes} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 
@@ -9,17 +9,19 @@ export type ButtonProps = {
 };
 
 export function Button({ attr, onPress, onNavigate }: ButtonProps) {
+  const [ pressed, setPressed ] = useState(false);
+
   const shapeStyle: CSSProperties = {
     position: "absolute",
-    left: attr.shape.position.x,
-    top: attr.shape.position.y,
-    width: attr.shape.size.width,
-    height: attr.shape.size.height,
-    backgroundColor: attr.shape.fill ?? "transparent",
-    borderWidth: attr.shape.strokeWidth,
+    left: (pressed && attr.pressed.shape.position?.x) ? attr.pressed.shape.position.x : attr.shape.position.x,
+    top: (pressed && attr.pressed.shape.position?.y) ? attr.pressed.shape.position.y : attr.shape.position.y,
+    width: (pressed && attr.pressed.shape.size?.width) ? attr.pressed.shape.size.width : attr.shape.size.width,
+    height: (pressed && attr.pressed.shape.size?.height) ? attr.pressed.shape.size.height : attr.shape.size.height,
+    backgroundColor: (pressed && attr.pressed.shape.fill) ? attr.pressed.shape.fill : attr.shape.fill ?? "transparent",
+    borderWidth: (pressed && attr.pressed.shape.strokeWidth) ? attr.pressed.shape.strokeWidth : attr.shape.strokeWidth,
     borderStyle: "solid",
-    borderColor: attr.shape.stroke ?? "transparent",
-    borderRadius: attr.shape.cornerRadius,
+    borderColor: (pressed && attr.pressed.shape.stroke) ? attr.pressed.shape.stroke : attr.shape.stroke ?? "transparent",
+    borderRadius: (pressed && attr.pressed.shape.cornerRadius) ? attr.pressed.shape.cornerRadius : attr.shape.cornerRadius,
   };
 
   const textContainerStyle: CSSProperties = {
@@ -31,9 +33,10 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
   };
 
   const textStyle: CSSProperties = {
-    color: attr.text.fontColor ?? undefined,
-    fontFamily: attr.text.font?.name,
-    fontSize: attr.text.fontSize,
+    color: (pressed && attr.pressed.text.fontColor) ? attr.pressed.text.fontColor : attr.text.fontColor ?? undefined,
+    fontFamily: (pressed && attr.pressed.text.font?.name) ? attr.pressed.text.font.name : attr.text.font?.name,
+    fontSize: (pressed && attr.pressed.text.fontSize) ? attr.pressed.text.fontSize : attr.text.fontSize,
+    userSelect: "none",
   };
 
   const handlePress = useCallback(() => {
@@ -45,8 +48,29 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
     }
   }, [attr]);
 
+  const handleDown = useCallback(() => {
+    if (attr.buttonType === "toggle") {
+      setPressed(ov => !ov);
+    } else {
+      setPressed(true);
+    }
+  }, [attr]);
+
+  const handleUp = useCallback(() => {
+    if (attr.buttonType !== "toggle") {
+      setPressed(false);
+    }
+  }, [attr]);
+
   return (
-    <div style={shapeStyle} onClick={handlePress}>
+    <div
+      style={shapeStyle}
+      onClick={handlePress}
+      onTouchStart={handleDown}
+      onMouseDown={handleDown}
+      onTouchEnd={handleDown}
+      onMouseUp={handleUp}
+    >
       {attr.text.text && (
         <div style={textContainerStyle}>
           <div style={textStyle}>{attr.text.text}</div>

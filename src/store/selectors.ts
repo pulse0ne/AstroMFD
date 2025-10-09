@@ -1,4 +1,5 @@
 import {RootState} from "./types.ts";
+import {Screen} from "@common/shared/models";
 
 export function activeScreenSelector(state: RootState) {
   const { screenSet, activeScreenIndex } = state;
@@ -26,4 +27,9 @@ export function hasRedosSelector(state: RootState) {
   if (!state.screenSet || state.activeScreenIndex === null) return false;
   const activeScreenId = state.screenSet.screens[state.activeScreenIndex].id;
   return (state.histories.get(activeScreenId)?.future?.length ?? 0) > 0;
+}
+
+export function screensSelector(state: RootState) {
+  if (!state.screenSet) return [] as Screen[];
+  return state.screenSet.screens;
 }

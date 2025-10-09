@@ -74,9 +74,13 @@ async fn handle_socket(
                                 .iter()
                                 .cloned()
                                 .map(|mut f| {
-                                    f.viewport_width = width;
-                                    f.viewport_height = height;
-                                    f
+                                    if f.ip_addr == addr {
+                                        f.viewport_width = width;
+                                        f.viewport_height = height;
+                                        f
+                                    } else {
+                                        f
+                                    }
                                 })
                                 .collect();
                             let _ = state_clone.app_handle.emit("clients-updated-event", DeviceList { devices: clients.clone() });

@@ -1,5 +1,6 @@
 export type FontSpec = {
   name: string;
+  format: string;
   postscriptName: string;
 };
 

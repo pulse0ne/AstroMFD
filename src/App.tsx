@@ -10,15 +10,10 @@ import {invoke} from "@tauri-apps/api/core";
 - Deletion of screens (delete screen thumb file too)
 - Confirmation modal for screen deletions
 - Renaming of screens/screen sets
-- Pressed state for buttons
 - Add shadow/glow effects to shapes/text
-- Develop ScreenSet selector (react router)
-- Persisting/loading ScreenSets
-- Client rendering/navigation
-- Send updates to mobile clients
-- Dynamic Font loading (hook mobile UI up to it via font loading API)
+- Develop ScreenSet selector in desktop client (react router)
 - Improved error-handling in Rust code
-- Startup flow...how to handle Journal Path? other config?
+- Configuration (journal path)
 - Include pre-built SVGs for button shapes
 - Nav triggers (open screen on specified journal event)
 - Support custom images/svgs via folder (or "upload"?)

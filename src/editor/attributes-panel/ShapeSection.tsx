@@ -4,19 +4,35 @@ import {useRecentColors} from "../../hooks/useRecentColors.ts";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
+  pressedAttr?: Partial<ShapeAttributes>;
+  isPressed?: boolean;
   onUpdate: (attr: ShapeAttributes, type: string) => void;
+  onUpdatePressed?: (attr: Partial<ShapeAttributes>, type: string) => void;
 };
 
-export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
+export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUpdatePressed }: ShapeSectionProps) {
   const { recentColors, addRecentColor } = useRecentColors();
 
   const handleColorChange = (key: "fill"|"stroke", value: string) => {
-    onUpdate(Object.assign({}, shapeAttr, { [key]: value }), `widget.shape.${key}`);
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { [key]: value }), `widget.pressed.shape.${key}`);
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, {[key]: value}), `widget.shape.${key}`);
+    }
   };
 
   const handleNumericalChange = (key: "strokeWidth"|"cornerRadius", value: number) => {
-    onUpdate(Object.assign({}, shapeAttr, { [key]: value }), `widget.shape.${key}`);
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { [key]: value }), `widget.pressed.shape.${key}`);
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, {[key]: value}), `widget.shape.${key}`);
+    }
   };
+
+  const fill = (isPressed && pressedAttr?.fill) ? pressedAttr.fill : shapeAttr.fill;
+  const stroke = (isPressed && pressedAttr?.stroke) ? pressedAttr.stroke : shapeAttr.stroke;
+  const strokeWidth = (isPressed && pressedAttr?.strokeWidth) ? pressedAttr.strokeWidth : shapeAttr.strokeWidth;
+  const cornerRadius = (isPressed && pressedAttr?.cornerRadius) ? pressedAttr.cornerRadius : shapeAttr.cornerRadius;
 
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
@@ -24,7 +40,7 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
       <div className="row align-center gap-16">
         <span style={{ width: 50 }}>Fill:</span>
         <ColorSwatch
-          color={shapeAttr.fill ?? undefined}
+          color={fill ?? undefined}
           recents={recentColors}
           onUpdate={c => handleColorChange("fill", c)}
           onAddRecentColor={addRecentColor}
@@ -33,7 +49,7 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
       <div className="row align-center gap-16">
         <span style={{ width: 50 }}>Stroke:</span>
         <ColorSwatch
-          color={shapeAttr.stroke ?? undefined}
+          color={stroke ?? undefined}
           recents={recentColors}
           onUpdate={c => handleColorChange("stroke", c)}
           onAddRecentColor={addRecentColor}
@@ -45,7 +61,7 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
           type="number"
           min={0}
           style={{width: 75}}
-          value={shapeAttr.strokeWidth}
+          value={strokeWidth}
           onChange={(evt) => handleNumericalChange("strokeWidth", Number.parseInt(evt.target.value))}
         />
       </div>
@@ -55,7 +71,7 @@ export function ShapeSection({ shapeAttr, onUpdate }: ShapeSectionProps) {
           type="number"
           min={0}
           style={{ width: 75 }}
-          value={shapeAttr.cornerRadius}
+          value={cornerRadius}
           onChange={(evt) => handleNumericalChange("cornerRadius", Number.parseInt(evt.target.value))}
         />
       </div>

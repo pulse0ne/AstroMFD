@@ -4,11 +4,11 @@ import {FontSpec, Position, ShapeAttributes, Size, TextAttributes, Widget} from 
 import {SizePositionSection} from "./SizePositionSection.tsx";
 import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";
-import {ButtonSpecificsSection} from "./ButtonSpecificsSection.tsx";
+import {ButtonSpecificsSection, ScreenIdAndName} from "./ButtonSpecificsSection.tsx";
 import {MdRedo, MdUndo} from "react-icons/md";
 import {IconType} from "react-icons";
 import {useECStore} from "../../store";
-import {hasRedosSelector, hasUndosSelector} from "../../store/selectors.ts";
+import {activeScreenSelector, hasRedosSelector, hasUndosSelector, screensSelector} from "../../store/selectors.ts";
 
 function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
   if (ephemeralShapeState) {
@@ -25,13 +25,17 @@ function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Siz
 export type AttributesPanelProps = {
   ephemeralShapeState: (Size & Position) | null;
   selectedWidget: Widget | null;
+  isPressed: boolean;
   onUpdate: (updated: Widget, type: string) => void;
+  togglePressed: () => void;
 };
 
-export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate }: AttributesPanelProps) {
+export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed, onUpdate, togglePressed }: AttributesPanelProps) {
   const [ fonts, setFonts ] = useState<FontSpec[]>([]);
   const hasUndos = useECStore(hasUndosSelector);
   const hasRedos = useECStore(hasRedosSelector);
+  const screens = useECStore(screensSelector);
+  const currentScreen = useECStore(activeScreenSelector);
   const undo = useECStore(state => state.undo);
   const redo = useECStore(state => state.redo);
 
@@ -41,7 +45,6 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
 
   const handleSizeChange = (size: Size) => {
     if (selectedWidget?.type === "button") {
-      // TODO: handle pressed for button
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
     } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
@@ -52,7 +55,6 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
 
   const handlePositionChange = (position: Position) => {
     if (selectedWidget?.type === "button") {
-      // TODO: handle pressed for button
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
     } else if (selectedWidget?.type === "label") {
       onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
@@ -62,27 +64,30 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
   };
 
   const handleShapeAttrChange = (attr: ShapeAttributes, type: string) =>  {
-    if (selectedWidget?.type === "button") {
-      // TODO: handle pressed state
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
-    } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
-    } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
-    }
+    onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
   }
 
-  const handleTextAttrChange = (attr: TextAttributes, type: string) => {
-    // TODO: handle pressed state
+  const handlePressedShapeAttrChange = (attr: Partial<ShapeAttributes>, type: string) => {
     if (selectedWidget?.type === "button") {
+      onUpdate(Object.assign({}, selectedWidget, { pressed: { ...selectedWidget.pressed, shape: attr }}), type);
+    }
+  };
+
+  const handleTextAttrChange = (attr: TextAttributes, type: string) => {
       onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
-    } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
+  };
+
+  const handlePressedTextAttrChange = (attr: Partial<TextAttributes>, type: string) => {
+    if (selectedWidget?.type === "button") {
+      onUpdate(Object.assign({}, selectedWidget, { pressed: { ...selectedWidget.pressed, text: attr }}), type);
     }
   };
 
   const size = selectedWidget ? extractShapeAttr("size", ephemeralShapeState, selectedWidget) as Size : null;
   const position = selectedWidget ? extractShapeAttr("position", ephemeralShapeState, selectedWidget) as Position : null;
+  const filteredScreens: ScreenIdAndName[] = screens
+    .filter(screen => screen.id !== currentScreen?.id)
+    .map(screen => ({ id: screen.id, name: screen.name }));
 
   return (
     <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
@@ -102,7 +107,9 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
         <div>
           <ButtonSpecificsSection
             attr={selectedWidget}
-            screens={{}}
+            screens={filteredScreens}
+            isPressed={isPressed}
+            togglePressed={togglePressed}
             onUpdate={(widget, type) => onUpdate(widget, type)}
           />
           <SizePositionSection
@@ -113,11 +120,17 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, onUpdate 
           />
           <ShapeSection
             shapeAttr={selectedWidget.shape}
+            pressedAttr={selectedWidget.pressed.shape}
+            isPressed={isPressed}
             onUpdate={handleShapeAttrChange}
+            onUpdatePressed={handlePressedShapeAttrChange}
           />
           <TextSection
             textAttr={selectedWidget.text}
+            pressedAttr={selectedWidget.pressed.text}
+            isPressed={isPressed}
             onUpdate={handleTextAttrChange}
+            onUpdatePressed={handlePressedTextAttrChange}
             fonts={fonts}
           />
         </div>
