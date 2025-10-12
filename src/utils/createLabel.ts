@@ -10,6 +10,7 @@ export function createLabel(): LabelAttributes {
       position: { x: 100, y: 100 },
       fill: null,
       stroke: null,
+      shadow: null,
       strokeWidth: 0,
       cornerRadius: 0
     },
@@ -18,6 +19,7 @@ export function createLabel(): LabelAttributes {
       font: null,
       fontSize: 16,
       fontColor: "white",
+      shadow: null,
       horizontalAlignment: "center",
       verticalAlignment: "middle"
     },

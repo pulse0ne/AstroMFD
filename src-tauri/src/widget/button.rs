@@ -45,6 +45,7 @@ pub struct PressedOverrides {
 #[serde(rename_all = "camelCase")]
 pub struct VJoyButtonConfig {
     pub button: u8,
+    pub fixed_duration: bool,
     pub duration: u64,
 }
 

@@ -41,6 +41,7 @@
     "@types/uuid": "^11.0.0",
     "@vitejs/plugin-react": "^4.6.0",
     "concurrently": "^9.2.1",
+    "ts-json-schema-generator": "^2.4.0",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
   }

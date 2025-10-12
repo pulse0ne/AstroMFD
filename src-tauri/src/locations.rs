@@ -20,12 +20,17 @@ pub fn save_dir() -> PathBuf {
     ec_root().join("screen-sets")
 }
 
+pub fn sounds_dir() -> PathBuf {
+    ec_root().join("sounds")
+}
+
 pub fn initialize() {
     let ec_root = ec_root();
     let log_dir = log_dir();
     let screen_img_dir = screen_img_dir();
     let save_dir = save_dir();
-    let dirs = vec![ec_root, log_dir, screen_img_dir, save_dir];
+    let sounds_dir = sounds_dir();
+    let dirs = vec![ec_root, log_dir, screen_img_dir, save_dir, sounds_dir];
     
     dirs.iter().for_each(|dir| {
         if !dir.exists() {

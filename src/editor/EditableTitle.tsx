@@ -1,0 +1,68 @@
+import {CSSProperties, useEffect, useRef, useState} from "react";
+
+export type EditableTitleProps = {
+  value: string;
+  onChange: (newValue: string) => void;
+  className?: string;
+  style?: CSSProperties;
+  inputStyle?: CSSProperties;
+};
+
+export function EditableTitle({ value, onChange, className, style, inputStyle }: EditableTitleProps) {
+  const [ editing, setEditing ] = useState(false);
+  const [ draft, setDraft ] = useState(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [editing]);
+
+  const handleDoubleClick = () => {
+    setDraft(value);
+    setEditing(true);
+  };
+
+  const handleBlur = () => {
+    setEditing(false);
+    if (draft !== value) {
+      onChange(draft.trim());
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur();
+    } else if (e.key === "Escape") {
+      setEditing(false);
+      setDraft(value);
+    }
+  };
+
+  const mergedStyle = Object.assign({
+    background: "transparent",
+    border: "none",
+    margin: 0,
+    padding: 0
+  } as CSSProperties, inputStyle ?? {});
+
+  return (
+    <div className={className} style={style} onDoubleClick={handleDoubleClick}>
+      {editing ? (
+        <input
+          ref={inputRef}
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          style={mergedStyle}
+        />
+      ) : (
+        <span>{value}</span>
+      )}
+    </div>
+  );
+}

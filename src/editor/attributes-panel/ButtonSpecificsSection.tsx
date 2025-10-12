@@ -21,7 +21,12 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
   };
 
   const handleVjoyButtonChange = (key: keyof ButtonAction, value: number) => {
-    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, [key]: value }}), "widget.button.button");
+    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, [key]: value }}), `widget.button.button.${key}`);
+  };
+
+  const toggleFixedDuration = () => {
+    const fixedDuration = !attr.vjoyButton.fixedDuration;
+    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, fixedDuration }}), "widget.button.button.fixedDuration");
   };
 
   const handleNavTargetChange = (targetId: string) => {
@@ -56,17 +61,24 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
                 onChange={(evt) => handleVjoyButtonChange("button", Number.parseInt(evt.target.value))}
               />
             </div>
-            <div className="row gap-16">
-              <span>Duration (ms):</span>
-              <input
-                type="number"
-                min={50}
-                max={5000}
-                step={10}
-                value={attr.vjoyButton.duration}
-                onChange={(evt) => handleVjoyButtonChange("duration", Number.parseInt(evt.target.value))}
-              />
+            <div className="row gap-16 align-center">
+              <span>Fixed Duration:</span>
+              <Toggle onToggle={toggleFixedDuration} value={attr.vjoyButton.fixedDuration} />
             </div>
+            {attr.vjoyButton.fixedDuration && (
+              <div className="row gap-16 align-center">
+                <span>Duration (ms):</span>
+                <input
+                  type="number"
+                  min={50}
+                  max={5000}
+                  step={10}
+                  disabled={!attr.vjoyButton.fixedDuration}
+                  value={attr.vjoyButton.duration}
+                  onChange={(evt) => handleVjoyButtonChange("duration", Number.parseInt(evt.target.value))}
+                />
+              </div>
+            )}
           </>
         )}
         {attr.buttonType === "navigation" && (

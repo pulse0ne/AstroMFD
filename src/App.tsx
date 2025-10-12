@@ -5,18 +5,24 @@ import {Creator} from "./Creator.tsx";
 
 /*--------------------
   TODO:
-- Action button settings for duration == press length
+- Device identification
+- Snapping/Guides/Grid
+- Gradients
+- Finish Audio feedback
+- Finish Renaming of screens/screen sets
+- Filters (CRT, more?)
 - SVG choosing/editing
-- Duplication of widgets (hook functions up to store & controls)
+- Duplication of widgets (hook functions up to store & create controls)
 - Deletion of screens (delete screen thumb file too)
 - Confirmation modal for screen deletions
-- Renaming of screens/screen sets
 - Develop ScreenSet selector in desktop client (react router)
 - Improved error-handling in Rust code
-- Configuration (journal path)
+- Configuration (journal path, vjoy device, etc.)
 - Include pre-built SVGs for button shapes
+- Configurable shape # of sides (triangles, pentagons, hexagons, etc.)
+- Render icon for use in app
 - Nav triggers (open screen on specified journal event)
-- Audio/haptic feedback?
+- Haptic feedback? (not supported in mobile safari)
 - Color themes?
 - Multiselect?
 - README/wiki?

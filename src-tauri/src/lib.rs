@@ -51,6 +51,8 @@ pub async fn run() {
             tokio::spawn(async move {
                 let app = axum::Router::new()
                     .route("/ws", axum::routing::get(ws::ws_handler))
+                    .route("/audio", axum::routing::get(mobile_assets::list_audio_clips))
+                    .route("/audio/{source}/{sound}", axum::routing::get(mobile_assets::audio_handler))
                     .route("/fonts/{font}", axum::routing::get(mobile_assets::font_handler))
                     .route("/screen-sets", axum::routing::get(mobile_assets::screen_set_handler))
                     .fallback(axum::routing::get(mobile_assets::static_handler))

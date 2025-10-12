@@ -2,15 +2,24 @@ import {type CSSProperties, useCallback, useState} from "react";
 import type {ButtonAttributes, ShadowEffect} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 
+// TODO: remove;; just a test
+const audio = new Audio("/audio/resources/Flip.mp3");
+
+function playSound() {
+  audio.currentTime = 0;
+  audio.play().catch(e => console.error(e));
+}
+
 export type ButtonProps = {
   attr: ButtonAttributes;
   onPress: (button: number, duration: number) => void;
+  onDown: (button: number) => void;
+  onUp: (button: number) => void;
   onNavigate: (target: string) => void;
 };
 
-export function Button({ attr, onPress, onNavigate }: ButtonProps) {
+export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps) {
   const [ pressed, setPressed ] = useState(false);
-  console.log(attr);
 
   const shapeStyle: CSSProperties = {
     position: "absolute",
@@ -44,18 +53,24 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
 
   const handlePress = useCallback(() => {
     if (attr.buttonType === "action" || attr.buttonType === "toggle") {
-      const {button, duration} = attr.vjoyButton;
-      onPress(button, duration);
+      const {button, fixedDuration, duration} = attr.vjoyButton;
+      if (fixedDuration) {
+        onPress(button, duration);
+      }
     } else if (attr.buttonType === "navigation" && attr.navTarget) {
       onNavigate(attr.navTarget);
     }
   }, [attr]);
 
   const handleDown = useCallback(() => {
+    playSound();
     if (attr.buttonType === "toggle") {
       setPressed(ov => !ov);
     } else {
       setPressed(true);
+    }
+    if (!attr.vjoyButton.fixedDuration && attr.buttonType !== "navigation") {
+      onDown(attr.vjoyButton.button);
     }
   }, [attr]);
 
@@ -63,16 +78,17 @@ export function Button({ attr, onPress, onNavigate }: ButtonProps) {
     if (attr.buttonType !== "toggle") {
       setPressed(false);
     }
+    if (!attr.vjoyButton.fixedDuration && attr.buttonType !== "navigation") {
+      onUp(attr.vjoyButton.button);
+    }
   }, [attr]);
 
   return (
     <div
       style={shapeStyle}
       onClick={handlePress}
-      onTouchStart={handleDown}
-      onMouseDown={handleDown}
-      onTouchEnd={handleDown}
-      onMouseUp={handleUp}
+      onPointerDown={handleDown}
+      onPointerUp={handleUp}
     >
       {attr.text.text && (
         <div style={textContainerStyle}>

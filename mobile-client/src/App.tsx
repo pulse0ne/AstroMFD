@@ -3,6 +3,8 @@ import ConnectionOverlay from "./ConnectionOverlay.tsx";
 import {ViewportReporter} from "./ViewportReporter.tsx";
 import {ScreenSetManager} from "./ScreenSetManager.tsx";
 
+console.log(window.navigator.userAgent);
+
 function App() {
   return (
     <WebsocketProvider>

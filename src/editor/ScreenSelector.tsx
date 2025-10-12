@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import useTauriListen from "../hooks/useTauriListen.tsx";
 import {useECStore} from "../store";
 import {invoke} from "@tauri-apps/api/core";
+import {EditableTitle} from "./EditableTitle.tsx";
+import {Screen} from "@common/shared/models";
 
 type ImageUpdatedMessage = {
   id: string;
@@ -11,6 +13,7 @@ export function ScreenSelector() {
   const screenSet = useECStore(state => state.screenSet);
   const activeScreenIndex = useECStore(state => state.activeScreenIndex);
   const setActiveScreenIndex = useECStore(state => state.setActiveScreenIndex);
+  const updateScreen = useECStore(state => state.updateScreen);
   const [ screenImages, setScreenImages ] = useState<Record<string, string>>({});
   const { lastEvent } = useTauriListen<ImageUpdatedMessage>("screen-image-updated");
 
@@ -42,6 +45,12 @@ export function ScreenSelector() {
       .catch(e => console.error(e));
   }, [lastEvent]);
 
+  const handleScreenRename = (name: string) => {
+    if (!screenSet || activeScreenIndex === null) return;
+    const updatedScreen: Screen = Object.assign({}, screenSet.screens[activeScreenIndex], { name });
+    updateScreen(updatedScreen);
+  };
+
   return (
     <div
       className="screen-selector fill-y col align-center"
@@ -68,15 +77,16 @@ export function ScreenSelector() {
                 <img src={screenImages[screen.id]} alt={screenImages[screen.id]} width={62} height={62} />
               )}
             </div>
-            <span
+            <EditableTitle
               style={{
                 textAlign: "center",
                 fontSize: 10,
                 color: ix === activeScreenIndex ? "var(--gradient-stop1)" : undefined
               }}
-            >
-              {screen.name}
-            </span>
+              inputStyle={{ fontSize: 10, textAlign: "center" }}
+              value={screen.name}
+              onChange={handleScreenRename}
+            />
           </div>
         )))}
       </div>

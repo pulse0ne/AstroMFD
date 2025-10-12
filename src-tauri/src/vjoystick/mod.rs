@@ -18,6 +18,8 @@ use crate::state::{MobileEvent, ServerEvent};
 #[cfg_attr(any(target_os = "windows", target_os = "macos"), async_trait::async_trait)]
 pub trait InputDevice: Send + Sync {
     async fn press_button(&mut self, button: u8, duration_millis: u64);
+    async fn button_down(&mut self, button: u8);
+    async fn button_up(&mut self, button: u8);
 }
 
 pub async fn vjoy_worker(
@@ -38,8 +40,14 @@ pub async fn vjoy_worker(
     while let Some(evt) = mobile_rx.recv().await {
         trace!("Received mobile event: {:?}", evt);
         match evt {
-            MobileEvent::Press { button, duration } => {
+            MobileEvent::FixedPress { button, duration } => {
                 device.lock().await.press_button(button, duration).await;
+            },
+            MobileEvent::ButtonDown { button } => {
+                device.lock().await.button_down(button).await;
+            },
+            MobileEvent::ButtonUp { button } => {
+                device.lock().await.button_up(button).await;
             },
             _ => {}
         }

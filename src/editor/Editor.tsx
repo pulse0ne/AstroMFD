@@ -212,6 +212,13 @@ export default function Editor() {
                   height={workspaceSize.height}
                   fill="#000"
                 />
+                {/*<Grid*/}
+                {/*  color="rgba(255, 0, 0, 0.3)"*/}
+                {/*  width={workspaceSize.width}*/}
+                {/*  height={workspaceSize.height}*/}
+                {/*  gridSize={50}*/}
+                {/*  zoomLevel={stageScale}*/}
+                {/*/>*/}
                 {activeScreen?.widgets.map(((widget, ix) => (
                   <WidgetRenderer
                     key={widget.id}
@@ -238,3 +245,40 @@ export default function Editor() {
     </div>
   );
 }
+
+
+//// Experiment
+// type GridProps = {
+//   color: string;
+//   width: number;
+//   height: number;
+//   gridSize: number;
+//   zoomLevel: number;
+// };
+// const Grid = ({ color, width, height, gridSize, zoomLevel }: GridProps) => {
+//   console.log(zoomLevel);
+//   const lines = [];
+//   // Vertical lines
+//   for (let i = 0; i < width / gridSize; i++) {
+//     lines.push(
+//       <Line
+//         key={i}
+//         points={[i * gridSize, 0, i * gridSize, height]}
+//         stroke={color}
+//         strokeWidth={1 / zoomLevel}
+//       />
+//     );
+//   }
+//   // Horizontal lines
+//   for (let i = 0; i < height / gridSize; i++) {
+//     lines.push(
+//       <Line
+//         key={i + width / gridSize}
+//         points={[0, i * gridSize, width, i * gridSize]}
+//         stroke={color}
+//         strokeWidth={1 / zoomLevel}
+//       />
+//     );
+//   }
+//   return <>{lines}</>;
+// }

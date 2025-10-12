@@ -20,7 +20,15 @@ export function ScreenRenderer({ screen, size, onNavigate, onMessage }: ScreenRe
   };
 
   const handlePress = (button: number, duration: number) => {
-    onMessage({ press: { button, duration }});
+    onMessage({ fixedPress: { button, duration } });
+  };
+
+  const handleDown = (button: number) => {
+    onMessage({ buttonDown: { button }});
+  };
+
+  const handleUp = (button: number) => {
+    onMessage({ buttonUp: { button }});
   };
 
   return (
@@ -28,7 +36,13 @@ export function ScreenRenderer({ screen, size, onNavigate, onMessage }: ScreenRe
       {screen.widgets.map(widget => (
         <Fragment key={widget.id}>
           {widget.type === "button" && (
-            <Button attr={widget} onPress={handlePress} onNavigate={onNavigate} />
+            <Button
+              attr={widget}
+              onPress={handlePress}
+              onDown={handleDown}
+              onUp={handleUp}
+              onNavigate={onNavigate}
+            />
           )}
           {widget.type === "panel" && (
             <Panel attr={widget} />

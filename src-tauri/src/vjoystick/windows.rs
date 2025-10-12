@@ -20,4 +20,18 @@ impl InputDevice for VJoyDevice {
         device.set_button(button, ButtonState::Released).unwrap();
         self.vjoy.update_device_state(&device).unwrap();
     }
+    
+    async fn button_down(&mut self, button: u8) {
+        debug!("Button down: {}", button);
+        let mut device = self.vjoy.get_device_state(self.device_id).unwrap();
+        device.set_button(button, ButtonState::Pressed).unwrap();
+        self.vjoy.update_device_state(&device).unwrap();
+    }
+
+    async fn button_up(&mut self, button: u8) {
+        debug!("Button up: {}", button);
+        let mut device = self.vjoy.get_device_state(self.device_id).unwrap();
+        device.set_button(button, ButtonState::Released).unwrap();
+        self.vjoy.update_device_state(&device).unwrap();
+    }
 }

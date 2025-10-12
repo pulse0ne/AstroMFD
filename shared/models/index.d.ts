@@ -53,6 +53,7 @@ export type ButtonType = "action" | "navigation" | "toggle";
 
 export type ButtonAction = {
   button: number;
+  fixedDuration: boolean;
   duration: number;
 };
 

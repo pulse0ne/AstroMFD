@@ -19,7 +19,9 @@ pub enum ServerEvent {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum MobileEvent {
-    Press { button: u8, duration: u64 },
+    FixedPress { button: u8, duration: u64 },
+    ButtonDown { button: u8 },
+    ButtonUp { button: u8 },
     ViewportReport { width: u64, height: u64 },
 }
 
