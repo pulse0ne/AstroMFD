@@ -30,7 +30,7 @@ async fn handle_socket(
 
     {
         let mut clients = state.mobile_clients.lock().await;
-        clients.push(MobileClient { ip_addr: addr, viewport_width: 0, viewport_height: 0 });
+        clients.push(MobileClient { ip_addr: addr, viewport_width: 0, viewport_height: 0, device_type: "other".to_string() });
         let _ = state.app_handle.emit("clients-updated-event", DeviceList { devices: clients.clone() });
         info!("Accepted new websocket connection: {:?} ({} total connections)", addr, clients.clone().len());
     }
@@ -67,8 +67,8 @@ async fn handle_socket(
             if let Message::Text(txt) = msg {
                 if let Ok(evt) = serde_json::from_str::<MobileEvent>(&txt) {
                     match evt {
-                        MobileEvent::ViewportReport { width, height } => {
-                            info!("Got viewportReport from {:?}: {}x{}", addr, width, height);
+                        MobileEvent::ClientReport { width, height, device } => {
+                            info!("Got clientReport from {:?}: {}x{} ({})", addr, width, height, device);
                             let mut clients = state_clone.mobile_clients.lock().await;
                             *clients = clients
                                 .iter()
@@ -77,6 +77,7 @@ async fn handle_socket(
                                     if f.ip_addr == addr {
                                         f.viewport_width = width;
                                         f.viewport_height = height;
+                                        f.device_type = device.clone();
                                         f
                                     } else {
                                         f

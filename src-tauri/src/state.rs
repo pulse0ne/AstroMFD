@@ -19,10 +19,10 @@ pub enum ServerEvent {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum MobileEvent {
-    FixedPress { button: u8, duration: u64 },
     ButtonDown { button: u8 },
     ButtonUp { button: u8 },
-    ViewportReport { width: u64, height: u64 },
+    FixedPress { button: u8, duration: u64 },
+    ClientReport { width: u64, height: u64, device: String },
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -31,6 +31,7 @@ pub struct MobileClient {
     pub ip_addr: IpAddr,
     pub viewport_width: u64,
     pub viewport_height: u64,
+    pub device_type: String,
 }
 
 #[derive(Clone)]

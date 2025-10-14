@@ -1,0 +1,17 @@
+.screen-set-selector-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    padding: 24px;
+}
+
+.screen-set-img-container {
+    background: black;
+    width: 256px;
+    height: 256px;
+}
+
+.screen-set-add-new-container {
+    width: 256px;
+    height: 256px;
+    background: linear-gradient(to bottom right, var(--gradient-stop1), var(--gradient-stop2));
+}

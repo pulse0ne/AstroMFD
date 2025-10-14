@@ -15,11 +15,17 @@ use log::{info, trace};
 use tokio::sync::{broadcast, mpsc, Mutex};
 use crate::state::{MobileEvent, ServerEvent};
 
+pub struct VJoyDeviceConfig {
+    pub id: u32,
+    pub buttons: usize,
+}
+
 #[cfg_attr(any(target_os = "windows", target_os = "macos"), async_trait::async_trait)]
 pub trait InputDevice: Send + Sync {
     async fn press_button(&mut self, button: u8, duration_millis: u64);
     async fn button_down(&mut self, button: u8);
     async fn button_up(&mut self, button: u8);
+    async fn query_devices(&self) -> Vec<VJoyDeviceConfig>;
 }
 
 pub async fn vjoy_worker(
@@ -29,7 +35,7 @@ pub async fn vjoy_worker(
     let device: Arc<Mutex<dyn InputDevice>> = {
         #[cfg(target_os = "windows")]
         {
-            Arc::new(Mutex::new(VJoyDevice { vjoy: VJoy::from_default_dll_location().unwrap(), device_id: 2 }))
+            Arc::new(Mutex::new(VJoyDeviceConfig { vjoy: VJoy::from_default_dll_location().unwrap(), device_id: 2 }))
         }
         #[cfg(not(target_os = "windows"))]
         {

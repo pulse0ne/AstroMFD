@@ -5,6 +5,8 @@ import {invoke} from "@tauri-apps/api/core";
 import {EditableTitle} from "./EditableTitle.tsx";
 import {Screen} from "@common/shared/models";
 
+import "./screen-selector.css";
+
 type ImageUpdatedMessage = {
   id: string;
 };
@@ -52,25 +54,16 @@ export function ScreenSelector() {
   };
 
   return (
-    <div
-      className="screen-selector fill-y col align-center"
-      style={{ background: "var(--toolbar-color-hex)", borderRight: "var(--border-light)" }}
-    >
-      <div className="fill-x" style={{ marginTop: 12, marginBottom: 16, paddingBottom: 16, borderBottom: "var(--border-light)" }}>
-        <h5 style={{ textAlign: "center" }}>Screens</h5>
+    <div className="screen-selector fill-y col align-items-center">
+      <div className="fill-x m16-t m16-b border-b">
+        <h5 className="text-center">Screens</h5>
       </div>
-      <div className="flex-x flex-grow col align-center gap-16" style={{ /*overflowY: "scroll"*/ }}>
+      <div className="flex-x flex-grow col align-items-center gap-16">
         {screenSet?.screens?.map(((screen, ix) => (
-          <div className="col align-center" key={screen.id}>
+          <div className="col align-items-center" key={screen.id}>
             <div
-              className="pointer"
-              style={{
-                width: 64,
-                height: 64,
-                border: "var(--border-light)",
-                borderColor: ix === activeScreenIndex ? "var(--gradient-stop1)" : undefined,
-                backgroundColor: "black"
-              }}
+              className="pointer border screen-selector-screen-container"
+              style={{ borderColor: ix === activeScreenIndex ? "var(--gradient-stop1)" : undefined }}
               onClick={() => setActiveScreenIndex(ix)}
             >
               {screenImages[screen.id] && (

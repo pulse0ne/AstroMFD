@@ -10,6 +10,8 @@ import {IconType} from "react-icons";
 import {useECStore} from "../../store";
 import {activeScreenSelector, hasRedosSelector, hasUndosSelector, screensSelector} from "../../store/selectors.ts";
 
+import "./attributes-panel.css";
+
 function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
   if (ephemeralShapeState) {
     if (attrType === "size") {
@@ -97,15 +99,12 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
 
   return (
     <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
-      <div
-        className="row gap-16 align-center justify-center"
-        style={{ borderBottom: "var(--border-light)", paddingBottom: 8 }}
-      >
+      <div className="row gap-16 align-items-center justify-content-center p8-t border-b">
         <UndoRedoButton type="undo" disabled={!hasUndos} onClick={undo} />
         <UndoRedoButton type="redo" disabled={!hasRedos} onClick={redo} />
       </div>
       {!selectedWidget && (
-        <div className="flex-grow row justify-center align-center">
+        <div className="flex-grow row justify-content-center align-items-center">
           <div>No selection</div>
         </div>
       )}

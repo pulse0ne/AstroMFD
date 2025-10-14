@@ -1,8 +1,8 @@
 import {
   MdAdd,
   MdArrowBackIos,
-  MdClose,
-  MdPhoneAndroid, MdSync,
+  MdClose, MdDesktopWindows,
+  MdPhoneAndroid, MdPhoneIphone, MdTabletAndroid, MdTabletMac,
 } from "react-icons/md";
 import {ChangeEvent, PropsWithChildren, useState} from "react";
 import Popup from "reactjs-popup";
@@ -17,6 +17,9 @@ import {findNextAvailableButton} from "../utils/findNextAvailableButton.ts";
 import {createButton} from "../utils/createButton.ts";
 import {createLabel} from "../utils/createLabel.ts";
 import {createPanel} from "../utils/createPanel.ts";
+import {IconType} from "react-icons";
+
+import "./toolbar.css";
 
 export function Toolbar() {
   const [ addPopupOpen, setAddPopupOpen ] = useState(false);
@@ -71,9 +74,9 @@ export function Toolbar() {
   };
 
   return (
-    <div className="toolbar row align-center justify-space-between relative">
-      <div className="row align-center">
-        <MdArrowBackIos className="pointer" style={{ marginRight: 16 }} onClick={goBack} />
+    <div className="toolbar row align-items-center justify-content-space-between relative">
+      <div className="row align-items-center">
+        <MdArrowBackIos className="pointer m16-r" onClick={goBack} />
         <Popup
           open={addPopupOpen}
           closeOnDocumentClick
@@ -82,28 +85,21 @@ export function Toolbar() {
           arrow={false}
           contentStyle={{ background: "var(--toolbar-color-hex)" }}
           trigger={
-            <button style={{paddingLeft: 12}}>
-              <div className="row align-center" style={{gap: 4}}><MdAdd size={15}/> Add</div>
+            <button className="p16-l">
+              <div className="row align-items-center gap-4">
+                <MdAdd size={15}/>
+                <span>Add</span></div>
             </button>
           }
         >
           <AddWidgetMenuItem onClick={() => handleAddWidget(createButton)}>Button</AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
-          <div style={{borderBottom: "var(--border-light)"}}></div>
+          <div style={{ borderBottom: "var(--border-light)" }}></div>
           <AddWidgetMenuItem onClick={handleAddScreen}>Screen</AddWidgetMenuItem>
         </Popup>
       </div>
-      <div
-        className="fill-y row align-center"
-        style={{
-          gap: 4,
-          position: "absolute",
-          top: 0,
-          left: "50%",
-          transform: "translateX(-50%)"
-      }}>
-
+      <div className="fill-y row align-items-center gap-4 toolbar-centered-container">
         <input
           style={{ width: 56 }}
           value={screenSet?.size?.width ?? 1200}
@@ -137,13 +133,38 @@ export function Toolbar() {
           position="bottom center"
         >
           {devices.map(device => (
-            <div className="popup-menu-item row align-center gap-8" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>
-              <MdSync />{device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
+            <div className="popup-menu-item row align-items-center gap-8" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>
+              <DeviceIcon deviceType={device.deviceType} />{device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
             </div>
           ))}
         </Popup>
       </div>
     </div>
+  );
+}
+
+type DeviceIconProps = {
+  deviceType: ClientInfo["deviceType"];
+};
+
+function DeviceIcon({ deviceType }: DeviceIconProps) {
+  let Icon: IconType = MdDesktopWindows;
+  switch(deviceType) {
+    case "android-tablet":
+      Icon = MdTabletAndroid;
+      break;
+    case "android-phone":
+      Icon = MdPhoneAndroid;
+      break;
+    case "ios-tablet":
+      Icon = MdTabletMac;
+      break;
+    case "ios-phone":
+      Icon = MdPhoneIphone;
+      break;
+  }
+  return (
+    <Icon />
   );
 }
 

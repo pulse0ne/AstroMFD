@@ -2,6 +2,8 @@ import {ChangeEvent, CSSProperties, forwardRef, useEffect, useMemo, useState} fr
 import Popup from "reactjs-popup";
 import {RgbaStringColorPicker} from "react-colorful";
 
+import "./color-swatch.css";
+
 export type ColorSwatchProps = {
   color?: string;
   recents: string[];

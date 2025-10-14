@@ -31,7 +31,7 @@ export function LogsModal({ open, onClose }: LogsModalProps) {
           {logs.length === 0 && "No logs"}
           {logs.map(entry => <LogLine key={entry.timestamp} entry={entry} />)}
         </div>
-        <div className="row justify-center align-center" style={{ margin: 16 }}>
+        <div className="row justify-content-center align-items-center m16">
           <button onClick={onClose}>Close</button>
         </div>
       </div>

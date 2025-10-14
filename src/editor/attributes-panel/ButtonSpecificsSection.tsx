@@ -61,12 +61,12 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
                 onChange={(evt) => handleVjoyButtonChange("button", Number.parseInt(evt.target.value))}
               />
             </div>
-            <div className="row gap-16 align-center">
+            <div className="row gap-16 align-items-center">
               <span>Fixed Duration:</span>
               <Toggle onToggle={toggleFixedDuration} value={attr.vjoyButton.fixedDuration} />
             </div>
             {attr.vjoyButton.fixedDuration && (
-              <div className="row gap-16 align-center">
+              <div className="row gap-16 align-items-center">
                 <span>Duration (ms):</span>
                 <input
                   type="number"
@@ -94,7 +94,7 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
         )}
       </div>
       <div className="col gap-16">
-        <div className="row align-center gap-16">
+        <div className="row align-items-center gap-16">
           <span>State:</span>
           <Toggle
             size={32}

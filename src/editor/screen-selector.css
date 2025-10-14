@@ -1,0 +1,12 @@
+.screen-selector {
+    min-width: 100px;
+    background: var(--toolbar-color-hex);
+    border-right: var(--border-light);
+}
+
+.screen-selector-screen-container {
+    background: black;
+    width: 64px;
+    height: 64px;
+    border: var(--border-light);
+}

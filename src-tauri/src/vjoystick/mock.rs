@@ -1,5 +1,5 @@
 use log::info;
-use crate::vjoystick::InputDevice;
+use crate::vjoystick::{InputDevice, VJoyDeviceConfig};
 
 pub struct MockDevice;
 
@@ -15,5 +15,13 @@ impl InputDevice for MockDevice {
 
     async fn button_up(&mut self, button: u8) {
         info!("[MOCK] button_up({})", button);
+    }
+    
+    async fn query_devices(&self) -> Vec<VJoyDeviceConfig> {
+        info!("[MOCK] query_devices()");
+        vec![
+            VJoyDeviceConfig { id: 1, buttons: 64 },
+            VJoyDeviceConfig { id: 2, buttons: 128 },
+        ]
     }
 }

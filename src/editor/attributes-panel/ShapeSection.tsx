@@ -2,6 +2,7 @@ import {ShadowEffect, ShapeAttributes} from "@common/shared/models";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 import {Toggle} from "./Toggle.tsx";
+import {GradientPicker} from "./GradientPicker.tsx";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -68,7 +69,7 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{ width: 50 }}>Fill:</span>
         <ColorSwatch
           color={fill ?? undefined}
@@ -76,8 +77,9 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           onUpdate={c => handleColorChange("fill", c)}
           onAddRecentColor={addRecentColor}
         />
+        <GradientPicker onChange={console.log} />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{ width: 50 }}>Stroke:</span>
         <ColorSwatch
           color={stroke ?? undefined}
@@ -86,7 +88,7 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           onAddRecentColor={addRecentColor}
         />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{ width: 100 }}>Stroke Width:</span>
         <input
           type="number"
@@ -96,7 +98,7 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           onChange={(evt) => handleNumericalChange("strokeWidth", Number.parseInt(evt.target.value))}
         />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{ width: 100 }}>Corner Radius:</span>
         <input
           type="number"
@@ -107,7 +109,7 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
         />
       </div>
       <div className="col gap-16">
-        <div className="row gap-16 align-center">
+        <div className="row gap-16 align-items-center">
           <span>Shadow:</span>
           <Toggle
             onToggle={handleShadowToggle}

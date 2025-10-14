@@ -8,7 +8,8 @@ import {useECStore} from "../store";
 import {invoke} from "@tauri-apps/api/core";
 import {activeScreenSelector, activeWidgetSelector} from "../store/selectors.ts";
 import {Position, Size, Widget} from "@common/shared/models";
-import "./styles.css";
+// import "./styles.css";
+import "./editor.css";
 
 const SCALE_FACTOR = 1.05;
 

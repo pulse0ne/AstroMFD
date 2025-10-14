@@ -10,6 +10,8 @@ import {
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 import {Toggle} from "./Toggle.tsx";
 
+import "./text-section.css";
+
 export type TextSectionProps = {
   textAttr: TextAttributes;
   pressedAttr?: Partial<TextAttributes>;
@@ -106,7 +108,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
   return (
     <div className="attribute-section col gap-16" style={{paddingTop: 16}}>
       <h5>TEXT</h5>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span>Label:</span>
         <textarea
           className="text-textarea"
@@ -114,7 +116,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
           onChange={(evt) => handleStringValueChange("text", evt.target.value)}
         />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span>Font:</span>
         <select
           id="font-select"
@@ -126,14 +128,14 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
             <option
               key={font.postscriptName}
               value={font.postscriptName}
-              style={{fontFamily: font.name}}
+              style={{ fontFamily: font.name }}
             >
               {font.name}
             </option>
           ))}
         </select>
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span>Color:</span>
         <ColorSwatch
           color={fontColor}
@@ -142,7 +144,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
           onAddRecentColor={addRecentColor}
         />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span>Size:</span>
         <input
           type="number"
@@ -152,7 +154,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
         />
       </div>
       <div className="col gap-16">
-        <div className="row gap-16 align-center">
+        <div className="row gap-16 align-items-center">
           <span>Shadow:</span>
           <Toggle
             onToggle={handleShadowToggle}
@@ -203,7 +205,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
           </div>
         )}
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{width: 140}}>Horizontal Alignment:</span>
         <MdAlignHorizontalLeft
           className="pointer"
@@ -224,7 +226,7 @@ export function TextSection({ textAttr, pressedAttr, isPressed, fonts, onUpdate,
           onClick={() => handleAlignmentChange("right")}
         />
       </div>
-      <div className="row align-center gap-16">
+      <div className="row align-items-center gap-16">
         <span style={{width: 140}}>Vertical Alignment:</span>
         <MdAlignVerticalTop
           className="pointer"

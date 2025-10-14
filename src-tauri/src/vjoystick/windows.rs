@@ -1,6 +1,6 @@
 use log::debug;
 use vjoy::{ButtonState, VJoy};
-use crate::vjoystick::InputDevice;
+use crate::vjoystick::{InputDevice, VJoyDeviceConfig};
 
 pub struct VJoyDevice {
     pub vjoy: VJoy,
@@ -33,5 +33,15 @@ impl InputDevice for VJoyDevice {
         let mut device = self.vjoy.get_device_state(self.device_id).unwrap();
         device.set_button(button, ButtonState::Released).unwrap();
         self.vjoy.update_device_state(&device).unwrap();
+    }
+
+    async fn query_devices(&self) -> Vec<VJoyDeviceConfig> {
+        debug!("Querying vjoy devices");
+        self.vjoy.devices_cloned().map(|d| {
+            VJoyDeviceConfig {
+                id: d.id(),
+                buttons: d.num_buttons(),
+            }
+        }).collect()
     }
 }

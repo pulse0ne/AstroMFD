@@ -6,6 +6,8 @@ import {
   MdKeyboardDoubleArrowUp
 } from "react-icons/md";
 import {useECStore} from "../../store";
+import {IconType} from "react-icons";
+import {useMemo} from "react";
 
 export type SizePositionSectionProps = {
   size: Size;
@@ -79,39 +81,40 @@ export function SizePositionSection({size, position, onSizeChange, onPositionCha
           />
         </div>
       </div>
-      <div className="row align-center">
+      <div className="row align-items-center">
         <span>Ordering:</span>
-        <div className="flex-grow row align-center justify-space-around" style={{ padding: "0 24px" }}>
-          <MdKeyboardDoubleArrowUp
-            size={24}
-            style={{ color: "var(--gradient-stop1)" }}
-            className="pointer"
-            onClick={sendToFront}
-            title="Send To Front"
-          />
-          <MdKeyboardArrowUp
-            size={24}
-            style={{ color: "var(--gradient-stop1)" }}
-            className="pointer"
-            onClick={sendForward}
-            title="Send Forward"
-          />
-          <MdKeyboardArrowDown
-            size={24}
-            style={{ color: "var(--gradient-stop1)" }}
-            className="pointer"
-            onClick={sendBackward}
-            title="Send Backward"
-          />
-          <MdKeyboardDoubleArrowDown
-            size={24}
-            style={{ color: "var(--gradient-stop1)" }}
-            className="pointer"
-            onClick={sendToBack}
-            title="Send To Back"
-          />
+        <div className="flex-grow row align-items-center justify-content-space-around" style={{ padding: "0 24px" }}>
+          <ArrangeIcon type="front" title="Send To Front" onClick={sendToFront} />
+          <ArrangeIcon type="forward" title="Send Forward" onClick={sendForward} />
+          <ArrangeIcon type="backward" title="Send Backward" onClick={sendBackward} />
+          <ArrangeIcon type="back" title="Send To Back" onClick={sendToBack} />
+
         </div>
       </div>
     </div>
+  );
+}
+
+type ArrangeIconProps = {
+  type: "back"|"backward"|"front"|"forward";
+  title: string;
+  onClick: () => void;
+};
+
+function ArrangeIcon({ type, title, onClick }: ArrangeIconProps) {
+  const Icon: IconType = useMemo(() => {
+    switch(type) {
+      case "back":
+        return MdKeyboardDoubleArrowDown;
+      case "backward":
+        return MdKeyboardArrowDown;
+      case "front":
+        return MdKeyboardDoubleArrowUp;
+      default:
+        return MdKeyboardArrowUp;
+    }
+  }, [type]);
+  return (
+    <Icon size={24} className="pointer arrange-icon" title={title} onClick={onClick} />
   );
 }

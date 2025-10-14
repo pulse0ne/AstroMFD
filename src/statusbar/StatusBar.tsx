@@ -6,7 +6,7 @@ import {QrCodeModal} from "./QrCodeModal.tsx";
 import {LogsModal} from "./LogsModal.tsx";
 import {LogsProvider} from "../hooks/useLogs.tsx";
 
-import "./styles.css";
+import "./status-bar.css";
 
 type ModalType = "qr" | "logs";
 
@@ -21,16 +21,16 @@ export default function StatusBar() {
 
   return (
     <LogsProvider>
-      <div className="status-bar row justify-space-between relative">
+      <div className="status-bar row justify-content-space-between relative">
         <div>
           {devices.length} client(s) connected
         </div>
-        <div className="row align-center gap-16">
+        <div className="row align-items-center gap-16">
           <span>http://{serverIp}:11011</span>
-          <MdOutlineQrCode2 size={20} onClick={() => setModal("qr")} style={{ cursor: "pointer", color: "var(--gradient-stop1)" }}/>
+          <MdOutlineQrCode2 size={20} onClick={() => setModal("qr")} className="pointer qr-icon" />
         </div>
 
-        <div className="row justify-center align-center" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+        <div className="centered-statusbar-container row justify-content-center align-items-center">
             <a href="#" onClick={() => setModal("logs")}>Logs</a>
         </div>
       </div>

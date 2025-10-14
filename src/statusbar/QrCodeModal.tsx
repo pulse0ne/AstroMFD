@@ -2,6 +2,8 @@ import {useEffect} from "react";
 import QRCode from "qrcode";
 import Popup from "reactjs-popup";
 
+import "./qr-code-modal.css";
+
 export type QrCodeModalProps = {
   open: boolean;
   serverIp: string;
@@ -16,13 +18,16 @@ export function QrCodeModal({ open, serverIp, onClose }: QrCodeModalProps) {
       modal
       open={open}
       onClose={onClose}
-      contentStyle={{ border: "var(--border-light)", overflow: "hidden" }}
+      contentStyle={{
+        border: "var(--border-light)",
+        overflow: "hidden"
+      }}
       overlayStyle={{
         backgroundColor: "rgba(55, 55, 55, 0.2)",
         backdropFilter: "blur(6px)"
       }}
     >
-      <div className="qr-modal-root col align-center justify-center">
+      <div className="qr-modal-root col align-items-center justify-content-center">
         <div style={{ fontSize: "0.75em" }}>{url}</div>
         <QrCode serverAddress={url} />
         <button onClick={onClose}>Close</button>

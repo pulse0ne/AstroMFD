@@ -1,10 +1,10 @@
-import {Toolbar} from "./editor/Toolbar.tsx";
+import {Toolbar} from "../editor/Toolbar.tsx";
 import {useParams} from "react-router";
 import {useEffect} from "react";
 import {invoke} from "@tauri-apps/api/core";
-import {useECStore} from "./store";
-import Editor from "./editor/Editor.tsx";
-import {ScreenSelector} from "./editor/ScreenSelector.tsx";
+import {useECStore} from "../store";
+import Editor from "../editor/Editor.tsx";
+import {ScreenSelector} from "../editor/ScreenSelector.tsx";
 import {ScreenSet} from "@common/shared/models";
 
 function debounce <T extends (...args: any[]) => any>(
@@ -57,7 +57,7 @@ export function Creator() {
   return (
     <div className="creator flex-grow col no-overflow">
       {!screenSet && (
-        <div className="fill row align-center justify-center">
+        <div className="fill row align-items-center justify-content-center">
           <div className="loader"></div>
         </div>
       )}

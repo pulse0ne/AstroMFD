@@ -1,0 +1,12 @@
+.attributes-panel {
+    background-color: var(--panel-color-hex);
+    width: 320px;
+    min-width: 320px;
+    padding: 12px;
+    border-left: var(--border-light);
+}
+
+.attribute-section {
+    padding-bottom: 12px;
+    border-bottom: var(--border-light);
+}
