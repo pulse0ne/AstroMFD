@@ -3,7 +3,6 @@ import {DevicesProvider} from "./hooks/useDevices.tsx";
 import {MemoryRouter, Route, Routes} from "react-router";
 import {Creator} from "./views/Creator.tsx";
 import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
-import {parseSvg} from "./utils/parseSvg.ts";
 
 /*--------------------
   TODO:
@@ -50,5 +49,3 @@ function App() {
 }
 
 export default App;
-
-parseSvg("<svg></svg>");

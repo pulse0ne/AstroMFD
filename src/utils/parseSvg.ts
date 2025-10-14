@@ -1,4 +1,4 @@
-import { parseSync } from "xml-reader";
+import {parseSync, XmlNode} from "xml-reader";
 
 const rawSvg = `<svg
    width="155.87535mm"
@@ -18,7 +18,9 @@ const rawSvg = `<svg
        transform="matrix(0.26458333,0,0,0.26458333,220.00001,0)" /></g></svg>
 `;
 
-export function parseSvg(rawText: string) {
+export type SvgXmlNode = XmlNode;
+
+export function parseSvg(rawText: string): SvgXmlNode {
   const parsed = parseSync(`<root>${rawText}</root>`, { parentNodes: false });
   const isValid = parsed.children && parsed.children.length === 1 && parsed.children.every(n => n.name === "svg");
   if (isValid) {

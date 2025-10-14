@@ -1,9 +1,15 @@
 import {useNavigate} from "react-router";
-import {useEffect, useState} from "react";
+import {CSSProperties, useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api/core";
 import {MdAdd} from "react-icons/md";
 
 import "./screen-set-selector.css";
+import {EditableTitle} from "../editor/EditableTitle.tsx";
+
+const bigText: CSSProperties = {
+  fontSize: 24,
+  fontWeight: "bold"
+};
 
 type ScreenSetMeta = {
   id: string;
@@ -33,7 +39,7 @@ export function ScreenSetSelector() {
           <div className="col justify-content-center align-items-center screen-set-add-new-container border">
             <MdAdd size={128} style={{ opacity: 0.7 }} />
           </div>
-          <h3>New</h3>
+          <span style={bigText}>New</span>
         </div>
       </div>
     </div>
@@ -48,13 +54,18 @@ type ScreenSetItemProps = {
 function ScreenSetItem({ screenSet, onSelect }: ScreenSetItemProps) {
   return (
     <div
-      className="pointer col align-items-center gap-8 p24"
-      onClick={() => onSelect(screenSet.id)}
+      className="col align-items-center gap-8 p24"
+      // onClick={() => onSelect(screenSet.id)}
     >
-      <div className="screen-set-img-container border">
+      <div className="screen-set-img-container border" onClick={() => onSelect(screenSet.id)}>
         {/* TODO: img */}
       </div>
-      <h3 className="text-center">{screenSet.name}</h3>
+      <EditableTitle
+        className="text-center"
+        style={bigText}
+        inputStyle={{ textAlign: "center", ...bigText }}
+        value={screenSet.name} onChange={console.log}
+      />
     </div>
   );
 }

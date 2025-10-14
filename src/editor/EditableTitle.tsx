@@ -44,7 +44,7 @@ export function EditableTitle({ value, onChange, className, style, inputStyle }:
 
   const mergedStyle = Object.assign({
     background: "transparent",
-    border: "none",
+    border: "var(--border-light)",
     margin: 0,
     padding: 0
   } as CSSProperties, inputStyle ?? {});
