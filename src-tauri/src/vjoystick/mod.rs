@@ -35,7 +35,7 @@ pub async fn vjoy_worker(
     let device: Arc<Mutex<dyn InputDevice>> = {
         #[cfg(target_os = "windows")]
         {
-            Arc::new(Mutex::new(VJoyDeviceConfig { vjoy: VJoy::from_default_dll_location().unwrap(), device_id: 2 }))
+            Arc::new(Mutex::new(VJoyDevice { vjoy: VJoy::from_default_dll_location().unwrap(), device_id: 2 }))
         }
         #[cfg(not(target_os = "windows"))]
         {

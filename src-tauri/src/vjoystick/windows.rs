@@ -37,7 +37,7 @@ impl InputDevice for VJoyDevice {
 
     async fn query_devices(&self) -> Vec<VJoyDeviceConfig> {
         debug!("Querying vjoy devices");
-        self.vjoy.devices_cloned().map(|d| {
+        self.vjoy.devices_cloned().iter().map(|d| {
             VJoyDeviceConfig {
                 id: d.id(),
                 buttons: d.num_buttons(),
