@@ -10,6 +10,8 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 - Finish Gradients
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets
+- Finish SVG modification (attribute panel)
+- Screen Set Attribute Panel tab
 - Snapping/Guides/Grid
 - Filters (CRT, more?)
 - SVG choosing/editing
@@ -48,6 +50,4 @@ function App() {
   );
 }
 
-export default App
-
-// console.log(parse(TEST_SVG));
+export default App;

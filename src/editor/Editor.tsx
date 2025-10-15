@@ -180,7 +180,6 @@ export default function Editor() {
 
   const handleAttributePanelUpdate = (widget: Widget, type: string) => {
     if (activeWidget) {
-      console.log("widget", widget);
       updateWidget(widget, type);
     }
   };

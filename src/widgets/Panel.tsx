@@ -4,7 +4,7 @@ import {KonvaEventObject} from "konva/lib/Node";
 import {Shape} from "konva/lib/Shape";
 import {Group, Rect, Transformer} from "react-konva";
 import {PanelAttributes} from "@common/shared/models";
-import {renderSvgNode} from "./renderSvgNode.tsx";
+import {SvgContent} from "./SvgContent.tsx";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -82,7 +82,6 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
   }, [isSelected, attr]);
 
   if (attr.shape.svg) {
-    const svg = renderSvgNode(attr.shape.svg);
     return (
       <>
         <Group
@@ -98,7 +97,11 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
           onTransform={handleTransform}
           onTransformEnd={handleTransformEnd}
         >
-          {svg}
+          <SvgContent
+            svg={attr.shape.svg}
+            targetWidth={attr.shape.size.width}
+            targetHeight={attr.shape.size.height}
+          />
         </Group>
         {isSelected && (
           <Transformer

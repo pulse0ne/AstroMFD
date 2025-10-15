@@ -3,6 +3,7 @@ import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 import {Toggle} from "./Toggle.tsx";
 import {GradientPicker} from "./GradientPicker.tsx";
+import {extractColors, replaceSvgColor} from "../../utils/svg/color.ts";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -34,7 +35,6 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
   const handleShadowToggle = () => {
     const newShadowValue: ShadowEffect | null = Boolean(shadow) ? null : { color: "#000", strength: 3, xOffset: 0, yOffset: 0 };
     if (isPressed && onUpdatePressed) {
-      console.log(Object.assign({}, pressedAttr, { shadow: newShadowValue }));
       onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadowValue }), "widget.pressed.shape.shadow");
     } else {
       onUpdate(Object.assign({}, shapeAttr, { shadow: newShadowValue }), "widget.shape.shadow");
@@ -52,7 +52,6 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
 
   const handleShadowColor = (value: string) => {
     const newShadow: ShadowEffect = Object.assign({}, shadow, { color: value });
-    console.log(shadow, newShadow, shapeAttr, pressedAttr);
     if (isPressed && onUpdatePressed) {
       onUpdatePressed(Object.assign({}, pressedAttr, { shadow: newShadow }), "widget.pressed.shape.shadow.color");
     } else {
@@ -66,9 +65,21 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
   const cornerRadius = (isPressed && pressedAttr?.cornerRadius) ? pressedAttr.cornerRadius : shapeAttr.cornerRadius;
   const shadow = (isPressed && pressedAttr?.shadow) ? pressedAttr.shadow : shapeAttr.shadow;
 
+  /// TEST ///
+  const handleColorSwap = () => {
+    const randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+    if (shapeAttr.svg) {
+      const path = extractColors(shapeAttr.svg)[0];
+      const newSvg = replaceSvgColor(shapeAttr.svg, path.path, path.type, randomColor);
+      onUpdate(Object.assign({}, shapeAttr, { svg: newSvg }), "test");
+    }
+  };
+  ////////////
+
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
+      <button onClick={handleColorSwap}>Swap Color</button>
       <div className="row align-items-center gap-16">
         <span style={{ width: 50 }}>Fill:</span>
         <ColorSwatch

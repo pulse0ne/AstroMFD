@@ -1,7 +1,28 @@
+import {SvgUtils} from "../utils/svg/parseSvg.ts";
 import {SvgXmlNode} from "@common/shared/models";
+import {Fragment} from "react";
 import {Circle, Ellipse, Group, Line, Path, Rect} from "react-konva";
 
-export function renderSvgNode(node: SvgXmlNode, key?: string|number) {
+export function SvgContent({ svg, targetWidth, targetHeight }: { svg: SvgXmlNode, targetWidth: number, targetHeight: number }) {
+  const vb = SvgUtils.getSvgViewBox(svg);
+  const scaleX = targetWidth / vb.width;
+  const scaleY = targetHeight / vb.height;
+
+  const content = renderSvgNode(svg);
+
+  return (
+    <Group
+      scaleX={scaleX}
+      scaleY={scaleY}
+      x={-vb.x * scaleX}
+      y={-vb.y * scaleY}
+    >
+      {content}
+    </Group>
+  );
+}
+
+function renderSvgNode(node: SvgXmlNode, key?: string|number) {
   if (node.type === "text") return null;
 
   const { name, attributes, children } = node;
@@ -9,27 +30,22 @@ export function renderSvgNode(node: SvgXmlNode, key?: string|number) {
 
   switch (name) {
     case "svg":
+      return (<Fragment>{renderedChildren}</Fragment>);
     case "g":
       return (
-        <Group
-          key={key}
-        >
+        <Group key={key}>
           {renderedChildren}
         </Group>
       );
     case "path":
-      const pathAttr = {
-        ...attributes,
-        ...(attributes.style ? parseStyleAttribute(attributes.style) : {}),
-      };
       return (
         <Path
           key={key}
-          data={pathAttr.d || ""}
-          fill={pathAttr.fill || undefined}
-          fillRule={pathAttr.fillRule as CanvasFillRule || undefined}
-          stroke={pathAttr.stroke || undefined}
-          strokeWidth={parseFloat(pathAttr["stroke-width"] || "1")}
+          data={attributes.d || ""}
+          fill={attributes.fill || undefined}
+          fillRule={attributes.fillRule as CanvasFillRule || undefined}
+          stroke={attributes.stroke || undefined}
+          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
         />
       );
 
@@ -92,15 +108,4 @@ export function renderSvgNode(node: SvgXmlNode, key?: string|number) {
     default:
       return null;
   }
-}
-
-function parseStyleAttribute(style: string): Record<string, string> {
-  return style.split(";").reduce((acc, rule) => {
-    const [key, value] = rule.split(":").map((s) => s.trim());
-    if (key && value) {
-      const camelKey = key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-      acc[camelKey] = value;
-    }
-    return acc;
-  }, {} as Record<string, string>);
 }
