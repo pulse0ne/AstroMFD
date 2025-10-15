@@ -48,4 +48,6 @@ function App() {
   );
 }
 
-export default App;
+export default App
+
+// console.log(parse(TEST_SVG));

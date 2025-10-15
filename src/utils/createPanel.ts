@@ -6,6 +6,7 @@ export function createPanel(): PanelAttributes {
     id: uuid(),
     type: "panel",
     shape: {
+      svg: null,
       size: { width: 250, height: 150 },
       position: { x: 100, y: 100 },
       fill: "rgba(53, 64, 79, 1)",

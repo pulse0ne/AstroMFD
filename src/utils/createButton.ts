@@ -13,6 +13,7 @@ export function createButton(): ButtonAttributes {
     },
     navTarget: null,
     shape: {
+      svg: null,
       size: { width: 200, height: 100 },
       position: { x: 100, y: 100 },
       fill: "rgb(56, 30, 83)",

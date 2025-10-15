@@ -16,7 +16,7 @@ export const createScreenSetSlice: StateCreator<
     set((state) => {
       state.screenSet = screenSet;
       if (screenSet.screens.length) {
-        state.activeScreenIndex = screenSet.screens.length - 1;
+        state.activeScreenIndex = 0;
       }
     });
   },

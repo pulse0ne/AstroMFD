@@ -6,6 +6,7 @@ export function createLabel(): LabelAttributes {
     id: uuid(),
     type: "label",
     shape: {
+      svg: null,
       size: { width: 100, height: 75 },
       position: { x: 100, y: 100 },
       fill: null,

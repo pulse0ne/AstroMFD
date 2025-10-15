@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
-use crate::widget::base::{FontSpec, HorizontalAlignment, Position, ShadowEffect, Size, TextAttributes, VerticalAlignment, WidgetBase};
+use crate::widget::base::{FontSpec, HorizontalAlignment, Position, ShadowEffect, Size, SvgXmlNode, TextAttributes, VerticalAlignment, WidgetBase};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PartialShapeAttributes {
+    pub svg: Option<SvgXmlNode>,
     pub fill: Option<String>,
     pub stroke: Option<String>,
     pub stroke_width: Option<f64>,

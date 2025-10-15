@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -62,7 +63,19 @@ pub struct Position {
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct SvgXmlNode {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub element_type: String,
+    pub value: String,
+    pub attributes: HashMap<String, String>,
+    pub children: Vec<SvgXmlNode>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ShapeAttributes {
+    pub svg: Option<SvgXmlNode>,
     pub fill: Option<String>,
     pub stroke: Option<String>,
     pub stroke_width: f64,

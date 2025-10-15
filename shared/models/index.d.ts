@@ -4,6 +4,15 @@ export type FontSpec = {
   postscriptName: string;
 };
 
+export type SvgXmlNode = {
+  name: string;
+  type: "element"|"text";
+  value: string;
+  parent: SvgXmlNode|null;
+  attributes: Record<string, string>;
+  children: SvgXmlNode[];
+};
+
 export type ShadowEffect = {
   color: string;
   strength: number;
@@ -22,6 +31,7 @@ export type TextAttributes = {
 };
 
 export type ShapeAttributes = {
+  svg: SvgXmlNode | null;
   fill: string | null;
   stroke: string | null;
   strokeWidth: number;

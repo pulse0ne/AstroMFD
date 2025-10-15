@@ -4,6 +4,7 @@ import {KonvaEventObject} from "konva/lib/Node";
 import {Shape} from "konva/lib/Shape";
 import {Group, Rect, Transformer} from "react-konva";
 import {PanelAttributes} from "@common/shared/models";
+import {renderSvgNode} from "./renderSvgNode.tsx";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -79,6 +80,35 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
       trRef.current.getLayer().batchDraw();
     }
   }, [isSelected, attr]);
+
+  if (attr.shape.svg) {
+    const svg = renderSvgNode(attr.shape.svg);
+    return (
+      <>
+        <Group
+          ref={groupRef}
+          x={attr.shape.position.x}
+          y={attr.shape.position.y}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+          draggable
+          onMouseDown={handleSelect}
+          onDragEnd={handleReposition}
+          onDragMove={handleDragging}
+          onTransform={handleTransform}
+          onTransformEnd={handleTransformEnd}
+        >
+          {svg}
+        </Group>
+        {isSelected && (
+          <Transformer
+            ref={trRef}
+            rotateEnabled={false}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
