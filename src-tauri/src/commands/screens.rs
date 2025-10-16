@@ -3,14 +3,17 @@ use std::fs::File;
 use std::io::BufReader;
 use log::debug;
 use serde::Serialize;
+use uuid::Uuid;
 use crate::locations::save_dir;
 use crate::state::{AppState, ServerEvent};
-use crate::widget::screen_set::ScreenSet;
+use crate::widget::screen_set::{Screen, ScreenSet, ScreenSize};
 
 #[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct ScreenSetMeta {
     pub id: String,
     pub name: String,
+    pub screen_img_id: Option<String>,
 }
 
 #[tauri::command]
@@ -35,10 +38,13 @@ pub async fn list_screen_sets() -> Result<Vec<ScreenSetMeta>, String> {
 
         let screen_set: ScreenSet = serde_json::from_reader(reader)
             .map_err(|e| format!("Failed to deserialize {:?}: {e}", path))?;
+        
+        let img_id = screen_set.screens.first().map(|s| s.id.clone());
 
         screen_sets.push(ScreenSetMeta {
             id: screen_set.id,
             name: screen_set.name,
+            screen_img_id: img_id,
         });
     }
 
@@ -87,9 +93,36 @@ pub async fn update_clients(state: tauri::State<'_, AppState>, screen_set: Scree
 }
 
 #[tauri::command]
-pub async fn delete_screen_set(id: String) -> Result<(), String> {
+pub async fn delete_screen_set(id: String) -> Result<Vec<ScreenSetMeta>, String> {
     let file_path = save_dir().join(format!("{}.json", id));
     fs::remove_file(&file_path)
         .map_err(|e| format!("Failed to delete file {:?}: {e}", file_path))?;
-    Ok(())
+    list_screen_sets().await
+}
+
+#[tauri::command]
+pub async fn rename_screen_set(id: String, name: String) -> Result<Vec<ScreenSetMeta>, String> {
+    let mut screen_set = get_screen_set_by_id(id.clone()).await?;
+    screen_set.name = name;
+    save_screen_set(screen_set).await?;
+    list_screen_sets().await
+}
+
+#[tauri::command]
+pub async fn create_screen_set(name: String) -> Result<ScreenSet, String> {
+    let screen_set = ScreenSet {
+        id: Uuid::new_v4().to_string(),
+        name,
+        screens: vec![
+            Screen {
+                id: Uuid::new_v4().to_string(),
+                name: "Untitled Screen 1".to_string(),
+                widgets: vec![],
+                background_color: "black".to_string(),
+            }
+        ],
+        size: ScreenSize { width: 1200, height: 800 },
+    };
+    save_screen_set(screen_set.clone()).await?;
+    Ok(screen_set)
 }

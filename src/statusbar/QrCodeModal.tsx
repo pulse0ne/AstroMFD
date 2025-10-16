@@ -1,7 +1,6 @@
 import {useEffect} from "react";
 import QRCode from "qrcode";
-import Popup from "reactjs-popup";
-
+import {Modal} from "../Modal.tsx";
 import "./qr-code-modal.css";
 
 export type QrCodeModalProps = {
@@ -14,25 +13,20 @@ export function QrCodeModal({ open, serverIp, onClose }: QrCodeModalProps) {
   const url = `http://${serverIp}:11011`;
 
   return (
-    <Popup
-      modal
+    <Modal
       open={open}
       onClose={onClose}
-      contentStyle={{
-        border: "var(--border-light)",
-        overflow: "hidden"
-      }}
-      overlayStyle={{
-        backgroundColor: "rgba(55, 55, 55, 0.2)",
-        backdropFilter: "blur(6px)"
-      }}
+      footer={
+        <div className="col align-items-center justify-content-center">
+          <button onClick={onClose}>Close</button>
+        </div>
+      }
     >
-      <div className="qr-modal-root col align-items-center justify-content-center">
-        <div style={{ fontSize: "0.75em" }}>{url}</div>
-        <QrCode serverAddress={url} />
-        <button onClick={onClose}>Close</button>
+      <div className="col align-items-center justify-content-center m24-t">
+        <div style={{fontSize: "0.75em"}}>{url}</div>
+        <QrCode serverAddress={url}/>
       </div>
-    </Popup>
+    </Modal>
   );
 }
 
@@ -40,7 +34,7 @@ type QrCodeProps = {
   serverAddress: string;
 };
 
-function QrCode({ serverAddress }: QrCodeProps) {
+function QrCode({serverAddress}: QrCodeProps) {
   useEffect(() => {
     const canvas = document.getElementById("qr-code");
     if (canvas) {

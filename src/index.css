@@ -192,6 +192,11 @@ input:focus {
     overflow: hidden;
 }
 
+.modal-root {
+    background-color: black;
+    min-height: 25vh;
+}
+
 .loader {
     width: 50px;
     aspect-ratio: 1;

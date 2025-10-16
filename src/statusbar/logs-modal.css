@@ -1,10 +1,4 @@
-.logs-modal-root {
-    background-color: black;
-}
-
 .logs-container {
-    min-height: 25vh;
-    max-height: 75vh;
     padding: 16px;
     overflow-y: auto;
     border-bottom: var(--border-light);

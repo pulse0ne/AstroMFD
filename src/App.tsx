@@ -11,6 +11,7 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets
 - Finish SVG modification (attribute panel)
+- SVG rendering on client
 - Screen Set Attribute Panel tab
 - Snapping/Guides/Grid
 - Filters (CRT, more?)

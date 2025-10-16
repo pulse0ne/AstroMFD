@@ -1,6 +1,6 @@
 import {LogEntry} from "../types/websocket.ts";
 import {useLogs} from "../hooks/useLogs.tsx";
-import Popup from "reactjs-popup";
+import {Modal} from "../Modal.tsx";
 
 export type LogsModalProps = {
   open: boolean,
@@ -10,32 +10,23 @@ export type LogsModalProps = {
 export function LogsModal({ open, onClose }: LogsModalProps) {
   const { logs } = useLogs();
   return (
-    <Popup
-      modal
+    <Modal
       open={open}
       onClose={onClose}
-      contentStyle={{
-        border: "var(--border-light)",
-        overflow: "hidden",
-        width: "80%",
-        maxHeight: "80%",
-        minHeight: "25%"
-      }}
-      overlayStyle={{
-        backgroundColor: "rgba(55, 55, 55, 0.2)",
-        backdropFilter: "blur(6px)"
-      }}
+      header={<h2 className="text-center">Logs</h2>}
+      footer={
+        <div className="row justify-content-center align-items-center">
+          <button onClick={onClose}>Close</button>
+        </div>
+      }
     >
-      <div className="logs-modal-root fill-y col no-overflow">
-        <div className="logs-container flex-grow fill-x">
+      <div className="col flex-grow no-overflow">
+        <div className="logs-container flex-grow">
           {logs.length === 0 && "No logs"}
           {logs.map(entry => <LogLine key={entry.timestamp} entry={entry} />)}
         </div>
-        <div className="row justify-content-center align-items-center m16">
-          <button onClick={onClose}>Close</button>
-        </div>
       </div>
-    </Popup>
+    </Modal>
   );
 }
 
