@@ -78,14 +78,18 @@ pub async fn update_clients(state: tauri::State<'_, AppState>, screen_set: Scree
     let ws_sender = state.server_tx.clone();
     let id = screen_set.id.clone();
 
-    let _ = ws_sender
-        .send(ServerEvent::LayoutPushed { id, screen_set })
-        .map_err(|e| format!("Failed to send LayoutPushed event: {e}"))?;
+    if ws_sender.receiver_count() > 0 {
+        let _ = ws_sender
+            .send(ServerEvent::LayoutPushed { id, screen_set })
+            .map_err(|e| format!("Failed to send LayoutPushed event: {e}"))?;
+    }
     Ok(())
 }
 
 #[tauri::command]
-pub async fn delete_screen_set(_id: String) -> Result<(), String> {
-    // TODO
+pub async fn delete_screen_set(id: String) -> Result<(), String> {
+    let file_path = save_dir().join(format!("{}.json", id));
+    fs::remove_file(&file_path)
+        .map_err(|e| format!("Failed to delete file {:?}: {e}", file_path))?;
     Ok(())
 }
