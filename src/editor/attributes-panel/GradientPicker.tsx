@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 import { ColorSwatch } from "./ColorSwatch";
 import "./gradient-picker.css";
 import { v4 as uuid } from "uuid";
+import {Gradient, GradientStop} from "@common/shared/models";
+import {gradientString} from "../../utils/gradientString.ts";
 
 const defaultGradient = () => {
   return {
@@ -21,18 +23,6 @@ const defaultGradient = () => {
   } as Gradient;
 };
 
-// TODO: move to shared
-export type Gradient = {
-  type: "linear" | "radial";
-  stops: GradientStop[];
-};
-
-export type GradientStop = {
-  id: string;
-  color: string;
-  position: number; // 0–100
-};
-
 export type GradientPickerProps = {
   value?: Gradient;
   onChange: (gradient: Gradient) => void;
@@ -43,11 +33,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
   const [activeStop, setActiveStop] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
-  const gradientCSS = `${
-    gradient.type === "linear" ? "linear-gradient(90deg" : "radial-gradient(circle"
-  }, ${gradient.stops
-    .map((s) => `${s.color} ${s.position}%`)
-    .join(", ")})`;
+  const gradientCSS = gradientString(gradient);
 
   const updateGradientStops = (nextStops: GradientStop[]) => {
     const newGradient: Gradient = { ...gradient, stops: nextStops };

@@ -1,9 +1,10 @@
-import {ShadowEffect, ShapeAttributes} from "@common/shared/models";
+import {Color, Gradient, ShadowEffect, ShapeAttributes} from "@common/shared/models";
 import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 import {Toggle} from "./Toggle.tsx";
 import {GradientPicker} from "./GradientPicker.tsx";
 import {extractColors, replaceSvgColor} from "../../utils/svg/color.ts";
+import {gradientString} from "../../utils/gradientString.ts";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -16,11 +17,19 @@ export type ShapeSectionProps = {
 export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUpdatePressed }: ShapeSectionProps) {
   const { recentColors, addRecentColor } = useRecentColors();
 
-  const handleColorChange = (key: "fill"|"stroke", value: string) => {
+  const handleStroke = (value: string) => {
     if (isPressed && onUpdatePressed) {
-      onUpdatePressed(Object.assign({}, pressedAttr, { [key]: value }), `widget.pressed.shape.${key}`);
+      onUpdatePressed(Object.assign({}, pressedAttr, { stroke: value }), "widget.pressed.shape.stroke");
     } else {
-      onUpdate(Object.assign({}, shapeAttr, {[key]: value}), `widget.shape.${key}`);
+      onUpdate(Object.assign({}, shapeAttr, { stroke: value }), "widget.shape.stroke");
+    }
+  };
+
+  const handleFill = (type: Color["type"], value: Color["value"]) => {
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { fill: { type, value } }), "widget.pressed.shape.fill");
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, { fill : { type, value } }), "widget.shape.fill");
     }
   };
 
@@ -65,6 +74,8 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
   const cornerRadius = (isPressed && pressedAttr?.cornerRadius) ? pressedAttr.cornerRadius : shapeAttr.cornerRadius;
   const shadow = (isPressed && pressedAttr?.shadow) ? pressedAttr.shadow : shapeAttr.shadow;
 
+  const fillValue = !fill ? null : fill.type === "solid" ? fill.value as string : gradientString(fill.value as Gradient);
+
   /// TEST ///
   const handleColorSwap = () => {
     const randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
@@ -83,9 +94,9 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
       <div className="row align-items-center gap-16">
         <span style={{ width: 50 }}>Fill:</span>
         <ColorSwatch
-          color={fill ?? undefined}
+          color={fillValue ?? undefined}
           recents={recentColors}
-          onUpdate={c => handleColorChange("fill", c)}
+          onUpdate={c => handleFill("solid", c)}
           onAddRecentColor={addRecentColor}
         />
         <GradientPicker onChange={console.log} />
@@ -95,7 +106,7 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
         <ColorSwatch
           color={stroke ?? undefined}
           recents={recentColors}
-          onUpdate={c => handleColorChange("stroke", c)}
+          onUpdate={c => handleStroke(c)}
           onAddRecentColor={addRecentColor}
         />
       </div>

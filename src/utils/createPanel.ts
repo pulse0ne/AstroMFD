@@ -9,7 +9,7 @@ export function createPanel(): PanelAttributes {
       svg: null,
       size: { width: 250, height: 150 },
       position: { x: 100, y: 100 },
-      fill: "rgba(53, 64, 79, 1)",
+      fill: { type: "solid", value: "rgba(53, 64, 79, 1)" },
       stroke: null,
       shadow: null,
       strokeWidth: 0,

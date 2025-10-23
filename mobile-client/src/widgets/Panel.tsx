@@ -1,11 +1,22 @@
-import type {PanelAttributes} from "@common/shared/models";
-import type {CSSProperties} from "react";
+import type {Gradient, PanelAttributes} from "@common/shared/models";
+import {type CSSProperties, useMemo} from "react";
+import {gradientString} from "../../../src/utils/gradientString.ts";
 
 export type PanelProps = {
   attr: PanelAttributes;
 };
 
 export function Panel({ attr }: PanelProps) {
+  const fill = useMemo(() => {
+    const f = attr.shape.fill;
+    if (!f) return null;
+    if (f.type === "solid") {
+      return f.value as string;
+    } else {
+      return gradientString(f.value as Gradient);
+    }
+  }, [attr]);
+
   const shapeStyle: CSSProperties = {
     pointerEvents: "none",
     position: "absolute",
@@ -13,7 +24,7 @@ export function Panel({ attr }: PanelProps) {
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    backgroundColor: attr.shape.fill ?? "transparent",
+    backgroundColor: fill ?? "transparent",
     borderWidth: attr.shape.strokeWidth,
     borderStyle: "solid",
     borderColor: attr.shape.stroke ?? "transparent",

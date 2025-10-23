@@ -6,11 +6,15 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- Finish Home Screen
 - Finish Gradients
+- Finish Home Screen
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets
 - Finish SVG modification (attribute panel)
+- Support images
+- Config for server (port)
+- Change over to manual start/stop of server?
+- Build out journal events (check out status.json)
 - SVG rendering on client
 - Screen Set Attribute Panel tab
 - Snapping/Guides/Grid

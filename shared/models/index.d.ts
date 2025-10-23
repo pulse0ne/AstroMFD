@@ -1,3 +1,19 @@
+export type GradientStop = {
+  id: string;
+  color: string;
+  position: number; // 0–100
+};
+
+export type Gradient = {
+  type: "linear" | "radial";
+  stops: GradientStop[];
+};
+
+export type Color = {
+  type: "solid" | "gradient";
+  value: string | Gradient;
+};
+
 export type FontSpec = {
   name: string;
   format: string;
@@ -32,7 +48,7 @@ export type TextAttributes = {
 
 export type ShapeAttributes = {
   svg: SvgXmlNode | null;
-  fill: string | null;
+  fill: Color | null;
   stroke: string | null;
   strokeWidth: number;
   cornerRadius: number;

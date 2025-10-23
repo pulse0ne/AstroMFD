@@ -16,7 +16,7 @@ export function createButton(): ButtonAttributes {
       svg: null,
       size: { width: 200, height: 100 },
       position: { x: 100, y: 100 },
-      fill: "rgb(56, 30, 83)",
+      fill: { type: "solid", value: "rgb(56, 30, 83)" },
       stroke: "rgb(130, 51, 152)",
       shadow: null,
       strokeWidth: 1,

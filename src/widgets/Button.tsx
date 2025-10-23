@@ -1,10 +1,11 @@
 import {Group, Rect, Text, Transformer} from "react-konva";
 import {KonvaEventObject} from "konva/lib/Node";
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import {Shape} from "konva/lib/Shape";
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
 import {Konva} from "konva/lib/_FullInternals";
-import {ButtonAttributes, ShapeAttributes, TextAttributes} from "@common/shared/models";
+import {ButtonAttributes, Gradient, ShapeAttributes, TextAttributes} from "@common/shared/models";
+import {gradientString} from "../utils/gradientString.ts";
 
 export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;
@@ -21,6 +22,16 @@ export function Button({
 }: ButtonProps) {
   const groupRef = useRef<Konva.Group | null>(null);
   const trRef = useRef<Konva.Transformer | null>(null);
+
+  const fill = useMemo(() => {
+    const f = state === "primary" ? attr.shape.fill : attr.pressed.shape.fill;
+    if (!f) return null;
+    if (f.type === "solid") {
+      return f.value as string;
+    } else {
+      return gradientString(f.value as Gradient);
+    }
+  }, [attr, state]);
 
   const extractShapeAttr = useCallback(function _<K extends keyof ShapeAttributes>(key: K): ShapeAttributes[K] {
     if (state === "primary") {
@@ -133,7 +144,7 @@ export function Button({
         <Rect
           width={attr.shape.size.width}
           height={attr.shape.size.height}
-          fill={extractShapeAttr("fill") ?? undefined}
+          fill={fill ?? undefined}
           stroke={extractShapeAttr("stroke") ?? undefined}
           strokeWidth={extractShapeAttr("strokeWidth")}
           cornerRadius={extractShapeAttr("cornerRadius")}

@@ -3,6 +3,40 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct GradientStop {
+    pub id: String,
+    pub color: String,
+    pub position: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum Gradient {
+    Linear { stops: Vec<GradientStop> },
+    Radial { stops: Vec<GradientStop> },
+}
+
+impl Default for Gradient {
+    fn default() -> Self {
+        Gradient::Linear { stops: vec![] }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", content = "value", rename_all = "camelCase")]
+pub enum Color {
+    Solid(String),
+    Gradient(Gradient),
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Color::Solid("transparent".to_string())
+    }
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum VerticalAlignment {
     Top,
     #[default]
@@ -76,7 +110,7 @@ pub struct SvgXmlNode {
 #[serde(rename_all = "camelCase")]
 pub struct ShapeAttributes {
     pub svg: Option<SvgXmlNode>,
-    pub fill: Option<String>,
+    pub fill: Option<Color>,
     pub stroke: Option<String>,
     pub stroke_width: f64,
     pub corner_radius: f64,

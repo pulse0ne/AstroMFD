@@ -1,6 +1,7 @@
-import type {LabelAttributes} from "@common/shared/models";
-import type {CSSProperties} from "react";
+import type {Gradient, LabelAttributes} from "@common/shared/models";
+import {type CSSProperties, useMemo} from "react";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
+import {gradientString} from "../../../src/utils/gradientString.ts";
 
 export type LabelProps = {
   attr: LabelAttributes;
@@ -8,6 +9,17 @@ export type LabelProps = {
 };
 
 export function Label({ attr }: LabelProps) {
+
+  const fill = useMemo(() => {
+    const f = attr.shape.fill;
+    if (!f) return null;
+    if (f.type === "solid") {
+      return f.value as string;
+    } else {
+      return gradientString(f.value as Gradient);
+    }
+  }, [attr]);
+
   const shapeStyle: CSSProperties = {
     pointerEvents: "none",
     position: "absolute",
@@ -15,7 +27,7 @@ export function Label({ attr }: LabelProps) {
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    backgroundColor: attr.shape.fill ?? "transparent",
+    backgroundColor: fill ?? "transparent",
     borderWidth: attr.shape.strokeWidth,
     borderStyle: "solid",
     borderColor: attr.shape.stroke ?? "transparent",

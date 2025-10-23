@@ -1,10 +1,11 @@
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {useEffect, useRef} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {KonvaEventObject} from "konva/lib/Node";
 import {Shape} from "konva/lib/Shape";
 import {Group, Rect, Transformer} from "react-konva";
-import {PanelAttributes} from "@common/shared/models";
+import {Gradient, PanelAttributes} from "@common/shared/models";
 import {SvgContent} from "./SvgContent.tsx";
+import {gradientString} from "../utils/gradientString.ts";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -15,6 +16,16 @@ export type PanelProps = WidgetPropsBase & {
 export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSelected }: PanelProps) {
   const groupRef = useRef<any>(null);
   const trRef = useRef<any>(null);
+
+  const fill = useMemo(() => {
+    const f = attr.shape.fill;
+    if (!f) return null;
+    if (f.type === "solid") {
+      return f.value as string;
+    } else {
+      return gradientString(f.value as Gradient);
+    }
+  }, [attr]);
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
@@ -131,7 +142,7 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
         <Rect
           width={attr.shape.size.width}
           height={attr.shape.size.height}
-          fill={attr.shape.fill ?? undefined}
+          fill={fill ?? undefined}
           stroke={attr.shape.stroke ?? undefined}
           strokeWidth={attr.shape.strokeWidth}
           cornerRadius={attr.shape.cornerRadius}

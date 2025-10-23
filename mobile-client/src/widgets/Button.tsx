@@ -1,6 +1,7 @@
-import {type CSSProperties, useCallback, useState} from "react";
-import type {ButtonAttributes, ShadowEffect} from "@common/shared/models";
+import {type CSSProperties, useCallback, useMemo, useState} from "react";
+import type {ButtonAttributes, Gradient, ShadowEffect} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
+import {gradientString} from "../../../src/utils/gradientString.ts";
 
 // TODO: remove;; just a test
 const audio = new Audio("/audio/resources/Flip.mp3");
@@ -21,13 +22,23 @@ export type ButtonProps = {
 export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps) {
   const [ pressed, setPressed ] = useState(false);
 
+  const fill = useMemo(() => {
+    const f = pressed && attr.pressed.shape.fill ? attr.pressed.shape.fill : attr.pressed.shape.fill;
+    if (!f) return null;
+    if (f.type === "solid") {
+      return f.value as string;
+    } else {
+      return gradientString(f.value as Gradient);
+    }
+  }, [attr, pressed]);
+
   const shapeStyle: CSSProperties = {
     position: "absolute",
     left: (pressed && attr.pressed.shape.position?.x) ? attr.pressed.shape.position.x : attr.shape.position.x,
     top: (pressed && attr.pressed.shape.position?.y) ? attr.pressed.shape.position.y : attr.shape.position.y,
     width: (pressed && attr.pressed.shape.size?.width) ? attr.pressed.shape.size.width : attr.shape.size.width,
     height: (pressed && attr.pressed.shape.size?.height) ? attr.pressed.shape.size.height : attr.shape.size.height,
-    backgroundColor: (pressed && attr.pressed.shape.fill) ? attr.pressed.shape.fill : attr.shape.fill ?? "transparent",
+    backgroundColor: fill ?? "transparent",
     borderWidth: (pressed && attr.pressed.shape.strokeWidth) ? attr.pressed.shape.strokeWidth : attr.shape.strokeWidth,
     borderStyle: "solid",
     borderColor: (pressed && attr.pressed.shape.stroke) ? attr.pressed.shape.stroke : attr.shape.stroke ?? "transparent",
