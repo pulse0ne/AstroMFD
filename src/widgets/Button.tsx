@@ -5,7 +5,7 @@ import {Shape} from "konva/lib/Shape";
 import {WidgetPropsBase} from "./WidgetPropsBase.ts";
 import {Konva} from "konva/lib/_FullInternals";
 import {ButtonAttributes, Gradient, ShapeAttributes, TextAttributes} from "@common/shared/models";
-import {gradientString} from "../utils/gradientString.ts";
+import {coordinatesFromAngle} from "../utils/coordinatesFromAngle.ts";
 
 export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;
@@ -29,7 +29,6 @@ export function Button({
     if (f.type === "solid") {
       return f.value as string;
     } else {
-      // return gradientString(f.value as Gradient);
       return null;
     }
   }, [attr, state]);
@@ -134,12 +133,12 @@ export function Button({
       acc.push(stop.color);
       return acc;
     }, [] as Array<number|string>);
-    console.log(stops);
     if (gradient.type === "linear") {
+      const { start, end } = coordinatesFromAngle(attr.shape.size.width, attr.shape.size.height, gradient.angle ?? 0);
       return {
         fillLinearGradientColorStops: stops,
-        fillLinearGradientStartPoint: { x: 0, y: 0 },
-        fillLinearGradientEndPoint: { x: attr.shape.size.width, y: 0 },
+        fillLinearGradientStartPoint: start,
+        fillLinearGradientEndPoint: end,
       };
     }
     const centerX = attr.shape.size.width / 2;

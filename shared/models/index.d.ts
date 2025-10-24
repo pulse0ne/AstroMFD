@@ -6,6 +6,7 @@ export type GradientStop = {
 
 export type Gradient = {
   type: "linear" | "radial";
+  angle?: number | null;
   stops: GradientStop[];
 };
 

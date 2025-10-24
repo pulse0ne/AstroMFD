@@ -3,7 +3,6 @@ import {ColorSwatch} from "./ColorSwatch.tsx";
 import {useRecentColors} from "../../hooks/useRecentColors.ts";
 import {Toggle} from "./Toggle.tsx";
 import {GradientPicker} from "./GradientPicker.tsx";
-import {extractColors, replaceSvgColor} from "../../utils/svg/color.ts";
 import {gradientString} from "../../utils/gradientString.ts";
 import {v4 as uuid} from "uuid";
 
@@ -103,24 +102,12 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
 
   const fillValue = !fill ? null : fill.type === "solid" ? fill.value as string : gradientString(fill.value as Gradient);
 
-  /// TEST ///
-  const handleColorSwap = () => {
-    const randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-    if (shapeAttr.svg) {
-      const path = extractColors(shapeAttr.svg)[0];
-      const newSvg = replaceSvgColor(shapeAttr.svg, path.path, path.type, randomColor);
-      onUpdate(Object.assign({}, shapeAttr, { svg: newSvg }), "test");
-    }
-  };
-  ////////////
-
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
-      <button onClick={handleColorSwap}>Swap Color</button>
       <div className="col gap-16">
         <div className="row align-items-center gap-16">
-          <span style={{ width: 50 }}>Fill:</span>
+          <span>Fill Type:</span>
           <Toggle
             onToggle={handleFillTypeChange}
             value={Boolean(fill) && fill?.type !== "solid"}
@@ -135,12 +122,15 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
           />
         )}
         {!fill || fill?.type === "solid" && (
-          <ColorSwatch
-            color={fillValue ?? undefined}
-            recents={recentColors}
-            onUpdate={c => handleFill("solid", c)}
-            onAddRecentColor={addRecentColor}
-          />
+          <div className="row align-items-center gap-16">
+            <span>Fill Color:</span>
+            <ColorSwatch
+              color={fillValue ?? undefined}
+              recents={recentColors}
+              onUpdate={c => handleFill("solid", c)}
+              onAddRecentColor={addRecentColor}
+            />
+          </div>
         )}
       </div>
       <div className="row align-items-center gap-16">

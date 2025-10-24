@@ -12,15 +12,33 @@ export function Toggle({ size = 32, onToggle, value, leftLabel, rightLabel }: To
   const Component = value ? MdToggleOn : MdToggleOff;
 
   return (
-    <div className="row align-items-center gap-12">
-      {leftLabel && <span style={{ opacity: value ? 0.5 : 1.0 }}>{leftLabel}</span>}
+    <div className="row align-items-center gap-8">
+      {leftLabel && (
+        <span
+          style={{
+            opacity: value ? 0.4 : 1.0,
+            color: value ? undefined : "var(--gradient-stop1)"
+          }}
+        >
+          {leftLabel}
+        </span>
+      )}
       <Component
         size={size}
         color={value && !Boolean(leftLabel) ? "var(--gradient-stop1)" : undefined}
         onClick={onToggle}
         className="pointer"
       />
-      {rightLabel && <span style={{ opacity: value ? 1.0 : 0.5 }}>{rightLabel}</span>}
+      {rightLabel && (
+        <span
+          style={{
+            opacity: value ? 1.0 : 0.4,
+            color: value ? "var(--gradient-stop1)" : undefined
+          }}
+        >
+          {rightLabel}
+        </span>
+      )}
     </div>
   );
 }

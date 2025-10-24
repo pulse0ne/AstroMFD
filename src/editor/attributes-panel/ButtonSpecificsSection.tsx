@@ -100,8 +100,9 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
             size={32}
             value={isPressed}
             onToggle={togglePressed}
+            leftLabel="Default"
+            rightLabel="Pressed"
           />
-          ({isPressed ? "pressed" : "default"})
         </div>
       </div>
     </div>

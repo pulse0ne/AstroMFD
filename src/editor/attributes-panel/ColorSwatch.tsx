@@ -187,7 +187,8 @@ const Swatch = forwardRef<HTMLDivElement, SwatchProps>(function Swatch({ color =
     backgroundRepeat: "repeat",
     backgroundSize: `${checkerSize}px ${checkerSize}px`,
     position: "relative",
-    overflow: "hidden"
+    overflow: "hidden",
+    border: "var(--border-light)"
   };
 
   const overlayStyle: CSSProperties = {

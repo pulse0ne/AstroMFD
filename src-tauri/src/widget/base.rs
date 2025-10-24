@@ -12,13 +12,13 @@ pub struct GradientStop {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum Gradient {
-    Linear { stops: Vec<GradientStop> },
-    Radial { stops: Vec<GradientStop> },
+    Linear { stops: Vec<GradientStop>, angle: Option<f64> },
+    Radial { stops: Vec<GradientStop>, angle: Option<f64> },
 }
 
 impl Default for Gradient {
     fn default() -> Self {
-        Gradient::Linear { stops: vec![] }
+        Gradient::Linear { stops: vec![], angle: Some(0.0) }
     }
 }
 

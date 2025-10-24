@@ -29,24 +29,19 @@ export type GradientPickerProps = {
 };
 
 export function GradientPicker({ value, onChange }: GradientPickerProps) {
-  // const [gradient, setGradient] = useState<Gradient>(value ?? defaultGradient());
   const [activeStop, setActiveStop] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
   const gradient = value ?? defaultGradient();
-
   const gradientCSS = gradientString(gradient);
-  console.log(gradientCSS);
 
   const updateGradientStops = (nextStops: GradientStop[]) => {
     const newGradient: Gradient = { ...gradient, stops: nextStops };
-    // setGradient(newGradient);
     onChange(newGradient);
   };
 
   const toggleType = () => {
     const nextType = gradient.type === "linear" ? "radial" : "linear";
-    // setGradient({ type: nextType, stops: [...gradient.stops] });
     onChange({ type: nextType, stops: [...gradient.stops ]});
   };
 
@@ -65,9 +60,9 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
 
   const handleDrag = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
-    // const startX = e.clientX;
     const rect = barRef.current?.getBoundingClientRect();
     if (!rect) return;
+    setActiveStop(id);
     const onMove = (moveEvt: MouseEvent) => {
       const dx = moveEvt.clientX - rect.left;
       const pos = (dx / rect.width) * 100;
@@ -76,7 +71,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
           s.id === id
             ? { ...s, position: Math.min(100, Math.max(0, pos)) }
             : s
-        )
+        ).sort((a, b) => a.position - b.position)
       );
     };
     const onUp = () => {
@@ -85,6 +80,19 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
     };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
+  };
+
+  const handleRightClick = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (gradient.stops.length > 2) {
+      onChange({ ...gradient, stops: gradient.stops.filter(s => s.id !== id) })
+    }
+  };
+
+  const handleAngleChange = (newAngle: number) => {
+    if (!isNaN(newAngle)) {
+      onChange({...gradient, angle: newAngle});
+    }
   };
 
   const updateStopColor = (id: string, newColor: string) => {
@@ -108,10 +116,26 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
         </button>
       </div>
 
+      {gradient.type === "linear" && (
+        <div className="row gap-16">
+          <span>Angle:</span>
+          <input
+            type="range"
+            step={5}
+            min={-180}
+            max={180}
+            value={gradient.angle ?? 0}
+            onChange={e => handleAngleChange(parseInt(e.target.value))}
+          />
+          {gradient.angle ?? 0}
+        </div>
+      )}
+
       <div
         className="gradient-bar"
         ref={barRef}
         onDoubleClick={handleBarClick}
+        onContextMenu={e => e.preventDefault()}
         style={{ background: gradientCSS }}
       >
         {gradient.stops.map((s) => (
@@ -120,24 +144,24 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
             className={`stop-handle ${activeStop === s.id ? "active" : ""}`}
             style={{ left: `${s.position}%`, background: s.color }}
             onMouseDown={(e) => handleDrag(s.id, e)}
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveStop(s.id);
-            }}
+            onContextMenu={(e) => handleRightClick(s.id, e)}
           />
         ))}
       </div>
 
-      {activeStop && (
-        <div className="stop-editor">
-          <ColorSwatch
-            color={gradient.stops.find((s) => s.id === activeStop)?.color ?? ""}
-            recents={[]}
-            onUpdate={(c) => updateStopColor(activeStop, c)}
-            onAddRecentColor={() => {}}
-          />
-        </div>
-      )}
+      <div className="row gap-16 align-items-center">
+        <span>Stop Color:</span>
+        {activeStop && (
+          <div className="stop-editor">
+            <ColorSwatch
+              color={gradient.stops.find((s) => s.id === activeStop)?.color ?? ""}
+              recents={[]}
+              onUpdate={(c) => updateStopColor(activeStop, c)}
+              onAddRecentColor={() => {}}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

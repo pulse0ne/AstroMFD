@@ -5,7 +5,7 @@ import {Shape} from "konva/lib/Shape";
 import {Group, Rect, Transformer} from "react-konva";
 import {Gradient, PanelAttributes} from "@common/shared/models";
 import {SvgContent} from "./SvgContent.tsx";
-import {gradientString} from "../utils/gradientString.ts";
+import {coordinatesFromAngle} from "../utils/coordinatesFromAngle.ts";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -23,7 +23,7 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     if (f.type === "solid") {
       return f.value as string;
     } else {
-      return gradientString(f.value as Gradient);
+      return null;
     }
   }, [attr]);
 
@@ -92,6 +92,35 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     }
   }, [isSelected, attr]);
 
+  const gradientProps = useMemo(() => {
+    const f = attr.shape.fill;
+    if (!f || f.type === "solid") return {};
+    const gradient = f.value as Gradient;
+    const stops = gradient.stops.reduce((acc, stop) => {
+      acc.push(stop.position / 100);
+      acc.push(stop.color);
+      return acc;
+    }, [] as Array<number|string>);
+    if (gradient.type === "linear") {
+      const { start, end } = coordinatesFromAngle(attr.shape.size.width, attr.shape.size.height, gradient.angle ?? 0);
+      return {
+        fillLinearGradientColorStops: stops,
+        fillLinearGradientStartPoint: start,
+        fillLinearGradientEndPoint: end,
+      };
+    }
+    const centerX = attr.shape.size.width / 2;
+    const centerY = attr.shape.size.height / 2;
+    console.log(centerX, centerY);
+    return {
+      fillRadialGradientColorStops: stops,
+      fillRadialGradientStartPoint: { x: centerX, y: centerY },
+      fillRadialGradientEndPoint: { x: centerX, y: centerY },
+      fillRadialGradientStartRadius: 0,
+      fillRadialGradientEndRadius: attr.shape.size.height // TODO
+    };
+  }, [attr]);
+
   if (attr.shape.svg) {
     return (
       <>
@@ -146,6 +175,8 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
           stroke={attr.shape.stroke ?? undefined}
           strokeWidth={attr.shape.strokeWidth}
           cornerRadius={attr.shape.cornerRadius}
+          // TODO: shadows
+          {...gradientProps}
         />
       </Group>
       {isSelected && (
