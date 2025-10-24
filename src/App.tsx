@@ -6,7 +6,7 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- Finish Gradients
+- Finish Gradients (add editing, support degree change)
 - Finish Home Screen
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets

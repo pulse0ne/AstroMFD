@@ -5,6 +5,7 @@ import {Toggle} from "./Toggle.tsx";
 import {GradientPicker} from "./GradientPicker.tsx";
 import {extractColors, replaceSvgColor} from "../../utils/svg/color.ts";
 import {gradientString} from "../../utils/gradientString.ts";
+import {v4 as uuid} from "uuid";
 
 export type ShapeSectionProps = {
   shapeAttr: ShapeAttributes;
@@ -30,6 +31,32 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
       onUpdatePressed(Object.assign({}, pressedAttr, { fill: { type, value } }), "widget.pressed.shape.fill");
     } else {
       onUpdate(Object.assign({}, shapeAttr, { fill : { type, value } }), "widget.shape.fill");
+    }
+  };
+
+  const handleFillTypeChange = () => {
+    let newFill: Color;
+    if (fill?.type === "solid") {
+      newFill = {
+        type: "gradient",
+        value: {
+          type: "linear",
+          stops: [
+            { id: uuid(), color: "white", position: 0 },
+            { id: uuid(), color: "black", position: 100 }
+          ]
+        }
+      };
+    } else {
+      newFill = {
+        type: "solid",
+        value: "gray"
+      };
+    }
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(Object.assign({}, pressedAttr, { fill: newFill }), "widget.pressed.shape.fill");
+    } else {
+      onUpdate(Object.assign({}, shapeAttr, { fill: newFill }), "widget.shape.fill");
     }
   };
 
@@ -91,15 +118,30 @@ export function ShapeSection({ shapeAttr, pressedAttr, isPressed, onUpdate, onUp
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
       <button onClick={handleColorSwap}>Swap Color</button>
-      <div className="row align-items-center gap-16">
-        <span style={{ width: 50 }}>Fill:</span>
-        <ColorSwatch
-          color={fillValue ?? undefined}
-          recents={recentColors}
-          onUpdate={c => handleFill("solid", c)}
-          onAddRecentColor={addRecentColor}
-        />
-        <GradientPicker onChange={console.log} />
+      <div className="col gap-16">
+        <div className="row align-items-center gap-16">
+          <span style={{ width: 50 }}>Fill:</span>
+          <Toggle
+            onToggle={handleFillTypeChange}
+            value={Boolean(fill) && fill?.type !== "solid"}
+            leftLabel="Solid"
+            rightLabel="Gradient"
+          />
+        </div>
+        {fill?.type === "gradient" && (
+          <GradientPicker
+            value={fill.value as Gradient}
+            onChange={v => handleFill("gradient", v)}
+          />
+        )}
+        {!fill || fill?.type === "solid" && (
+          <ColorSwatch
+            color={fillValue ?? undefined}
+            recents={recentColors}
+            onUpdate={c => handleFill("solid", c)}
+            onAddRecentColor={addRecentColor}
+          />
+        )}
       </div>
       <div className="row align-items-center gap-16">
         <span style={{ width: 50 }}>Stroke:</span>

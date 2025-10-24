@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { ColorSwatch } from "./ColorSwatch";
-import "./gradient-picker.css";
 import { v4 as uuid } from "uuid";
 import {Gradient, GradientStop} from "@common/shared/models";
 import {gradientString} from "../../utils/gradientString.ts";
+import "./gradient-picker.css";
 
 const defaultGradient = () => {
   return {
@@ -29,21 +29,25 @@ export type GradientPickerProps = {
 };
 
 export function GradientPicker({ value, onChange }: GradientPickerProps) {
-  const [gradient, setGradient] = useState<Gradient>(value ?? defaultGradient());
+  // const [gradient, setGradient] = useState<Gradient>(value ?? defaultGradient());
   const [activeStop, setActiveStop] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
+  const gradient = value ?? defaultGradient();
+
   const gradientCSS = gradientString(gradient);
+  console.log(gradientCSS);
 
   const updateGradientStops = (nextStops: GradientStop[]) => {
     const newGradient: Gradient = { ...gradient, stops: nextStops };
-    setGradient(newGradient);
+    // setGradient(newGradient);
     onChange(newGradient);
   };
 
   const toggleType = () => {
     const nextType = gradient.type === "linear" ? "radial" : "linear";
-    setGradient({ type: nextType, stops: [...gradient.stops] });
+    // setGradient({ type: nextType, stops: [...gradient.stops] });
+    onChange({ type: nextType, stops: [...gradient.stops ]});
   };
 
   const handleBarClick = (e: React.MouseEvent) => {

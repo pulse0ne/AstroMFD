@@ -29,7 +29,8 @@ export function Button({
     if (f.type === "solid") {
       return f.value as string;
     } else {
-      return gradientString(f.value as Gradient);
+      // return gradientString(f.value as Gradient);
+      return null;
     }
   }, [attr, state]);
 
@@ -124,6 +125,34 @@ export function Button({
   const textShadow = extractTextAttr("shadow");
   const shapeShadow = extractShapeAttr("shadow");
 
+  const gradientProps = useMemo(() => {
+    const f = state === "primary" ? attr.shape.fill : attr.pressed.shape.fill;
+    if (!f || f.type === "solid") return {};
+    const gradient = f.value as Gradient;
+    const stops = gradient.stops.reduce((acc, stop) => {
+      acc.push(stop.position / 100);
+      acc.push(stop.color);
+      return acc;
+    }, [] as Array<number|string>);
+    console.log(stops);
+    if (gradient.type === "linear") {
+      return {
+        fillLinearGradientColorStops: stops,
+        fillLinearGradientStartPoint: { x: 0, y: 0 },
+        fillLinearGradientEndPoint: { x: attr.shape.size.width, y: 0 },
+      };
+    }
+    const centerX = attr.shape.size.width / 2;
+    const centerY = attr.shape.size.height / 2;
+    return {
+      fillRadialGradientColorStops: stops,
+      fillRadialGradientStartPoint: { x: centerX, y: centerY },
+      fillRadialGradientEndPoint: { x: centerX, y: centerY },
+      fillRadialGradientStartRadius: 0,
+      fillRadialGradientEndRadius: attr.shape.size.height // TODO
+    };
+  }, [state, attr]);
+
   // TODO: icon/image support
   return (
     <>
@@ -152,6 +181,7 @@ export function Button({
           shadowOffsetX={shapeShadow?.xOffset ?? undefined}
           shadowOffsetY={shapeShadow?.yOffset ?? undefined}
           shadowBlur={shapeShadow?.strength ? shapeShadow.strength * 6 : undefined}
+          {...gradientProps}
         />
         <Text
           width={attr.shape.size.width}

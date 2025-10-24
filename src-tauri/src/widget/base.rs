@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct GradientStop {
     pub id: String,
     pub color: String,
-    pub position: u64,
+    pub position: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
