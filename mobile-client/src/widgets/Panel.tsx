@@ -1,6 +1,6 @@
 import type {Gradient, PanelAttributes} from "@common/shared/models";
 import {type CSSProperties, useMemo} from "react";
-import {gradientString} from "../../../src/utils/gradientString.ts";
+import {gradientString} from "../utils.ts";
 
 export type PanelProps = {
   attr: PanelAttributes;
@@ -24,7 +24,7 @@ export function Panel({ attr }: PanelProps) {
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    backgroundColor: fill ?? "transparent",
+    background: fill ?? "transparent",
     borderWidth: attr.shape.strokeWidth,
     borderStyle: "solid",
     borderColor: attr.shape.stroke ?? "transparent",

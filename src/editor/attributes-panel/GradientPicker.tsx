@@ -127,7 +127,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
             value={gradient.angle ?? 0}
             onChange={e => handleAngleChange(parseInt(e.target.value))}
           />
-          {gradient.angle ?? 0}
+          {gradient.angle ?? 0}&deg;
         </div>
       )}
 

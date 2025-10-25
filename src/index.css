@@ -12,8 +12,11 @@
     --editor-background-color-values: 51, 51, 51;
     --panel-color-values: 22, 22, 22;
 
-    --gradient-stop1: #bd49b7;
-    --gradient-stop2: #4956e4;
+    /*--gradient-stop1: #bd49b7;*/
+    /*--gradient-stop2: #4956e4;*/
+
+    --gradient-stop1: #a5b60b;
+    --gradient-stop2: #59b02a;
 
     --border-light: 1px solid rgba(255, 255, 255, 0.2);
 

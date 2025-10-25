@@ -1,7 +1,7 @@
 import type {Gradient, LabelAttributes} from "@common/shared/models";
 import {type CSSProperties, useMemo} from "react";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
-import {gradientString} from "../../../src/utils/gradientString.ts";
+import {gradientString} from "../utils.ts";
 
 export type LabelProps = {
   attr: LabelAttributes;
@@ -27,7 +27,7 @@ export function Label({ attr }: LabelProps) {
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    backgroundColor: fill ?? "transparent",
+    background: fill ?? "transparent",
     borderWidth: attr.shape.strokeWidth,
     borderStyle: "solid",
     borderColor: attr.shape.stroke ?? "transparent",
