@@ -1,4 +1,5 @@
 import {CSSProperties, useEffect, useRef, useState} from "react";
+import {MdEdit} from "react-icons/md";
 
 export type EditableTitleProps = {
   value: string;
@@ -6,9 +7,11 @@ export type EditableTitleProps = {
   className?: string;
   style?: CSSProperties;
   inputStyle?: CSSProperties;
+  editIcon?: boolean;
+  iconSize?: number;
 };
 
-export function EditableTitle({ value, onChange, className, style, inputStyle }: EditableTitleProps) {
+export function EditableTitle({ value, onChange, className, style, inputStyle, editIcon, iconSize }: EditableTitleProps) {
   const [ editing, setEditing ] = useState(false);
   const [ draft, setDraft ] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,7 +64,10 @@ export function EditableTitle({ value, onChange, className, style, inputStyle }:
           style={mergedStyle}
         />
       ) : (
-        <span>{value}</span>
+        <div className="row align-items-center gap-16">
+          <span>{value}</span>
+          {editIcon && (<MdEdit className="pointer" size={iconSize} onClick={handleDoubleClick} />)}
+        </div>
       )}
     </div>
   );

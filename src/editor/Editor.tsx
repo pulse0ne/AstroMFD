@@ -198,7 +198,7 @@ export default function Editor() {
             x={stagePosition.x}
             y={stagePosition.y}
             draggable
-            onMouseDown={handleDeselect}
+            onClick={handleDeselect}
             onDragEnd={handleStageDrag}
             onWheel={handleWheel}
           >

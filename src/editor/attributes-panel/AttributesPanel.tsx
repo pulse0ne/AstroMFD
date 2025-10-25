@@ -5,10 +5,8 @@ import {SizePositionSection} from "./SizePositionSection.tsx";
 import {ShapeSection} from "./ShapeSection.tsx";
 import {TextSection} from "./TextSection.tsx";
 import {ButtonSpecificsSection, ScreenIdAndName} from "./ButtonSpecificsSection.tsx";
-import {MdRedo, MdUndo} from "react-icons/md";
-import {IconType} from "react-icons";
 import {useECStore} from "../../store";
-import {activeScreenSelector, hasRedosSelector, hasUndosSelector, screensSelector} from "../../store/selectors.ts";
+import {activeScreenSelector, screensSelector} from "../../store/selectors.ts";
 
 import "./attributes-panel.css";
 
@@ -34,12 +32,8 @@ export type AttributesPanelProps = {
 
 export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed, onUpdate, togglePressed }: AttributesPanelProps) {
   const [ fonts, setFonts ] = useState<FontSpec[]>([]);
-  const hasUndos = useECStore(hasUndosSelector);
-  const hasRedos = useECStore(hasRedosSelector);
   const screens = useECStore(screensSelector);
   const currentScreen = useECStore(activeScreenSelector);
-  const undo = useECStore(state => state.undo);
-  const redo = useECStore(state => state.redo);
 
   useEffect(() => {
     invoke<FontSpec[]>("list_system_fonts").then(fonts => setFonts(fonts));
@@ -95,10 +89,6 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
 
   return (
     <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
-      <div className="row gap-16 align-items-center justify-content-center p8-t border-b">
-        <UndoRedoButton type="undo" disabled={!hasUndos} onClick={undo} />
-        <UndoRedoButton type="redo" disabled={!hasRedos} onClick={redo} />
-      </div>
       {!selectedWidget && (
         <div className="flex-grow row justify-content-center align-items-center">
           <div>No selection</div>
@@ -170,32 +160,5 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
         </div>
       )}
     </div>
-  );
-}
-
-type UndoRedoButtonProps = {
-  type: "undo"|"redo";
-  onClick: () => void;
-  disabled: boolean;
-};
-
-function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
-  const Icon: IconType = type === "undo" ? MdUndo : MdRedo;
-
-  const handleClick = () => {
-    if (!disabled) {
-      onClick();
-    }
-  };
-
-  return (
-    <Icon
-      size={20}
-      onClick={handleClick}
-      style={{
-        cursor: disabled ? undefined : "pointer",
-        color: disabled ? "#666" : "var(--gradient-stop1)"
-      }}
-    />
   );
 }

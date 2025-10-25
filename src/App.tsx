@@ -6,7 +6,9 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- Finish Gradients (add editing, support degree change)
+- Change "No Selection" to show Screen attributes (include screen size syncer)
+- Move Add Screen to screen list
+- Zoom controls
 - Finish Home Screen
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets
