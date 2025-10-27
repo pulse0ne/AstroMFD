@@ -6,6 +6,7 @@ export function createScreen(screenNum: number = 1): Screen {
     id: uuid(),
     name: `Untitled screen ${screenNum}`,
     backgroundColor: "black",
+    crtEffect: null,
     widgets: []
   };
 }

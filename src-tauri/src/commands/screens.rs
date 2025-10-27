@@ -119,6 +119,7 @@ pub async fn create_screen_set(name: String) -> Result<ScreenSet, String> {
                 name: "Untitled Screen 1".to_string(),
                 widgets: vec![],
                 background_color: "black".to_string(),
+                crt_effect: false,
             }
         ],
         size: ScreenSize { width: 1200, height: 800 },

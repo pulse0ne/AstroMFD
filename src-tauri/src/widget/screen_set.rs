@@ -15,6 +15,7 @@ pub struct Screen {
     pub name: String,
     pub background_color: String,
     pub widgets: Vec<Widget>,
+    pub crt_effect: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

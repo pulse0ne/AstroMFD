@@ -33,6 +33,7 @@ export function ScreenRenderer({ screen, size, onNavigate, onMessage }: ScreenRe
 
   return (
     <div style={bgStyle}>
+      {screen?.crtEffect && <div style={{ position: "absolute" }} className="fill scanlines"></div>}
       {screen.widgets.map(widget => (
         <Fragment key={widget.id}>
           {widget.type === "button" && (

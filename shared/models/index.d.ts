@@ -104,10 +104,17 @@ export type PanelAttributes = WidgetBase<"panel">;
 
 export type Widget = ButtonAttributes | LabelAttributes | PanelAttributes;
 
+// export type CrtEffect = {
+//   color: string;
+//   lineSize: number;
+//   strength: number;
+// };
+
 export type Screen = {
   id: string;
   name: string;
   backgroundColor: string; // TODO: support image?
+  crtEffect: boolean;
   widgets: Widget[];
 };
 

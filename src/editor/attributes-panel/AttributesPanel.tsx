@@ -7,6 +7,7 @@ import {TextSection} from "./TextSection.tsx";
 import {ButtonSpecificsSection, ScreenIdAndName} from "./ButtonSpecificsSection.tsx";
 import {useECStore} from "../../store";
 import {activeScreenSelector, screensSelector} from "../../store/selectors.ts";
+import {ScreenSection} from "./ScreenSection.tsx";
 
 import "./attributes-panel.css";
 
@@ -90,12 +91,14 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
   return (
     <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
       {!selectedWidget && (
-        <div className="flex-grow row justify-content-center align-items-center">
-          <div>No selection</div>
+        <div>
+          <h2 className="border-b p8-b">SCREEN</h2>
+          <ScreenSection />
         </div>
       )}
       {selectedWidget?.type === "button" && (
         <div>
+          <h2 className="border-b p8-b">BUTTON</h2>
           <ButtonSpecificsSection
             attr={selectedWidget}
             screens={filteredScreens}
@@ -128,6 +131,7 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
       )}
       {selectedWidget?.type === "label" && (
         <div>
+          <h2 className="border-b p8-b">LABEL</h2>
           <SizePositionSection
             size={size!}
             position={position!}
@@ -147,6 +151,7 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
       )}
       {selectedWidget?.type === "panel" && (
         <div>
+          <h2 className="border-b p8-b">PANEL</h2>
           <SizePositionSection
             size={size!}
             position={position!}
@@ -162,3 +167,4 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
     </div>
   );
 }
+

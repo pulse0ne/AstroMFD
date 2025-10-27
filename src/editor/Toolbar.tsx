@@ -4,8 +4,6 @@ import {
 } from "react-icons/md";
 import {PropsWithChildren, useState} from "react";
 import Popup from "reactjs-popup";
-// import {useDevices} from "../hooks/useDevices.tsx";
-// import {ClientInfo} from "../types/websocket.ts";
 import {useECStore} from "../store";
 import {useNavigate} from "react-router";
 import {
@@ -20,7 +18,6 @@ import {findNextAvailableButton} from "../utils/findNextAvailableButton.ts";
 import {createButton} from "../utils/createButton.ts";
 import {createLabel} from "../utils/createLabel.ts";
 import {createPanel} from "../utils/createPanel.ts";
-// import {IconType} from "react-icons";
 
 import "./toolbar.css";
 import {EditableTitle} from "./EditableTitle.tsx";
@@ -28,41 +25,17 @@ import {IconType} from "react-icons";
 
 export function Toolbar() {
   const [ addPopupOpen, setAddPopupOpen ] = useState(false);
-  // const [ syncPopupOpen, setSyncPopupOpen ] = useState(false);
   const screenSet = useECStore(state => state.screenSet);
   const selectedScreen = useECStore(activeScreenSelector);
   const addScreen = useECStore(state => state.addScreen);
   const updateScreen = useECStore(state => state.updateScreen);
   const addWidget = useECStore(state => state.addWidget);
-  // const updateSize = useECStore((state) => state.updateSize);
   const widgets = useECStore(activeScreenWidgetsSelector);
   const hasUndos = useECStore(hasUndosSelector);
   const hasRedos = useECStore(hasRedosSelector);
   const undo = useECStore(state => state.undo);
   const redo = useECStore(state => state.redo);
   const navigate = useNavigate();
-  // const { devices } = useDevices();
-  //
-  // const handleWidthChange = (evt: ChangeEvent<HTMLInputElement>) => {
-  //   const width = Number.parseInt(evt.target.value);
-  //   if (!isNaN(width)) {
-  //     updateSize({ width, height: screenSet?.size?.height ?? 800 });
-  //   }
-  // };
-  //
-  // const handleHeightChange = (evt: ChangeEvent<HTMLInputElement>) => {
-  //   const height = Number.parseInt(evt.target.value);
-  //   if (!isNaN(height)) {
-  //     updateSize({ width: screenSet?.size?.width ?? 1200, height });
-  //   }
-  // };
-  //
-  // const handleDeviceSync = (device: ClientInfo) => {
-  //   const width = device.viewportWidth;
-  //   const height = device.viewportHeight;
-  //   updateSize({ width, height });
-  //   setSyncPopupOpen(false);
-  // };
 
   const handleScreenRename = (name: string) => {
     if (selectedScreen) {
@@ -126,47 +99,6 @@ export function Toolbar() {
           iconSize={12}
         />
       </div>
-      {/* TODO: move this to Attributes panel */}
-      {/*<div className="fill-y row align-items-center gap-4 toolbar-centered-container">*/}
-      {/*  <input*/}
-      {/*    style={{ width: 56 }}*/}
-      {/*    value={screenSet?.size?.width ?? 1200}*/}
-      {/*    type="number"*/}
-      {/*    min={0}*/}
-      {/*    onChange={handleWidthChange}*/}
-      {/*  />*/}
-      {/*  <MdClose size={12} />*/}
-      {/*  <input*/}
-      {/*    style={{ width: 56 }}*/}
-      {/*    value={screenSet?.size?.height ?? 800}*/}
-      {/*    type="number"*/}
-      {/*    min={0}*/}
-      {/*    onChange={handleHeightChange}*/}
-      {/*  />*/}
-
-      {/*  <Popup*/}
-      {/*    trigger={*/}
-      {/*      <MdPhoneAndroid*/}
-      {/*        style={{*/}
-      {/*          cursor: devices.length ? "pointer" : undefined,*/}
-      {/*          color: devices.length ? "var(--gradient-stop1)" : "#666"*/}
-      {/*      }}*/}
-      {/*      />*/}
-      {/*    }*/}
-      {/*    open={syncPopupOpen}*/}
-      {/*    onOpen={() => setSyncPopupOpen(true)}*/}
-      {/*    onClose={() => setSyncPopupOpen(false)}*/}
-      {/*    contentStyle={{ background: "var(--toolbar-color-hex)" }}*/}
-      {/*    disabled={!devices.length}*/}
-      {/*    position="bottom center"*/}
-      {/*  >*/}
-      {/*    {devices.map(device => (*/}
-      {/*      <div className="popup-menu-item row align-items-center gap-8" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>*/}
-      {/*        <DeviceIcon deviceType={device.deviceType} />{device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}*/}
-      {/*      </div>*/}
-      {/*    ))}*/}
-      {/*  </Popup>*/}
-      {/*</div>*/}
       <div className="row align-items-center gap-16">
         <UndoRedoButton type="undo" disabled={!hasUndos} onClick={undo} />
         <UndoRedoButton type="redo" disabled={!hasRedos} onClick={redo} />
@@ -174,31 +106,6 @@ export function Toolbar() {
     </div>
   );
 }
-
-// type DeviceIconProps = {
-//   deviceType: ClientInfo["deviceType"];
-// };
-//
-// function DeviceIcon({ deviceType }: DeviceIconProps) {
-//   let Icon: IconType = MdDesktopWindows;
-//   switch(deviceType) {
-//     case "android-tablet":
-//       Icon = MdTabletAndroid;
-//       break;
-//     case "android-phone":
-//       Icon = MdPhoneAndroid;
-//       break;
-//     case "ios-tablet":
-//       Icon = MdTabletMac;
-//       break;
-//     case "ios-phone":
-//       Icon = MdPhoneIphone;
-//       break;
-//   }
-//   return (
-//     <Icon />
-//   );
-// }
 
 type AddWidgetMenuItemProps = PropsWithChildren<{
   onClick: () => void;

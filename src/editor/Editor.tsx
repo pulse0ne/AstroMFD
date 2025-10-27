@@ -187,7 +187,7 @@ export default function Editor() {
   return (
     <div className="row flex-grow no-overflow">
       <div className="flex-grow no-overflow relative" onContextMenu={(e) => e.preventDefault()}>
-        {/*<div style={{ position: "absolute" }} className="fill scanlines"></div>*/}
+        {activeScreen?.crtEffect && <div style={{ position: "absolute" }} className="fill scanlines"></div>}
         <div className="stage-container fill-y" ref={stageContainerRef}>
           <Stage
             ref={stageRef}
@@ -210,7 +210,7 @@ export default function Editor() {
                   y={0}
                   width={workspaceSize.width}
                   height={workspaceSize.height}
-                  fill="#000"
+                  fill={activeScreen?.backgroundColor}
                 />
                 {/*<Grid*/}
                 {/*  color="rgba(255, 0, 0, 0.3)"*/}

@@ -35,7 +35,7 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
 
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>BUTTON</h5>
+      <h5>ATTRIBUTES</h5>
       <div className="row gap-16">
         <span>Type:</span>
         <select
