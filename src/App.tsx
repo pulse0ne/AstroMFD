@@ -6,14 +6,13 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- Change "No Selection" to show Screen attributes (include screen size syncer)
 - Move Add Screen to screen list
 - Zoom controls
 - Finish Home Screen
 - Finish Audio feedback
 - Finish Renaming of screens/screen sets
 - Finish SVG modification (attribute panel)
-- Support images
+- Support images?
 - Config for server (port)
 - Change over to manual start/stop of server?
 - Build out journal events (check out status.json)

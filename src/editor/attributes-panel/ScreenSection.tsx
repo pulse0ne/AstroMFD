@@ -93,7 +93,7 @@ export function ScreenSection() {
           ))}
         </Popup>
       </div>
-      {/* filter (CRT), grid?, others? */}
+      {/* grid?, others? */}
       <div className="row gap-16 align-items-center">
         <span>Background:</span>
         <ColorSwatch
