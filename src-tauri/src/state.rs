@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::{broadcast, mpsc, Mutex};
 use crate::journal::JournalHandle;
 use crate::widget::screen_set::ScreenSet;
+use crate::input::InputKey;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -19,9 +20,9 @@ pub enum ServerEvent {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum MobileEvent {
-    ButtonDown { button: u8 },
-    ButtonUp { button: u8 },
-    FixedPress { button: u8, duration: u64 },
+    KeyDown { key: InputKey },
+    KeyUp { key: InputKey },
+    FixedPress { key: InputKey, duration: u64 },
     ClientReport { width: u64, height: u64, device: String },
 }
 

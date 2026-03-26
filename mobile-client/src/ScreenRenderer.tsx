@@ -1,5 +1,5 @@
 import {type CSSProperties, Fragment} from "react";
-import type {Screen, Size} from "@common/shared/models";
+import type {InputKey, Screen, Size} from "@common/shared/models";
 import {Button} from "./widgets/Button.tsx";
 import {Panel} from "./widgets/Panel.tsx";
 import {Label} from "./widgets/Label.tsx";
@@ -19,16 +19,16 @@ export function ScreenRenderer({ screen, size, onNavigate, onMessage }: ScreenRe
     height: size.height,
   };
 
-  const handlePress = (button: number, duration: number) => {
-    onMessage({ fixedPress: { button, duration } });
+  const handlePress = (key: InputKey, duration: number) => {
+    onMessage({ fixedPress: { key, duration } });
   };
 
-  const handleDown = (button: number) => {
-    onMessage({ buttonDown: { button }});
+  const handleDown = (key: InputKey) => {
+    onMessage({ keyDown: { key }});
   };
 
-  const handleUp = (button: number) => {
-    onMessage({ buttonUp: { button }});
+  const handleUp = (key: InputKey) => {
+    onMessage({ keyUp: { key }});
   };
 
   return (

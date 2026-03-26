@@ -1,13 +1,14 @@
 import { v4 as uuid } from "uuid";
-import {ButtonAttributes} from "@common/shared/models";
+import {ButtonAttributes, InputKey} from "@common/shared/models";
 
-export function createButton(): ButtonAttributes {
+export function createButton(defaultKey?: InputKey): ButtonAttributes {
+  const key: InputKey = defaultKey || { type: "joystickButton", button: 1 };
   return {
     id: uuid(),
     type: "button",
     buttonType: "action",
-    vjoyButton: {
-      button: 1,
+    input: {
+      key,
       fixedDuration: false,
       duration: 100
     },

@@ -1,3 +1,30 @@
+export type SpecialKey =
+  | "enter"
+  | "space"
+  | "tab"
+  | "escape"
+  | "backspace"
+  | "delete"
+  | "home"
+  | "end"
+  | "pageUp"
+  | "pageDown"
+  | "arrowUp"
+  | "arrowDown"
+  | "arrowLeft"
+  | "arrowRight"
+  | "shift"
+  | "ctrl"
+  | "alt"
+  | "capsLock";
+
+export type InputKey =
+  | { type: "joystickButton"; button: number }
+  | { type: "letter"; key: string }
+  | { type: "number"; key: number }
+  | { type: "functionKey"; key: number }
+  | { type: "specialKey"; key: SpecialKey };
+
 export type GradientStop = {
   id: string;
   color: string;
@@ -79,14 +106,14 @@ export type WidgetBase<W extends WidgetType> = {
 export type ButtonType = "action" | "navigation" | "toggle";
 
 export type ButtonAction = {
-  button: number;
+  key: InputKey;
   fixedDuration: boolean;
   duration: number;
 };
 
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
-  vjoyButton: ButtonAction;
+  input: ButtonAction;
   navTarget: string | null;
   text: TextAttributes;
   pressed: {

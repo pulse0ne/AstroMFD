@@ -18,6 +18,7 @@ import {findNextAvailableButton} from "../utils/findNextAvailableButton.ts";
 import {createButton} from "../utils/createButton.ts";
 import {createLabel} from "../utils/createLabel.ts";
 import {createPanel} from "../utils/createPanel.ts";
+import {useAvailableInputKeys} from "../hooks/useAvailableInputKeys.tsx";
 
 import "./toolbar.css";
 import {EditableTitle} from "./EditableTitle.tsx";
@@ -36,6 +37,7 @@ export function Toolbar() {
   const undo = useECStore(state => state.undo);
   const redo = useECStore(state => state.redo);
   const navigate = useNavigate();
+  const { defaultKey } = useAvailableInputKeys();
 
   const handleScreenRename = (name: string) => {
     if (selectedScreen) {
@@ -54,9 +56,14 @@ export function Toolbar() {
     setAddPopupOpen(false);
     const newWidget = createWidgetFn();
     if (newWidget.type === "button") {
-      newWidget.vjoyButton.button = findNextAvailableButton(widgets ?? []);
+      // If the default key is a joystick button, find the next available one
+      if (defaultKey.type === "joystickButton") {
+        const nextButton = findNextAvailableButton(widgets ?? []);
+        newWidget.input.key = { type: "joystickButton", button: nextButton };
+      }
+      // Otherwise, use the default key as-is
     }
-    addWidget(createWidgetFn());
+    addWidget(newWidget);
   };
 
   const goBack = () => {
@@ -82,7 +89,7 @@ export function Toolbar() {
             </button>
           }
         >
-          <AddWidgetMenuItem onClick={() => handleAddWidget(createButton)}>Button</AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(() => createButton(defaultKey))}>Button</AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
           <div style={{ borderBottom: "var(--border-light)" }}></div>

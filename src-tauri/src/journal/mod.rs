@@ -9,7 +9,7 @@ use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tokio::sync::mpsc::Sender;
 use tokio::sync::{broadcast, Mutex};
 use anyhow::Result;
-use log::{error, info, trace};
+use log::{debug, error, info, trace};
 use regex::Regex;
 use crate::journal::bounded_fifo_vec::BoundedFifoVec;
 use crate::state::ServerEvent;
@@ -271,4 +271,55 @@ fn test_read_journal() {
 
     let journal2 = read_journal(&journal_path, 1).unwrap();
     assert_eq!(journal2.len(), raw_lines_count - 1);
+}
+
+/// Attempts to detect the Elite Dangerous journal path for the current platform
+pub fn detect_elite_dangerous_journal_path() -> Option<String> {
+    #[cfg(target_os = "windows")]
+    {
+        // Windows: C:\Users\<username>\Saved Games\Frontier Developments\Elite Dangerous\
+        if let Some(user_profile) = std::env::var_os("USERPROFILE") {
+            let path = PathBuf::from(user_profile)
+                .join("Saved Games")
+                .join("Frontier Developments")
+                .join("Elite Dangerous");
+
+            if path.exists() {
+                debug!("Found Elite Dangerous journal path (Windows): {}", path.display());
+                return path.to_str().map(|s| s.to_string());
+            }
+        }
+        debug!("Could not find Elite Dangerous journal path on Windows");
+        None
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        // Linux (Proton): ~/.local/share/Steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/
+        if let Some(home) = std::env::var_os("HOME") {
+            let proton_path = PathBuf::from(&home)
+                .join(".local/share/Steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous");
+
+            if proton_path.exists() {
+                debug!("Found Elite Dangerous journal path (Linux/Proton): {}", proton_path.display());
+                return proton_path.to_str().map(|s| s.to_string());
+            }
+
+            // Alternative: Try ~/.steam/steam instead of ~/.local/share/Steam
+            let alt_path = PathBuf::from(&home)
+                .join(".steam/steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous");
+
+            if alt_path.exists() {
+                debug!("Found Elite Dangerous journal path (Linux/Proton alt): {}", alt_path.display());
+                return alt_path.to_str().map(|s| s.to_string());
+            }
+        }
+        debug!("Could not find Elite Dangerous journal path on Linux");
+        None
+    }
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    {
+        None
+    }
 }

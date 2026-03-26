@@ -1,5 +1,6 @@
 import StatusBar from "./statusbar/StatusBar.tsx";
 import {DevicesProvider} from "./hooks/useDevices.tsx";
+import {AvailableInputKeysProvider} from "./hooks/useAvailableInputKeys.tsx";
 import {MemoryRouter, Route, Routes} from "react-router";
 import {Creator} from "./views/Creator.tsx";
 import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
@@ -39,19 +40,21 @@ import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
 function App() {
   return (
     <main>
-      <DevicesProvider>
-        <div className="fill col no-overflow">
-          <div className="flex-grow col no-overflow">
-            <MemoryRouter>
-              <Routes>
-                <Route path="/" element={<ScreenSetSelector />} />
-                <Route path="/creator/:screenSetId" element={<Creator />} />
-              </Routes>
-            </MemoryRouter>
+      <AvailableInputKeysProvider>
+        <DevicesProvider>
+          <div className="fill col no-overflow">
+            <div className="flex-grow col no-overflow">
+              <MemoryRouter>
+                <Routes>
+                  <Route path="/" element={<ScreenSetSelector />} />
+                  <Route path="/creator/:screenSetId" element={<Creator />} />
+                </Routes>
+              </MemoryRouter>
+            </div>
+            <StatusBar />
           </div>
-          <StatusBar />
-        </div>
-      </DevicesProvider>
+        </DevicesProvider>
+      </AvailableInputKeysProvider>
     </main>
   );
 }

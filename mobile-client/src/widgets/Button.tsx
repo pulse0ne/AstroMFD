@@ -1,5 +1,5 @@
 import {type CSSProperties, useCallback, useMemo, useState} from "react";
-import type {ButtonAttributes, Gradient, ShadowEffect} from "@common/shared/models";
+import type {ButtonAttributes, Gradient, InputKey, ShadowEffect} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 import {gradientString} from "../utils.ts";
 
@@ -13,9 +13,9 @@ function playSound() {
 
 export type ButtonProps = {
   attr: ButtonAttributes;
-  onPress: (button: number, duration: number) => void;
-  onDown: (button: number) => void;
-  onUp: (button: number) => void;
+  onPress: (key: InputKey, duration: number) => void;
+  onDown: (key: InputKey) => void;
+  onUp: (key: InputKey) => void;
   onNavigate: (target: string) => void;
 };
 
@@ -66,14 +66,14 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
 
   const handlePress = useCallback(() => {
     if (attr.buttonType === "action" || attr.buttonType === "toggle") {
-      const {button, fixedDuration, duration} = attr.vjoyButton;
+      const {key, fixedDuration, duration} = attr.input;
       if (fixedDuration) {
-        onPress(button, duration);
+        onPress(key, duration);
       }
     } else if (attr.buttonType === "navigation" && attr.navTarget) {
       onNavigate(attr.navTarget);
     }
-  }, [attr]);
+  }, [attr, onPress, onNavigate]);
 
   const handleDown = useCallback(() => {
     playSound();
@@ -82,19 +82,19 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
     } else {
       setPressed(true);
     }
-    if (!attr.vjoyButton.fixedDuration && attr.buttonType !== "navigation") {
-      onDown(attr.vjoyButton.button);
+    if (!attr.input.fixedDuration && attr.buttonType !== "navigation") {
+      onDown(attr.input.key);
     }
-  }, [attr]);
+  }, [attr, onDown]);
 
   const handleUp = useCallback(() => {
     if (attr.buttonType !== "toggle") {
       setPressed(false);
     }
-    if (!attr.vjoyButton.fixedDuration && attr.buttonType !== "navigation") {
-      onUp(attr.vjoyButton.button);
+    if (!attr.input.fixedDuration && attr.buttonType !== "navigation") {
+      onUp(attr.input.key);
     }
-  }, [attr]);
+  }, [attr, onUp]);
 
   return (
     <div

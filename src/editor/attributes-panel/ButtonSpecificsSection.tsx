@@ -1,5 +1,6 @@
-import {ButtonAction, ButtonAttributes, ButtonType} from "@common/shared/models";
+import {ButtonAttributes, ButtonType, InputKey} from "@common/shared/models";
 import {Toggle} from "./Toggle.tsx";
+import {InputKeySelector} from "./InputKeySelector.tsx";
 
 export type ScreenIdAndName = {
   id: string;
@@ -20,13 +21,17 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
     onUpdate(Object.assign({}, attr, { buttonType: value }), "widget.button.type");
   };
 
-  const handleVjoyButtonChange = (key: keyof ButtonAction, value: number) => {
-    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, [key]: value }}), `widget.button.button.${key}`);
+  const handleInputKeyChange = (key: InputKey) => {
+    onUpdate(Object.assign({}, attr, { input: { ...attr.input, key }}), "widget.button.button.key");
+  };
+
+  const handleDurationChange = (duration: number) => {
+    onUpdate(Object.assign({}, attr, { input: { ...attr.input, duration }}), "widget.button.button.duration");
   };
 
   const toggleFixedDuration = () => {
-    const fixedDuration = !attr.vjoyButton.fixedDuration;
-    onUpdate(Object.assign({}, attr, { vjoyButton: { ...attr.vjoyButton, fixedDuration }}), "widget.button.button.fixedDuration");
+    const fixedDuration = !attr.input.fixedDuration;
+    onUpdate(Object.assign({}, attr, { input: { ...attr.input, fixedDuration }}), "widget.button.button.fixedDuration");
   };
 
   const handleNavTargetChange = (targetId: string) => {
@@ -50,22 +55,15 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
       <div className="col gap-16">
         {(attr.buttonType === "action" || attr.buttonType === "toggle") && (
           <>
-            <div className="row gap-16">
-              <span>Button:</span>
-              <input
-                type="number"
-                min={1}
-                max={127}
-                step={1}
-                value={attr.vjoyButton.button}
-                onChange={(evt) => handleVjoyButtonChange("button", Number.parseInt(evt.target.value))}
-              />
-            </div>
+            <InputKeySelector
+              value={attr.input.key}
+              onChange={handleInputKeyChange}
+            />
             <div className="row gap-16 align-items-center">
               <span>Fixed Duration:</span>
-              <Toggle onToggle={toggleFixedDuration} value={attr.vjoyButton.fixedDuration} />
+              <Toggle onToggle={toggleFixedDuration} value={attr.input.fixedDuration} />
             </div>
-            {attr.vjoyButton.fixedDuration && (
+            {attr.input.fixedDuration && (
               <div className="row gap-16 align-items-center">
                 <span>Duration (ms):</span>
                 <input
@@ -73,9 +71,9 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
                   min={50}
                   max={5000}
                   step={10}
-                  disabled={!attr.vjoyButton.fixedDuration}
-                  value={attr.vjoyButton.duration}
-                  onChange={(evt) => handleVjoyButtonChange("duration", Number.parseInt(evt.target.value))}
+                  disabled={!attr.input.fixedDuration}
+                  value={attr.input.duration}
+                  onChange={(evt) => handleDurationChange(Number.parseInt(evt.target.value))}
                 />
               </div>
             )}
