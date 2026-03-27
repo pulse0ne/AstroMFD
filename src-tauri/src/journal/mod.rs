@@ -1,20 +1,22 @@
 mod bounded_fifo_vec;
+mod status;
 
+use crate::journal::bounded_fifo_vec::BoundedFifoVec;
+use crate::state::ServerEvent;
+use anyhow::Result;
+use log::{debug, error, info, trace};
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, LazyLock};
 use std::sync::mpsc as std_mpsc;
-use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use std::sync::{Arc, LazyLock};
 use tokio::sync::mpsc::Sender;
 use tokio::sync::{broadcast, Mutex};
-use anyhow::Result;
-use log::{debug, error, info, trace};
-use regex::Regex;
-use crate::journal::bounded_fifo_vec::BoundedFifoVec;
-use crate::state::ServerEvent;
 
-static JOURNAL_RE: LazyLock<Regex, fn() -> Regex> = LazyLock::new(|| Regex::new(r#"Journal\.\d{4}-\d{2}-\d{2}T\d+?\.\d+?\.log"#).unwrap());
+static JOURNAL_RE: LazyLock<Regex, fn() -> Regex> =
+    LazyLock::new(|| Regex::new(r#"Journal\.\d{4}-\d{2}-\d{2}T\d+?\.\d+?\.log"#).unwrap());
 
 pub struct JournalHandle {
     pub(crate) journal: Arc<Mutex<Journal>>,
@@ -22,10 +24,7 @@ pub struct JournalHandle {
 }
 
 impl JournalHandle {
-    pub async fn start(
-        dir: PathBuf,
-        server_tx: broadcast::Sender<ServerEvent>,
-    ) -> Result<Self> {
+    pub async fn start(dir: PathBuf, server_tx: broadcast::Sender<ServerEvent>) -> Result<Self> {
         let journal = Arc::new(Mutex::new(Journal::new(dir)));
 
         // Tokio mpsc channel
@@ -285,7 +284,10 @@ pub fn detect_elite_dangerous_journal_path() -> Option<String> {
                 .join("Elite Dangerous");
 
             if path.exists() {
-                debug!("Found Elite Dangerous journal path (Windows): {}", path.display());
+                debug!(
+                    "Found Elite Dangerous journal path (Windows): {}",
+                    path.display()
+                );
                 return path.to_str().map(|s| s.to_string());
             }
         }
@@ -301,7 +303,10 @@ pub fn detect_elite_dangerous_journal_path() -> Option<String> {
                 .join(".local/share/Steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous");
 
             if proton_path.exists() {
-                debug!("Found Elite Dangerous journal path (Linux/Proton): {}", proton_path.display());
+                debug!(
+                    "Found Elite Dangerous journal path (Linux/Proton): {}",
+                    proton_path.display()
+                );
                 return proton_path.to_str().map(|s| s.to_string());
             }
 
@@ -310,7 +315,10 @@ pub fn detect_elite_dangerous_journal_path() -> Option<String> {
                 .join(".steam/steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous");
 
             if alt_path.exists() {
-                debug!("Found Elite Dangerous journal path (Linux/Proton alt): {}", alt_path.display());
+                debug!(
+                    "Found Elite Dangerous journal path (Linux/Proton alt): {}",
+                    alt_path.display()
+                );
                 return alt_path.to_str().map(|s| s.to_string());
             }
         }

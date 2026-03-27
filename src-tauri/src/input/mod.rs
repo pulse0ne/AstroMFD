@@ -1,9 +1,9 @@
 #[cfg(target_os = "windows")]
 mod windows;
 #[cfg(target_os = "windows")]
-pub use windows::VJoyDevice;
-#[cfg(target_os = "windows")]
 use vjoy::VJoy;
+#[cfg(target_os = "windows")]
+pub use windows::VJoyDevice;
 
 #[cfg(target_os = "linux")]
 mod linux;
@@ -15,11 +15,11 @@ mod mock;
 #[cfg(not(any(target_os = "windows", target_os = "linux")))]
 pub use mock::MockDevice;
 
-use std::sync::Arc;
-use log::{info, trace};
-use tokio::sync::{broadcast, mpsc, Mutex};
 use crate::state::{MobileEvent, ServerEvent};
+use log::{info, trace};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use tokio::sync::{broadcast, mpsc, Mutex};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(tag = "type", rename_all = "camelCase")]
@@ -63,7 +63,7 @@ pub enum SpecialKey {
     CapsLock,
 }
 
-#[cfg_attr(any(target_os = "windows", target_os = "macos"), async_trait::async_trait)]
+#[async_trait::async_trait]
 pub trait InputDevice: Send + Sync {
     /// Press and release a key after the specified duration
     async fn press_key(&mut self, key: &InputKey, duration_millis: u64);
@@ -83,12 +83,15 @@ pub trait InputDevice: Send + Sync {
 
 pub async fn input_worker(
     mut mobile_rx: mpsc::Receiver<MobileEvent>,
-    _server_tx: broadcast::Sender<ServerEvent>
+    _server_tx: broadcast::Sender<ServerEvent>,
 ) {
     let device: Arc<Mutex<dyn InputDevice>> = {
         #[cfg(target_os = "windows")]
         {
-            Arc::new(Mutex::new(VJoyDevice { vjoy: VJoy::from_default_dll_location().unwrap(), device_id: 2 }))
+            Arc::new(Mutex::new(VJoyDevice {
+                vjoy: VJoy::from_default_dll_location().unwrap(),
+                device_id: 2,
+            }))
         }
         #[cfg(target_os = "linux")]
         {
@@ -111,13 +114,13 @@ pub async fn input_worker(
         match evt {
             MobileEvent::FixedPress { key, duration } => {
                 device.lock().await.press_key(&key, duration).await;
-            },
+            }
             MobileEvent::KeyDown { key } => {
                 device.lock().await.key_down(&key).await;
-            },
+            }
             MobileEvent::KeyUp { key } => {
                 device.lock().await.key_up(&key).await;
-            },
+            }
             _ => {}
         }
     }
