@@ -1,5 +1,5 @@
-import {v4 as uuid} from "uuid";
-import {PanelAttributes} from "@common/shared/models";
+import { PanelAttributes } from "@common/shared/models";
+import { v4 as uuid } from "uuid";
 
 export function createPanel(): PanelAttributes {
   return {
@@ -13,7 +13,7 @@ export function createPanel(): PanelAttributes {
       stroke: null,
       shadow: null,
       strokeWidth: 0,
-      cornerRadius: 0
-    }
+      cornerRadius: 0,
+    },
   };
 }

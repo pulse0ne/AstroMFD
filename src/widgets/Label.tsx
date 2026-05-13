@@ -1,16 +1,23 @@
-import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {Group, Rect, Text, Transformer} from "react-konva";
-import {useEffect, useMemo, useRef} from "react";
-import {KonvaEventObject} from "konva/lib/Node";
-import {Shape} from "konva/lib/Shape";
-import {Gradient, LabelAttributes} from "@common/shared/models";
-import {coordinatesFromAngle} from "../utils/coordinatesFromAngle.ts";
+import { Gradient, LabelAttributes } from "@common/shared/models";
+import { KonvaEventObject } from "konva/lib/Node";
+import { Shape } from "konva/lib/Shape";
+import { useEffect, useMemo, useRef } from "react";
+import { Group, Rect, Text, Transformer } from "react-konva";
+
+import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type LabelProps = WidgetPropsBase & {
   attr: LabelAttributes;
 };
 
-export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSelected }: LabelProps) {
+export function Label({
+  attr,
+  onSelect,
+  onCommitUpdate,
+  onEphemeralUpdate,
+  isSelected,
+}: LabelProps) {
   const groupRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
@@ -26,7 +33,15 @@ export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onCommitUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height }, "widget.shape.position");
+    onCommitUpdate(
+      {
+        x: shape.x(),
+        y: shape.y(),
+        width: attr.shape.size.width,
+        height: attr.shape.size.height,
+      },
+      "widget.shape.position",
+    );
   };
 
   const handleDragging = (evt: KonvaEventObject<DragEvent>) => {
@@ -69,15 +84,18 @@ export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     node.width(newWidth);
     node.height(newHeight);
 
-    onCommitUpdate({
-      x: node.x(),
-      y: node.y(),
-      width: newWidth,
-      height: newHeight,
-    }, "widget.shape.size");
+    onCommitUpdate(
+      {
+        x: node.x(),
+        y: node.y(),
+        width: newWidth,
+        height: newHeight,
+      },
+      "widget.shape.size",
+    );
   };
 
-  const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
+  const handleSelect = (evt: KonvaEventObject<MouseEvent>) => {
     const isMulti = evt.evt.ctrlKey || evt.evt.shiftKey;
     onSelect(isMulti);
   };
@@ -93,13 +111,20 @@ export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     const f = attr.shape.fill;
     if (!f || f.type === "solid") return {};
     const gradient = f.value as Gradient;
-    const stops = gradient.stops.reduce((acc, stop) => {
-      acc.push(stop.position / 100);
-      acc.push(stop.color);
-      return acc;
-    }, [] as Array<number|string>);
+    const stops = gradient.stops.reduce(
+      (acc, stop) => {
+        acc.push(stop.position / 100);
+        acc.push(stop.color);
+        return acc;
+      },
+      [] as Array<number | string>,
+    );
     if (gradient.type === "linear") {
-      const { start, end } = coordinatesFromAngle(attr.shape.size.width, attr.shape.size.height, gradient.angle ?? 0);
+      const { start, end } = coordinatesFromAngle(
+        attr.shape.size.width,
+        attr.shape.size.height,
+        gradient.angle ?? 0,
+      );
       return {
         fillLinearGradientColorStops: stops,
         fillLinearGradientStartPoint: start,
@@ -113,7 +138,7 @@ export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
       fillRadialGradientStartPoint: { x: centerX, y: centerY },
       fillRadialGradientEndPoint: { x: centerX, y: centerY },
       fillRadialGradientStartRadius: 0,
-      fillRadialGradientEndRadius: attr.shape.size.height // TODO
+      fillRadialGradientEndRadius: attr.shape.size.height, // TODO
     };
   }, [attr]);
 
@@ -152,12 +177,7 @@ export function Label({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
           fill={attr.text.fontColor ?? undefined}
         />
       </Group>
-      {isSelected && (
-        <Transformer
-          ref={trRef}
-          rotateEnabled={false}
-        />
-      )}
+      {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
     </>
   );
 }

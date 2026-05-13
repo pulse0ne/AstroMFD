@@ -1,6 +1,7 @@
-import type {Gradient, PanelAttributes} from "@common/shared/models";
-import {type CSSProperties, useMemo} from "react";
-import {gradientString} from "../utils.ts";
+import type { Gradient, PanelAttributes } from "@common/shared/models";
+import { useMemo, type CSSProperties } from "react";
+
+import { gradientString } from "../utils.ts";
 
 export type PanelProps = {
   attr: PanelAttributes;
@@ -31,7 +32,5 @@ export function Panel({ attr }: PanelProps) {
     borderRadius: attr.shape.cornerRadius,
   };
 
-  return (
-    <div style={shapeStyle}></div>
-  );
+  return <div style={shapeStyle}></div>;
 }

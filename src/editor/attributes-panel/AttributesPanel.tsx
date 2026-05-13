@@ -1,17 +1,35 @@
-import {useEffect, useState} from "react";
-import {invoke} from "@tauri-apps/api/core";
-import {FontSpec, Position, ShapeAttributes, Size, TextAttributes, Widget} from "@common/shared/models";
-import {SizePositionSection} from "./SizePositionSection.tsx";
-import {ShapeSection} from "./ShapeSection.tsx";
-import {TextSection} from "./TextSection.tsx";
-import {ButtonSpecificsSection, ScreenIdAndName} from "./ButtonSpecificsSection.tsx";
-import {useECStore} from "../../store";
-import {activeScreenSelector, screensSelector} from "../../store/selectors.ts";
-import {ScreenSection} from "./ScreenSection.tsx";
+import {
+  FontSpec,
+  Position,
+  ShapeAttributes,
+  Size,
+  TextAttributes,
+  Widget,
+} from "@common/shared/models";
+import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useState } from "react";
+
+import { useECStore } from "../../store";
+import {
+  activeScreenSelector,
+  screensSelector,
+} from "../../store/selectors.ts";
+import {
+  ButtonSpecificsSection,
+  ScreenIdAndName,
+} from "./ButtonSpecificsSection.tsx";
+import { ScreenSection } from "./ScreenSection.tsx";
+import { ShapeSection } from "./ShapeSection.tsx";
+import { SizePositionSection } from "./SizePositionSection.tsx";
+import { TextSection } from "./TextSection.tsx";
 
 import "./attributes-panel.css";
 
-function extractShapeAttr(attrType: "size"|"position", ephemeralShapeState: (Size & Position) | null, selectedWidget: Widget): Size | Position {
+function extractShapeAttr(
+  attrType: "size" | "position",
+  ephemeralShapeState: (Size & Position) | null,
+  selectedWidget: Widget,
+): Size | Position {
   if (ephemeralShapeState) {
     if (attrType === "size") {
       const { width, height } = ephemeralShapeState;
@@ -31,65 +49,117 @@ export type AttributesPanelProps = {
   togglePressed: () => void;
 };
 
-export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed, onUpdate, togglePressed }: AttributesPanelProps) {
-  const [ fonts, setFonts ] = useState<FontSpec[]>([]);
+export function AttributesPanel({
+  ephemeralShapeState,
+  selectedWidget,
+  isPressed,
+  onUpdate,
+  togglePressed,
+}: AttributesPanelProps) {
+  const [fonts, setFonts] = useState<FontSpec[]>([]);
   const screens = useECStore(screensSelector);
   const currentScreen = useECStore(activeScreenSelector);
 
   useEffect(() => {
-    invoke<FontSpec[]>("list_system_fonts").then(fonts => setFonts(fonts));
+    invoke<FontSpec[]>("list_system_fonts").then((fonts) => setFonts(fonts));
   }, []);
 
   const handleSizeChange = (size: Size) => {
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, size },
+        }),
+        "widget.size",
+      );
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, size },
+        }),
+        "widget.size",
+      );
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, size } }), "widget.size");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, size },
+        }),
+        "widget.size",
+      );
     }
   };
 
   const handlePositionChange = (position: Position) => {
     if (selectedWidget?.type === "button") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, position },
+        }),
+        "widget.position",
+      );
     } else if (selectedWidget?.type === "label") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, position },
+        }),
+        "widget.position",
+      );
     } else if (selectedWidget?.type === "panel") {
-      onUpdate(Object.assign({}, selectedWidget, { shape: { ...selectedWidget.shape, position } }), "widget.position");
+      onUpdate(
+        Object.assign({}, selectedWidget, {
+          shape: { ...selectedWidget.shape, position },
+        }),
+        "widget.position",
+      );
     }
   };
 
-  const handleShapeAttrChange = (attr: ShapeAttributes, type: string) =>  {
+  const handleShapeAttrChange = (attr: ShapeAttributes, type: string) => {
     onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
-  }
+  };
 
-  const handlePressedShapeAttrChange = (attr: Partial<ShapeAttributes>, type: string) => {
+  const handlePressedShapeAttrChange = (
+    attr: Partial<ShapeAttributes>,
+    type: string,
+  ) => {
     if (selectedWidget?.type === "button") {
-      const pressed = Object.assign({}, selectedWidget.pressed, { shape: attr });
+      const pressed = Object.assign({}, selectedWidget.pressed, {
+        shape: attr,
+      });
       onUpdate(Object.assign({}, selectedWidget, { pressed }), type);
     }
   };
 
   const handleTextAttrChange = (attr: TextAttributes, type: string) => {
-      onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
+    onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
   };
 
-  const handlePressedTextAttrChange = (attr: Partial<TextAttributes>, type: string) => {
+  const handlePressedTextAttrChange = (
+    attr: Partial<TextAttributes>,
+    type: string,
+  ) => {
     if (selectedWidget?.type === "button") {
       const pressed = Object.assign({}, selectedWidget.pressed, { text: attr });
       onUpdate(Object.assign({}, selectedWidget, { pressed }), type);
     }
   };
 
-  const size = selectedWidget ? extractShapeAttr("size", ephemeralShapeState, selectedWidget) as Size : null;
-  const position = selectedWidget ? extractShapeAttr("position", ephemeralShapeState, selectedWidget) as Position : null;
+  const size = selectedWidget
+    ? (extractShapeAttr("size", ephemeralShapeState, selectedWidget) as Size)
+    : null;
+  const position = selectedWidget
+    ? (extractShapeAttr(
+        "position",
+        ephemeralShapeState,
+        selectedWidget,
+      ) as Position)
+    : null;
   const filteredScreens: ScreenIdAndName[] = screens
-    .filter(screen => screen.id !== currentScreen?.id)
-    .map(screen => ({ id: screen.id, name: screen.name }));
+    .filter((screen) => screen.id !== currentScreen?.id)
+    .map((screen) => ({ id: screen.id, name: screen.name }));
 
   return (
-    <div className="attributes-panel col fill-y" style={{overflowY: "auto"}}>
+    <div className="attributes-panel col fill-y" style={{ overflowY: "auto" }}>
       {!selectedWidget && (
         <div>
           <h2 className="border-b p8-b">SCREEN</h2>
@@ -167,4 +237,3 @@ export function AttributesPanel({ ephemeralShapeState, selectedWidget, isPressed
     </div>
   );
 }
-

@@ -19,7 +19,8 @@
   user-select: none;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   height: 100%;
   width: 100%;
@@ -60,7 +61,8 @@ button:hover {
   position: relative;
   overflow: hidden;
 }
-.scanlines:before, .scanlines:after {
+.scanlines:before,
+.scanlines:after {
   display: block;
   pointer-events: none;
   content: "";
@@ -81,7 +83,11 @@ button:hover {
   bottom: 0;
   left: 0;
   z-index: 2147483648;
-  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.2) 51%);
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 51%
+  );
   background-size: 100% 4px;
   -webkit-animation: scanlines 1s steps(60) infinite;
   animation: scanlines 1s steps(60) infinite;

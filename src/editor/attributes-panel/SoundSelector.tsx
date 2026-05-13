@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import type { ButtonSound } from "@common/shared/models";
+import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useState } from "react";
 
 type AudioEntry = {
   source: string;

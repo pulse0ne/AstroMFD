@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import * as path from "node:path";
+
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -31,10 +32,10 @@ export default defineConfig(async () => ({
   },
   resolve: {
     alias: {
-      "@common/shared": path.resolve(__dirname, "./shared")
-    }
+      "@common/shared": path.resolve(__dirname, "./shared"),
+    },
   },
   optimizeDeps: {
-    include: ["@common/shared"]
-  }
+    include: ["@common/shared"],
+  },
 }));

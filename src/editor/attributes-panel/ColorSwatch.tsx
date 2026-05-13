@@ -1,6 +1,13 @@
-import {ChangeEvent, CSSProperties, forwardRef, useEffect, useMemo, useState} from "react";
+import {
+  ChangeEvent,
+  CSSProperties,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { RgbaStringColorPicker } from "react-colorful";
 import Popup from "reactjs-popup";
-import {RgbaStringColorPicker} from "react-colorful";
 
 import "./color-swatch.css";
 
@@ -14,9 +21,14 @@ export type ColorSwatchProps = {
   onAddRecentColor: (color: string) => void;
 };
 
-export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAddRecentColor }: ColorSwatchProps) {
+export function ColorSwatch({
+  color = "rgba(0, 0, 0, 0)",
+  recents,
+  onUpdate,
+  onAddRecentColor,
+}: ColorSwatchProps) {
   const rgba = useMemo(() => splitColor(color), [color]);
-  const [ wasCopied, setWasCopied ] = useState(false);
+  const [wasCopied, setWasCopied] = useState(false);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined = undefined;
@@ -36,7 +48,10 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
     navigator.clipboard.writeText(color).then(() => setWasCopied(true));
   };
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>, component: keyof RGBA) => {
+  const handlePaste = (
+    event: React.ClipboardEvent<HTMLInputElement>,
+    component: keyof RGBA,
+  ) => {
     const data = event.clipboardData;
     if (data) {
       const text = data.getData("text");
@@ -48,13 +63,13 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
         } else if (component === "a") {
           const parsed = Number.parseFloat(text);
           if (!isNaN(parsed)) {
-            const newColor: RGBA = {...rgba, [component]: clamp(parsed)};
+            const newColor: RGBA = { ...rgba, [component]: clamp(parsed) };
             onUpdate(rgbaString(newColor));
           }
         } else {
           const parsed = Number.parseInt(text);
           if (!isNaN(parsed)) {
-            const newColor: RGBA = {...rgba, [component]: clamp(parsed)};
+            const newColor: RGBA = { ...rgba, [component]: clamp(parsed) };
             onUpdate(rgbaString(newColor));
           }
         }
@@ -62,7 +77,10 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
     }
   };
 
-  const handleInput = (event: ChangeEvent<HTMLInputElement>, component: keyof RGBA) => {
+  const handleInput = (
+    event: ChangeEvent<HTMLInputElement>,
+    component: keyof RGBA,
+  ) => {
     const parser = component === "a" ? Number.parseFloat : Number.parseInt;
     const value = parser(event.target.value);
     if (!isNaN(value)) {
@@ -75,7 +93,9 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
   return (
     <Popup
       trigger={
-        <div><Swatch color={color} width={96} height={24} checkerSize={16} /></div>
+        <div>
+          <Swatch color={color} width={96} height={24} checkerSize={16} />
+        </div>
       }
       position="left top"
       contentStyle={{ background: "var(--panel-color-hex)" }}
@@ -97,7 +117,7 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
                 type="number"
                 min={0}
                 max={255}
-                style={{width: 48}}
+                style={{ width: 48 }}
                 value={rgba.r}
                 onChange={(evt) => handleInput(evt, "r")}
                 onPaste={(evt) => handlePaste(evt, "r")}
@@ -111,7 +131,7 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
                 type="number"
                 min={0}
                 max={255}
-                style={{width: 48}}
+                style={{ width: 48 }}
                 value={rgba.g}
                 onChange={(evt) => handleInput(evt, "g")}
                 onPaste={(evt) => handlePaste(evt, "g")}
@@ -127,7 +147,7 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
                 type="number"
                 min={0}
                 max={255}
-                style={{width: 48}}
+                style={{ width: 48 }}
                 value={rgba.b}
                 onChange={(evt) => handleInput(evt, "b")}
                 onPaste={(evt) => handlePaste(evt, "b")}
@@ -141,7 +161,7 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
                 type="number"
                 min={0}
                 max={255}
-                style={{width: 48}}
+                style={{ width: 48 }}
                 value={rgba.a}
                 onChange={(evt) => handleInput(evt, "a")}
                 onPaste={(evt) => handlePaste(evt, "a")}
@@ -150,12 +170,17 @@ export function ColorSwatch({color = "rgba(0, 0, 0, 0)", recents, onUpdate, onAd
           </tr>
         </tbody>
       </table>
-      <div className="col" style={{paddingLeft: 12, paddingRight: 12}}>
-        <button onClick={handleCopy} disabled={wasCopied}>{wasCopied ? "Copied" : "Copy"}</button>
+      <div className="col" style={{ paddingLeft: 12, paddingRight: 12 }}>
+        <button onClick={handleCopy} disabled={wasCopied}>
+          {wasCopied ? "Copied" : "Copy"}
+        </button>
       </div>
-      <div className="row gap-8" style={{ padding: 12, flexWrap: "wrap", width: 176}}>
+      <div
+        className="row gap-8"
+        style={{ padding: 12, flexWrap: "wrap", width: 176 }}
+      >
         {recents.map((c, i) => (
-          <Swatch key={i} color={c} width={24} height={24}/>
+          <Swatch key={i} color={c} width={24} height={24} />
         ))}
       </div>
     </Popup>
@@ -169,14 +194,22 @@ type SwatchProps = {
   checkerSize?: number;
 };
 
-const Swatch = forwardRef<HTMLDivElement, SwatchProps>(function Swatch({ color = "rgba(0, 0, 0, 0)", width = 96, height = 24, checkerSize = 16 }: SwatchProps, ref) {
+const Swatch = forwardRef<HTMLDivElement, SwatchProps>(function Swatch(
+  {
+    color = "rgba(0, 0, 0, 0)",
+    width = 96,
+    height = 24,
+    checkerSize = 16,
+  }: SwatchProps,
+  ref,
+) {
   const svg = [
     `<svg xmlns='http://www.w3.org/2000/svg' width='${checkerSize}' height='${checkerSize}' viewBox='0 0 ${checkerSize} ${checkerSize}'>`,
-    `<rect width='${checkerSize/2}' height='${checkerSize/2}' fill='%23fff'/>`,
-    `<rect x='${checkerSize/2}' width='${checkerSize/2}' height='${checkerSize/2}' fill='%23dcdcdc'/>`,
-    `<rect x='${checkerSize/2}' y='${checkerSize/2}' width='${checkerSize/2}' height='${checkerSize/2}' fill='%23fff'/>`,
-    `<rect y='${checkerSize/2}' width='${checkerSize/2}' height='${checkerSize/2}' fill='%23dcdcdc'/>`,
-    `</svg>`
+    `<rect width='${checkerSize / 2}' height='${checkerSize / 2}' fill='%23fff'/>`,
+    `<rect x='${checkerSize / 2}' width='${checkerSize / 2}' height='${checkerSize / 2}' fill='%23dcdcdc'/>`,
+    `<rect x='${checkerSize / 2}' y='${checkerSize / 2}' width='${checkerSize / 2}' height='${checkerSize / 2}' fill='%23fff'/>`,
+    `<rect y='${checkerSize / 2}' width='${checkerSize / 2}' height='${checkerSize / 2}' fill='%23dcdcdc'/>`,
+    `</svg>`,
   ].join("");
   const bg = `url("data:image/svg+xml;utf8,${svg}")`;
 
@@ -188,14 +221,14 @@ const Swatch = forwardRef<HTMLDivElement, SwatchProps>(function Swatch({ color =
     backgroundSize: `${checkerSize}px ${checkerSize}px`,
     position: "relative",
     overflow: "hidden",
-    border: "var(--border-light)"
+    border: "var(--border-light)",
   };
 
   const overlayStyle: CSSProperties = {
     position: "absolute",
     inset: 0,
     background: color,
-    cursor: "pointer"
+    cursor: "pointer",
   };
 
   return (
@@ -205,7 +238,7 @@ const Swatch = forwardRef<HTMLDivElement, SwatchProps>(function Swatch({ color =
   );
 });
 
-type RGBA = { r: number, g: number, b: number, a: number };
+type RGBA = { r: number; g: number; b: number; a: number };
 const RE = /rgba\((?<r>\d+?), ?(?<g>\d+?), ?(?<b>\d+?), ?(?<a>.+?)\)/;
 
 function splitColor(colorString: string): RGBA {
@@ -216,7 +249,7 @@ function splitColor(colorString: string): RGBA {
       r: Number.parseInt(r),
       g: Number.parseInt(g),
       b: Number.parseInt(b),
-      a: Number.parseFloat(a)
+      a: Number.parseFloat(a),
     };
   }
   return { r: 0, g: 0, b: 0, a: 0 };

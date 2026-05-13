@@ -1,7 +1,7 @@
-import {StateCreator} from "zustand/vanilla";
-import {RootState, ScreenSlice} from "./types.ts";
-import {Screen} from "@common/shared/models";
+import { Screen } from "@common/shared/models";
+import { StateCreator } from "zustand/vanilla";
 
+import { RootState, ScreenSlice } from "./types.ts";
 
 export const createScreenSlice: StateCreator<
   RootState,

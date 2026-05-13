@@ -1,41 +1,45 @@
 .swatch {
-    width: 96px;
-    height: 56px;
-    border-radius: 6px;
-    position: relative;
-    background-image:
-            linear-gradient(45deg, #d1d1d1 25%, transparent 25%),
-            linear-gradient(-45deg, #d1d1d1 25%, transparent 25%),
-            linear-gradient(45deg, rgba(0,0,0,0.06) 25%, transparent 25%),
-            linear-gradient(-45deg, rgba(0,0,0,0.06) 25%, transparent 25%);
-    background-size: 16px 16px;
-    background-position: 0 0, 8px 0, 8px -8px, 0 8px;
+  width: 96px;
+  height: 56px;
+  border-radius: 6px;
+  position: relative;
+  background-image:
+    linear-gradient(45deg, #d1d1d1 25%, transparent 25%),
+    linear-gradient(-45deg, #d1d1d1 25%, transparent 25%),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    8px 0,
+    8px -8px,
+    0 8px;
 }
 
 .color-picker.react-colorful {
-    height: 216px;
-    width: 176px;
-    padding: 12px;
-    gap: 4px;
+  height: 216px;
+  width: 176px;
+  padding: 12px;
+  gap: 4px;
 }
 
 .color-picker .react-colorful__saturation-pointer {
-    width: 12px;
-    height: 12px;
-    border-radius: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
 }
 
 .color-picker .react-colorful__hue-pointer,
 .color-picker .react-colorful__alpha-pointer {
-    width: 8px;
-    border-radius: 2px;
+  width: 8px;
+  border-radius: 2px;
 }
 
 .color-picker .react-colorful__saturation,
 .color-picker .react-colorful__last-control {
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .color-picker .react-colorful__last-control {
-    margin-top: 8px;
+  margin-top: 8px;
 }

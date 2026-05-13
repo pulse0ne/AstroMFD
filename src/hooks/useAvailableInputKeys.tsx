@@ -1,6 +1,12 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { InputKey } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type AvailableInputKeysContextValue = {
   availableKeys: InputKey[];
@@ -13,13 +19,17 @@ const DEFAULT_FALLBACK_KEY: InputKey = {
   button: 1,
 };
 
-const AvailableInputKeysContext = createContext<AvailableInputKeysContextValue>({
-  availableKeys: [],
-  defaultKey: DEFAULT_FALLBACK_KEY,
-  isLoading: true,
-});
+const AvailableInputKeysContext = createContext<AvailableInputKeysContextValue>(
+  {
+    availableKeys: [],
+    defaultKey: DEFAULT_FALLBACK_KEY,
+    isLoading: true,
+  },
+);
 
-export function AvailableInputKeysProvider({ children }: PropsWithChildren<{}>) {
+export function AvailableInputKeysProvider({
+  children,
+}: PropsWithChildren<{}>) {
   const [state, setState] = useState<AvailableInputKeysContextValue>({
     availableKeys: [],
     defaultKey: DEFAULT_FALLBACK_KEY,
@@ -55,7 +65,9 @@ export function AvailableInputKeysProvider({ children }: PropsWithChildren<{}>) 
 export function useAvailableInputKeys() {
   const ctx = useContext(AvailableInputKeysContext);
   if (!ctx) {
-    throw new Error("useAvailableInputKeys must be used inside AvailableInputKeysProvider");
+    throw new Error(
+      "useAvailableInputKeys must be used inside AvailableInputKeysProvider",
+    );
   }
   return ctx;
 }

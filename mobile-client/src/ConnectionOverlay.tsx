@@ -1,9 +1,10 @@
-import {useAppWebsocket} from "./websocket/WebsocketContext.tsx";
-import {MdOutlineWifiOff} from "react-icons/md";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import { MdOutlineWifiOff } from "react-icons/md";
 
-export default function ConnectionOverlay () {
-  const [ showing, setShowing ] = useState(false);
+import { useAppWebsocket } from "./websocket/WebsocketContext.tsx";
+
+export default function ConnectionOverlay() {
+  const [showing, setShowing] = useState(false);
   const { isConnected, reconnect } = useAppWebsocket();
 
   useEffect(() => {

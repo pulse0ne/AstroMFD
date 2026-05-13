@@ -1,5 +1,5 @@
+import { ButtonAttributes, InputKey } from "@common/shared/models";
 import { v4 as uuid } from "uuid";
-import {ButtonAttributes, InputKey} from "@common/shared/models";
 
 export function createButton(defaultKey?: InputKey): ButtonAttributes {
   const key: InputKey = defaultKey || { type: "joystickButton", button: 1 };
@@ -10,7 +10,7 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
     input: {
       key,
       fixedDuration: false,
-      duration: 100
+      duration: 100,
     },
     navTarget: null,
     sound: null,
@@ -22,7 +22,7 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
       stroke: "rgb(130, 51, 152)",
       shadow: null,
       strokeWidth: 1,
-      cornerRadius: 8
+      cornerRadius: 8,
     },
     text: {
       text: "Button",
@@ -31,11 +31,11 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
       fontColor: "white",
       shadow: null,
       horizontalAlignment: "center",
-      verticalAlignment: "middle"
+      verticalAlignment: "middle",
     },
     pressed: {
       shape: {},
-      text: {}
-    }
+      text: {},
+    },
   };
 }

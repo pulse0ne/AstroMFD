@@ -1,9 +1,18 @@
-import {SvgUtils} from "../utils/svg/parseSvg.ts";
-import {SvgXmlNode} from "@common/shared/models";
-import {Fragment} from "react";
-import {Circle, Ellipse, Group, Line, Path, Rect} from "react-konva";
+import { SvgXmlNode } from "@common/shared/models";
+import { Fragment } from "react";
+import { Circle, Ellipse, Group, Line, Path, Rect } from "react-konva";
 
-export function SvgContent({ svg, targetWidth, targetHeight }: { svg: SvgXmlNode, targetWidth: number, targetHeight: number }) {
+import { SvgUtils } from "../utils/svg/parseSvg.ts";
+
+export function SvgContent({
+  svg,
+  targetWidth,
+  targetHeight,
+}: {
+  svg: SvgXmlNode;
+  targetWidth: number;
+  targetHeight: number;
+}) {
   const vb = SvgUtils.getSvgViewBox(svg);
   const scaleX = targetWidth / vb.width;
   const scaleY = targetHeight / vb.height;
@@ -22,7 +31,7 @@ export function SvgContent({ svg, targetWidth, targetHeight }: { svg: SvgXmlNode
   );
 }
 
-function renderSvgNode(node: SvgXmlNode, key?: string|number) {
+function renderSvgNode(node: SvgXmlNode, key?: string | number) {
   if (node.type === "text") return null;
 
   const { name, attributes, children } = node;
@@ -30,20 +39,16 @@ function renderSvgNode(node: SvgXmlNode, key?: string|number) {
 
   switch (name) {
     case "svg":
-      return (<Fragment>{renderedChildren}</Fragment>);
+      return <Fragment>{renderedChildren}</Fragment>;
     case "g":
-      return (
-        <Group key={key}>
-          {renderedChildren}
-        </Group>
-      );
+      return <Group key={key}>{renderedChildren}</Group>;
     case "path":
       return (
         <Path
           key={key}
           data={attributes.d || ""}
           fill={attributes.fill || undefined}
-          fillRule={attributes.fillRule as CanvasFillRule || undefined}
+          fillRule={(attributes.fillRule as CanvasFillRule) || undefined}
           stroke={attributes.stroke || undefined}
           strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
         />

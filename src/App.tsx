@@ -1,9 +1,10 @@
+import { MemoryRouter, Route, Routes } from "react-router";
+
+import { AvailableInputKeysProvider } from "./hooks/useAvailableInputKeys.tsx";
+import { DevicesProvider } from "./hooks/useDevices.tsx";
 import StatusBar from "./statusbar/StatusBar.tsx";
-import {DevicesProvider} from "./hooks/useDevices.tsx";
-import {AvailableInputKeysProvider} from "./hooks/useAvailableInputKeys.tsx";
-import {MemoryRouter, Route, Routes} from "react-router";
-import {Creator} from "./views/Creator.tsx";
-import {ScreenSetSelector} from "./views/ScreenSetSelector.tsx";
+import { Creator } from "./views/Creator.tsx";
+import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:

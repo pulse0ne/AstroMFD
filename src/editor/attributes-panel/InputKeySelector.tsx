@@ -72,7 +72,10 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
     <div className="col gap-16">
       <div className="row gap-16">
         <span>Input Type:</span>
-        <select value={value.type} onChange={(e) => handleTypeChange(e.target.value as InputKey["type"])}>
+        <select
+          value={value.type}
+          onChange={(e) => handleTypeChange(e.target.value as InputKey["type"])}
+        >
           <option value="joystickButton">Joystick Button</option>
           <option value="letter">Letter Key</option>
           <option value="number">Number Key</option>
@@ -98,7 +101,10 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       {value.type === "letter" && (
         <div className="row gap-16">
           <span>Letter:</span>
-          <select value={value.key} onChange={(e) => handleValueChange(e.target.value)}>
+          <select
+            value={value.key}
+            onChange={(e) => handleValueChange(e.target.value)}
+          >
             {Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ").map((letter) => (
               <option key={letter} value={letter}>
                 {letter}
@@ -111,7 +117,10 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       {value.type === "number" && (
         <div className="row gap-16">
           <span>Number:</span>
-          <select value={value.key} onChange={(e) => handleValueChange(e.target.value)}>
+          <select
+            value={value.key}
+            onChange={(e) => handleValueChange(e.target.value)}
+          >
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
               <option key={num} value={num}>
                 {num}
@@ -124,7 +133,10 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       {value.type === "functionKey" && (
         <div className="row gap-16">
           <span>Function Key:</span>
-          <select value={value.key} onChange={(e) => handleValueChange(e.target.value)}>
+          <select
+            value={value.key}
+            onChange={(e) => handleValueChange(e.target.value)}
+          >
             {Array.from({ length: 24 }, (_, i) => i + 1).map((num) => (
               <option key={num} value={num}>
                 F{num}
@@ -137,7 +149,10 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       {value.type === "specialKey" && (
         <div className="row gap-16">
           <span>Special Key:</span>
-          <select value={value.key} onChange={(e) => handleValueChange(e.target.value)}>
+          <select
+            value={value.key}
+            onChange={(e) => handleValueChange(e.target.value)}
+          >
             {SPECIAL_KEYS.map(({ value, label }) => (
               <option key={value} value={value}>
                 {label}

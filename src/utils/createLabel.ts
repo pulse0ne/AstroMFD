@@ -1,5 +1,5 @@
+import { LabelAttributes } from "@common/shared/models";
 import { v4 as uuid } from "uuid";
-import {LabelAttributes} from "@common/shared/models";
 
 export function createLabel(): LabelAttributes {
   return {
@@ -13,7 +13,7 @@ export function createLabel(): LabelAttributes {
       stroke: null,
       shadow: null,
       strokeWidth: 0,
-      cornerRadius: 0
+      cornerRadius: 0,
     },
     text: {
       text: "Label",
@@ -22,8 +22,8 @@ export function createLabel(): LabelAttributes {
       fontColor: "white",
       shadow: null,
       horizontalAlignment: "center",
-      verticalAlignment: "middle"
+      verticalAlignment: "middle",
     },
-    usesVariables: false
+    usesVariables: false,
   };
 }

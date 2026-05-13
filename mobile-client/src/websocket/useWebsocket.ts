@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const msgBuffer: string[] = [];
 
@@ -8,7 +8,10 @@ export function useWebsocket(url: string) {
   const [lastMessage, setLastMessage] = useState<any>(null);
 
   const connect = useCallback(() => {
-    if (socketRef.current && socketRef.current.readyState !== WebSocket.CLOSED) {
+    if (
+      socketRef.current &&
+      socketRef.current.readyState !== WebSocket.CLOSED
+    ) {
       return;
     }
 
@@ -18,7 +21,7 @@ export function useWebsocket(url: string) {
     socket.onopen = () => {
       setIsConnected(true);
       if (msgBuffer.length) {
-        msgBuffer.forEach(msg => socket.send(msg));
+        msgBuffer.forEach((msg) => socket.send(msg));
       }
     };
     socket.onclose = () => setIsConnected(false);

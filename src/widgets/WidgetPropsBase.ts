@@ -1,4 +1,4 @@
-import {Position, Size} from "@common/shared/models";
+import { Position, Size } from "@common/shared/models";
 
 export type WidgetPropsBase = {
   onSelect: (multi: boolean) => void;

@@ -1,13 +1,14 @@
-import {StateCreator} from "zustand/vanilla";
-import {HistorySlice, RootState} from "./types.ts";
-import {UndoableCommand} from "./command.ts";
+import { StateCreator } from "zustand/vanilla";
+
+import { UndoableCommand } from "./command.ts";
+import { HistorySlice, RootState } from "./types.ts";
 
 const HISTORY_LIMIT = 50;
 
 const COALESCE_TYPES = [
   "widget.shape.color",
   "widget.text.fontColor",
-  "widget.text.text"
+  "widget.text.text",
 ];
 
 export type History = {
@@ -30,7 +31,7 @@ export const createHistorySlice: StateCreator<
 
   // mutators
   executeCommand: (cmd: UndoableCommand) => {
-    set((state ) => {
+    set((state) => {
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
 
@@ -43,9 +44,16 @@ export const createHistorySlice: StateCreator<
         histories.set(screenId, history);
       }
 
-      const lastCmd = history.past.length ? history.past[history.past.length - 1] : null;
+      const lastCmd = history.past.length
+        ? history.past[history.past.length - 1]
+        : null;
 
-      if (lastCmd && COALESCE_TYPES.includes(cmd.type) && lastCmd.type === cmd.type && lastCmd.targetId === cmd.targetId) {
+      if (
+        lastCmd &&
+        COALESCE_TYPES.includes(cmd.type) &&
+        lastCmd.type === cmd.type &&
+        lastCmd.targetId === cmd.targetId
+      ) {
         history.past[history.past.length - 1] = cmd;
       } else {
         while (histories.get(screenId)!.past.length > HISTORY_LIMIT) {
@@ -59,7 +67,7 @@ export const createHistorySlice: StateCreator<
     });
   },
   undo: () => {
-    set(state => {
+    set((state) => {
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
       const history = state.histories.get(screenId);
@@ -75,7 +83,7 @@ export const createHistorySlice: StateCreator<
     });
   },
   redo: () => {
-    set(state => {
+    set((state) => {
       if (!state.screenSet || state.activeScreenIndex === null) return;
       const screenId = state.screenSet.screens[state.activeScreenIndex].id;
       const history = state.histories.get(screenId);

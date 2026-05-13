@@ -1,6 +1,7 @@
-import {RootState, ScreenSetSlice} from "./types.ts";
-import {StateCreator} from "zustand/vanilla";
-import {Screen} from "@common/shared/models";
+import { Screen } from "@common/shared/models";
+import { StateCreator } from "zustand/vanilla";
+
+import { RootState, ScreenSetSlice } from "./types.ts";
 
 export const createScreenSetSlice: StateCreator<
   RootState,
@@ -43,7 +44,9 @@ export const createScreenSetSlice: StateCreator<
   deleteScreen: (id: string) => {
     set((state) => {
       if (state.screenSet) {
-        state.screenSet.screens = state.screenSet.screens.filter(s => s.id !== id);
+        state.screenSet.screens = state.screenSet.screens.filter(
+          (s) => s.id !== id,
+        );
         state.activeScreenIndex = null;
         const histories = state.histories;
         if (histories.get(id)) {

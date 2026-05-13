@@ -1,11 +1,17 @@
-import {Group, Rect, Text, Transformer} from "react-konva";
-import {KonvaEventObject} from "konva/lib/Node";
-import {useCallback, useEffect, useMemo, useRef} from "react";
-import {Shape} from "konva/lib/Shape";
-import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {Konva} from "konva/lib/_FullInternals";
-import {ButtonAttributes, Gradient, ShapeAttributes, TextAttributes} from "@common/shared/models";
-import {coordinatesFromAngle} from "../utils/coordinatesFromAngle.ts";
+import {
+  ButtonAttributes,
+  Gradient,
+  ShapeAttributes,
+  TextAttributes,
+} from "@common/shared/models";
+import { Konva } from "konva/lib/_FullInternals";
+import { KonvaEventObject } from "konva/lib/Node";
+import { Shape } from "konva/lib/Shape";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Group, Rect, Text, Transformer } from "react-konva";
+
+import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type ButtonProps = WidgetPropsBase & {
   attr: ButtonAttributes;
@@ -18,7 +24,7 @@ export function Button({
   onSelect,
   onCommitUpdate,
   onEphemeralUpdate,
-  isSelected = false
+  isSelected = false,
 }: ButtonProps) {
   const groupRef = useRef<Konva.Group | null>(null);
   const trRef = useRef<Konva.Transformer | null>(null);
@@ -33,19 +39,25 @@ export function Button({
     }
   }, [attr, state]);
 
-  const extractShapeAttr = useCallback(function _<K extends keyof ShapeAttributes>(key: K): ShapeAttributes[K] {
-    if (state === "primary") {
-      return attr.shape[key];
-    }
-    return attr.pressed.shape[key] ?? attr.shape[key];
-  }, [state, attr]);
+  const extractShapeAttr = useCallback(
+    function _<K extends keyof ShapeAttributes>(key: K): ShapeAttributes[K] {
+      if (state === "primary") {
+        return attr.shape[key];
+      }
+      return attr.pressed.shape[key] ?? attr.shape[key];
+    },
+    [state, attr],
+  );
 
-  const extractTextAttr = useCallback(function _<K extends keyof TextAttributes>(key: K): TextAttributes[K] {
-    if (state === "primary") {
-      return attr.text[key];
-    }
-    return attr.pressed.text[key] ?? attr.text[key];
-  }, [state, attr]);
+  const extractTextAttr = useCallback(
+    function _<K extends keyof TextAttributes>(key: K): TextAttributes[K] {
+      if (state === "primary") {
+        return attr.text[key];
+      }
+      return attr.pressed.text[key] ?? attr.text[key];
+    },
+    [state, attr],
+  );
 
   const extractFontName = () => {
     if (state === "primary") {
@@ -56,7 +68,15 @@ export function Button({
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onCommitUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height }, "widget.shape.position");
+    onCommitUpdate(
+      {
+        x: shape.x(),
+        y: shape.y(),
+        width: attr.shape.size.width,
+        height: attr.shape.size.height,
+      },
+      "widget.shape.position",
+    );
   };
 
   const handleTransform = () => {
@@ -94,15 +114,18 @@ export function Button({
     node.width(newWidth);
     node.height(newHeight);
 
-    onCommitUpdate({
-      x: node.x(),
-      y: node.y(),
-      width: newWidth,
-      height: newHeight,
-    }, "widget.shape.size");
+    onCommitUpdate(
+      {
+        x: node.x(),
+        y: node.y(),
+        width: newWidth,
+        height: newHeight,
+      },
+      "widget.shape.size",
+    );
   };
 
-  const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
+  const handleSelect = (evt: KonvaEventObject<MouseEvent>) => {
     const isMulti = evt.evt.ctrlKey || evt.evt.shiftKey;
     onSelect(isMulti);
   };
@@ -128,13 +151,20 @@ export function Button({
     const f = state === "primary" ? attr.shape.fill : attr.pressed.shape.fill;
     if (!f || f.type === "solid") return {};
     const gradient = f.value as Gradient;
-    const stops = gradient.stops.reduce((acc, stop) => {
-      acc.push(stop.position / 100);
-      acc.push(stop.color);
-      return acc;
-    }, [] as Array<number|string>);
+    const stops = gradient.stops.reduce(
+      (acc, stop) => {
+        acc.push(stop.position / 100);
+        acc.push(stop.color);
+        return acc;
+      },
+      [] as Array<number | string>,
+    );
     if (gradient.type === "linear") {
-      const { start, end } = coordinatesFromAngle(attr.shape.size.width, attr.shape.size.height, gradient.angle ?? 0);
+      const { start, end } = coordinatesFromAngle(
+        attr.shape.size.width,
+        attr.shape.size.height,
+        gradient.angle ?? 0,
+      );
       return {
         fillLinearGradientColorStops: stops,
         fillLinearGradientStartPoint: start,
@@ -148,7 +178,7 @@ export function Button({
       fillRadialGradientStartPoint: { x: centerX, y: centerY },
       fillRadialGradientEndPoint: { x: centerX, y: centerY },
       fillRadialGradientStartRadius: 0,
-      fillRadialGradientEndRadius: attr.shape.size.height // TODO
+      fillRadialGradientEndRadius: attr.shape.size.height, // TODO
     };
   }, [state, attr]);
 
@@ -179,7 +209,9 @@ export function Button({
           shadowColor={shapeShadow?.color ?? undefined}
           shadowOffsetX={shapeShadow?.xOffset ?? undefined}
           shadowOffsetY={shapeShadow?.yOffset ?? undefined}
-          shadowBlur={shapeShadow?.strength ? shapeShadow.strength * 6 : undefined}
+          shadowBlur={
+            shapeShadow?.strength ? shapeShadow.strength * 6 : undefined
+          }
           {...gradientProps}
         />
         <Text
@@ -194,15 +226,12 @@ export function Button({
           shadowColor={textShadow?.color ?? undefined}
           shadowOffsetX={textShadow?.xOffset ?? undefined}
           shadowOffsetY={textShadow?.yOffset ?? undefined}
-          shadowBlur={textShadow?.strength ? textShadow.strength * 6 : undefined}
+          shadowBlur={
+            textShadow?.strength ? textShadow.strength * 6 : undefined
+          }
         />
       </Group>
-      {isSelected && (
-        <Transformer
-          ref={trRef}
-          rotateEnabled={false}
-        />
-      )}
+      {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
     </>
   );
 }

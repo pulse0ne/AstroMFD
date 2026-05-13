@@ -1,4 +1,4 @@
-import {MdToggleOff, MdToggleOn} from "react-icons/md";
+import { MdToggleOff, MdToggleOn } from "react-icons/md";
 
 export type ToggleProps = {
   size?: number;
@@ -8,7 +8,13 @@ export type ToggleProps = {
   rightLabel?: string;
 };
 
-export function Toggle({ size = 32, onToggle, value, leftLabel, rightLabel }: ToggleProps) {
+export function Toggle({
+  size = 32,
+  onToggle,
+  value,
+  leftLabel,
+  rightLabel,
+}: ToggleProps) {
   const Component = value ? MdToggleOn : MdToggleOff;
 
   return (
@@ -17,7 +23,7 @@ export function Toggle({ size = 32, onToggle, value, leftLabel, rightLabel }: To
         <span
           style={{
             opacity: value ? 0.4 : 1.0,
-            color: value ? undefined : "var(--gradient-stop1)"
+            color: value ? undefined : "var(--gradient-stop1)",
           }}
         >
           {leftLabel}
@@ -25,7 +31,9 @@ export function Toggle({ size = 32, onToggle, value, leftLabel, rightLabel }: To
       )}
       <Component
         size={size}
-        color={value && !Boolean(leftLabel) ? "var(--gradient-stop1)" : undefined}
+        color={
+          value && !Boolean(leftLabel) ? "var(--gradient-stop1)" : undefined
+        }
         onClick={onToggle}
         className="pointer"
       />
@@ -33,7 +41,7 @@ export function Toggle({ size = 32, onToggle, value, leftLabel, rightLabel }: To
         <span
           style={{
             opacity: value ? 1.0 : 0.4,
-            color: value ? "var(--gradient-stop1)" : undefined
+            color: value ? "var(--gradient-stop1)" : undefined,
           }}
         >
           {rightLabel}

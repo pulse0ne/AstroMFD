@@ -1,11 +1,12 @@
-import {WidgetPropsBase} from "./WidgetPropsBase.ts";
-import {useEffect, useMemo, useRef} from "react";
-import {KonvaEventObject} from "konva/lib/Node";
-import {Shape} from "konva/lib/Shape";
-import {Group, Rect, Transformer} from "react-konva";
-import {Gradient, PanelAttributes} from "@common/shared/models";
-import {SvgContent} from "./SvgContent.tsx";
-import {coordinatesFromAngle} from "../utils/coordinatesFromAngle.ts";
+import { Gradient, PanelAttributes } from "@common/shared/models";
+import { KonvaEventObject } from "konva/lib/Node";
+import { Shape } from "konva/lib/Shape";
+import { useEffect, useMemo, useRef } from "react";
+import { Group, Rect, Transformer } from "react-konva";
+
+import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { SvgContent } from "./SvgContent.tsx";
+import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -13,7 +14,13 @@ export type PanelProps = WidgetPropsBase & {
 
 // TODO: Support images/svg shapes
 
-export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSelected }: PanelProps) {
+export function Panel({
+  attr,
+  onSelect,
+  onCommitUpdate,
+  onEphemeralUpdate,
+  isSelected,
+}: PanelProps) {
   const groupRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
@@ -29,7 +36,15 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
 
   const handleReposition = (evt: KonvaEventObject<DragEvent>) => {
     const shape = evt.target as Shape;
-    onCommitUpdate({ x: shape.x(), y: shape.y(), width: attr.shape.size.width, height: attr.shape.size.height }, "widget.shape.position");
+    onCommitUpdate(
+      {
+        x: shape.x(),
+        y: shape.y(),
+        width: attr.shape.size.width,
+        height: attr.shape.size.height,
+      },
+      "widget.shape.position",
+    );
   };
 
   const handleDragging = (evt: KonvaEventObject<DragEvent>) => {
@@ -72,15 +87,18 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     node.width(newWidth);
     node.height(newHeight);
 
-    onCommitUpdate({
-      x: node.x(),
-      y: node.y(),
-      width: newWidth,
-      height: newHeight,
-    }, "widget.shape.size");
+    onCommitUpdate(
+      {
+        x: node.x(),
+        y: node.y(),
+        width: newWidth,
+        height: newHeight,
+      },
+      "widget.shape.size",
+    );
   };
 
-  const handleSelect = (evt: KonvaEventObject<MouseEvent>)=> {
+  const handleSelect = (evt: KonvaEventObject<MouseEvent>) => {
     const isMulti = evt.evt.ctrlKey || evt.evt.shiftKey;
     onSelect(isMulti);
   };
@@ -96,13 +114,20 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
     const f = attr.shape.fill;
     if (!f || f.type === "solid") return {};
     const gradient = f.value as Gradient;
-    const stops = gradient.stops.reduce((acc, stop) => {
-      acc.push(stop.position / 100);
-      acc.push(stop.color);
-      return acc;
-    }, [] as Array<number|string>);
+    const stops = gradient.stops.reduce(
+      (acc, stop) => {
+        acc.push(stop.position / 100);
+        acc.push(stop.color);
+        return acc;
+      },
+      [] as Array<number | string>,
+    );
     if (gradient.type === "linear") {
-      const { start, end } = coordinatesFromAngle(attr.shape.size.width, attr.shape.size.height, gradient.angle ?? 0);
+      const { start, end } = coordinatesFromAngle(
+        attr.shape.size.width,
+        attr.shape.size.height,
+        gradient.angle ?? 0,
+      );
       return {
         fillLinearGradientColorStops: stops,
         fillLinearGradientStartPoint: start,
@@ -117,7 +142,7 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
       fillRadialGradientStartPoint: { x: centerX, y: centerY },
       fillRadialGradientEndPoint: { x: centerX, y: centerY },
       fillRadialGradientStartRadius: 0,
-      fillRadialGradientEndRadius: attr.shape.size.height // TODO
+      fillRadialGradientEndRadius: attr.shape.size.height, // TODO
     };
   }, [attr]);
 
@@ -143,12 +168,7 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
             targetHeight={attr.shape.size.height}
           />
         </Group>
-        {isSelected && (
-          <Transformer
-            ref={trRef}
-            rotateEnabled={false}
-          />
-        )}
+        {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
       </>
     );
   }
@@ -179,12 +199,7 @@ export function Panel({ attr, onSelect, onCommitUpdate, onEphemeralUpdate, isSel
           {...gradientProps}
         />
       </Group>
-      {isSelected && (
-        <Transformer
-          ref={trRef}
-          rotateEnabled={false}
-        />
-      )}
+      {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
     </>
   );
 }

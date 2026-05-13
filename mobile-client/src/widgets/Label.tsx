@@ -1,7 +1,8 @@
-import type {Gradient, LabelAttributes} from "@common/shared/models";
-import {type CSSProperties, useMemo} from "react";
-import {hAlignmentMap, vAlignmentMap} from "./common.ts";
-import {gradientString} from "../utils.ts";
+import type { Gradient, LabelAttributes } from "@common/shared/models";
+import { useMemo, type CSSProperties } from "react";
+
+import { gradientString } from "../utils.ts";
+import { hAlignmentMap, vAlignmentMap } from "./common.ts";
 
 export type LabelProps = {
   attr: LabelAttributes;
@@ -9,7 +10,6 @@ export type LabelProps = {
 };
 
 export function Label({ attr }: LabelProps) {
-
   const fill = useMemo(() => {
     const f = attr.shape.fill;
     if (!f) return null;

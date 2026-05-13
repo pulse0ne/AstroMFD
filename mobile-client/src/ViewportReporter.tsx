@@ -1,5 +1,6 @@
-import {useAppWebsocket} from "./websocket/WebsocketContext.tsx";
-import {useEffect} from "react";
+import { useEffect } from "react";
+
+import { useAppWebsocket } from "./websocket/WebsocketContext.tsx";
 
 function detectDeviceType() {
   const ua = navigator.userAgent;
@@ -34,9 +35,15 @@ export function ViewportReporter() {
 
   useEffect(() => {
     function sendClientReport() {
-      const { clientWidth: width, clientHeight: height } = document.documentElement;
-      if (lastViewportSize.width !== width || lastViewportSize.height !== height) {
-        sendMessage({ clientReport: { width, height, device: detectedDevice } });
+      const { clientWidth: width, clientHeight: height } =
+        document.documentElement;
+      if (
+        lastViewportSize.width !== width ||
+        lastViewportSize.height !== height
+      ) {
+        sendMessage({
+          clientReport: { width, height, device: detectedDevice },
+        });
         lastViewportSize.width = width;
         lastViewportSize.height = height;
       }

@@ -1,5 +1,5 @@
+import { CSSProperties, ReactNode } from "react";
 import Popup from "reactjs-popup";
-import { ReactNode, CSSProperties } from "react";
 
 export type ModalProps = {
   open: boolean;
@@ -49,18 +49,22 @@ export function Modal({
     >
       <div className={`modal-root col fill-x ${className || ""}`}>
         {header && (
-          <div className="modal-header border-bottom p16" style={{ flexShrink: 0 }}>{header}</div>
+          <div
+            className="modal-header border-bottom p16"
+            style={{ flexShrink: 0 }}
+          >
+            {header}
+          </div>
         )}
 
-        <div className="modal-content flex-grow scroll-y p16">
-          {children}
-        </div>
+        <div className="modal-content flex-grow scroll-y p16">{children}</div>
 
         {footer && (
-          <div className="modal-footer border-t p16" style={{ flexShrink: 0 }}>{footer}</div>
+          <div className="modal-footer border-t p16" style={{ flexShrink: 0 }}>
+            {footer}
+          </div>
         )}
       </div>
     </Popup>
   );
 }
-

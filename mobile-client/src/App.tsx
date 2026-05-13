@@ -1,7 +1,7 @@
-import {WebsocketProvider} from "./websocket/WebsocketContext.tsx";
 import ConnectionOverlay from "./ConnectionOverlay.tsx";
-import {ViewportReporter} from "./ViewportReporter.tsx";
-import {ScreenSetManager} from "./ScreenSetManager.tsx";
+import { ScreenSetManager } from "./ScreenSetManager.tsx";
+import { ViewportReporter } from "./ViewportReporter.tsx";
+import { WebsocketProvider } from "./websocket/WebsocketContext.tsx";
 
 console.log(window.navigator.userAgent);
 

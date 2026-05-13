@@ -1,6 +1,8 @@
-import {useEffect} from "react";
 import QRCode from "qrcode";
-import {Modal} from "../Modal.tsx";
+import { useEffect } from "react";
+
+import { Modal } from "../Modal.tsx";
+
 import "./qr-code-modal.css";
 
 export type QrCodeModalProps = {
@@ -23,8 +25,8 @@ export function QrCodeModal({ open, serverIp, onClose }: QrCodeModalProps) {
       }
     >
       <div className="col align-items-center justify-content-center m24-t">
-        <div style={{fontSize: "0.75em"}}>{url}</div>
-        <QrCode serverAddress={url}/>
+        <div style={{ fontSize: "0.75em" }}>{url}</div>
+        <QrCode serverAddress={url} />
       </div>
     </Modal>
   );
@@ -34,11 +36,14 @@ type QrCodeProps = {
   serverAddress: string;
 };
 
-function QrCode({serverAddress}: QrCodeProps) {
+function QrCode({ serverAddress }: QrCodeProps) {
   useEffect(() => {
     const canvas = document.getElementById("qr-code");
     if (canvas) {
-      QRCode.toCanvas(canvas, serverAddress, { width: 200, color: { dark: "#fff", light: "#000" } });
+      QRCode.toCanvas(canvas, serverAddress, {
+        width: 200,
+        color: { dark: "#fff", light: "#000" },
+      });
     }
   }, []);
   return <canvas id="qr-code"></canvas>;

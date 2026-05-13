@@ -1,41 +1,41 @@
-import {
-  MdAdd,
-  MdArrowBackIos, MdRedo, MdUndo,
-} from "react-icons/md";
-import {PropsWithChildren, useState} from "react";
+import { Widget } from "@common/shared/models";
+import { PropsWithChildren, useState } from "react";
+import { MdAdd, MdArrowBackIos, MdRedo, MdUndo } from "react-icons/md";
+import { useNavigate } from "react-router";
 import Popup from "reactjs-popup";
-import {useECStore} from "../store";
-import {useNavigate} from "react-router";
+
+import { useAvailableInputKeys } from "../hooks/useAvailableInputKeys.tsx";
+import { useECStore } from "../store";
 import {
   activeScreenSelector,
   activeScreenWidgetsSelector,
   hasRedosSelector,
-  hasUndosSelector
+  hasUndosSelector,
 } from "../store/selectors.ts";
-import {Widget} from "@common/shared/models";
-import {createScreen} from "../utils/createScreen.ts";
-import {findNextAvailableButton} from "../utils/findNextAvailableButton.ts";
-import {createButton} from "../utils/createButton.ts";
-import {createLabel} from "../utils/createLabel.ts";
-import {createPanel} from "../utils/createPanel.ts";
-import {useAvailableInputKeys} from "../hooks/useAvailableInputKeys.tsx";
+import { createButton } from "../utils/createButton.ts";
+import { createLabel } from "../utils/createLabel.ts";
+import { createPanel } from "../utils/createPanel.ts";
+import { createScreen } from "../utils/createScreen.ts";
+import { findNextAvailableButton } from "../utils/findNextAvailableButton.ts";
 
 import "./toolbar.css";
-import {EditableTitle} from "./EditableTitle.tsx";
-import {IconType} from "react-icons";
+
+import { IconType } from "react-icons";
+
+import { EditableTitle } from "./EditableTitle.tsx";
 
 export function Toolbar() {
-  const [ addPopupOpen, setAddPopupOpen ] = useState(false);
-  const screenSet = useECStore(state => state.screenSet);
+  const [addPopupOpen, setAddPopupOpen] = useState(false);
+  const screenSet = useECStore((state) => state.screenSet);
   const selectedScreen = useECStore(activeScreenSelector);
-  const addScreen = useECStore(state => state.addScreen);
-  const updateScreen = useECStore(state => state.updateScreen);
-  const addWidget = useECStore(state => state.addWidget);
+  const addScreen = useECStore((state) => state.addScreen);
+  const updateScreen = useECStore((state) => state.updateScreen);
+  const addWidget = useECStore((state) => state.addWidget);
   const widgets = useECStore(activeScreenWidgetsSelector);
   const hasUndos = useECStore(hasUndosSelector);
   const hasRedos = useECStore(hasRedosSelector);
-  const undo = useECStore(state => state.undo);
-  const redo = useECStore(state => state.redo);
+  const undo = useECStore((state) => state.undo);
+  const redo = useECStore((state) => state.redo);
   const navigate = useNavigate();
   const { defaultKey } = useAvailableInputKeys();
 
@@ -52,7 +52,7 @@ export function Toolbar() {
     }
   };
 
-  const handleAddWidget = (createWidgetFn: () => Widget)=> {
+  const handleAddWidget = (createWidgetFn: () => Widget) => {
     setAddPopupOpen(false);
     const newWidget = createWidgetFn();
     if (newWidget.type === "button") {
@@ -84,16 +84,27 @@ export function Toolbar() {
           trigger={
             <button className="p16-l">
               <div className="row align-items-center gap-4">
-                <MdAdd size={15}/>
-                <span>Add</span></div>
+                <MdAdd size={15} />
+                <span>Add</span>
+              </div>
             </button>
           }
         >
-          <AddWidgetMenuItem onClick={() => handleAddWidget(() => createButton(defaultKey))}>Button</AddWidgetMenuItem>
-          <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>Label</AddWidgetMenuItem>
-          <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>Panel</AddWidgetMenuItem>
+          <AddWidgetMenuItem
+            onClick={() => handleAddWidget(() => createButton(defaultKey))}
+          >
+            Button
+          </AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>
+            Label
+          </AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>
+            Panel
+          </AddWidgetMenuItem>
           <div style={{ borderBottom: "var(--border-light)" }}></div>
-          <AddWidgetMenuItem onClick={handleAddScreen}>Screen</AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={handleAddScreen}>
+            Screen
+          </AddWidgetMenuItem>
         </Popup>
       </div>
       <div className="fill-y row align-items-center gap-4 toolbar-centered-container">
@@ -127,7 +138,7 @@ function AddWidgetMenuItem({ onClick, children }: AddWidgetMenuItemProps) {
 }
 
 type UndoRedoButtonProps = {
-  type: "undo"|"redo";
+  type: "undo" | "redo";
   onClick: () => void;
   disabled: boolean;
 };
@@ -147,7 +158,7 @@ function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
       onClick={handleClick}
       style={{
         cursor: disabled ? undefined : "pointer",
-        color: disabled ? "#666" : "var(--gradient-stop1)"
+        color: disabled ? "#666" : "var(--gradient-stop1)",
       }}
     />
   );

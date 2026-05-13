@@ -1,11 +1,15 @@
-import {parseSync} from "xml-reader";
-import {Position, Size, SvgXmlNode} from "@common/shared/models";
-import {normalize} from "./normalize.ts";
+import { Position, Size, SvgXmlNode } from "@common/shared/models";
+import { parseSync } from "xml-reader";
+
+import { normalize } from "./normalize.ts";
 
 export namespace SvgUtils {
   export function parse(rawText: string): SvgXmlNode {
-    const parsed = parseSync(`<root>${rawText}</root>`, {parentNodes: false});
-    const isValid = parsed.children && parsed.children.length === 1 && parsed.children.every(n => n.name === "svg");
+    const parsed = parseSync(`<root>${rawText}</root>`, { parentNodes: false });
+    const isValid =
+      parsed.children &&
+      parsed.children.length === 1 &&
+      parsed.children.every((n) => n.name === "svg");
     if (isValid) {
       return normalize(parsed.children[0]);
     }
@@ -15,11 +19,11 @@ export namespace SvgUtils {
   export function getSvgViewBox(svg: SvgXmlNode): Size & Position {
     const vb = svg.attributes.viewBox?.split(/\s+/).map(Number);
     if (vb && vb.length === 4) {
-      return {x: vb[0], y: vb[1], width: vb[2], height: vb[3]};
+      return { x: vb[0], y: vb[1], width: vb[2], height: vb[3] };
     }
     const w = parseFloat(svg.attributes.width || "100");
     const h = parseFloat(svg.attributes.height || "100");
-    return {x: 0, y: 0, width: w, height: h};
+    return { x: 0, y: 0, width: w, height: h };
   }
 }
 

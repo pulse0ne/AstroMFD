@@ -1,6 +1,7 @@
-import {Screen, ScreenSet, Size, Widget} from "@common/shared/models";
-import {History} from "./history.ts";
-import {UndoableCommand} from "./command.ts";
+import { Screen, ScreenSet, Size, Widget } from "@common/shared/models";
+
+import { UndoableCommand } from "./command.ts";
+import { History } from "./history.ts";
 
 export type WidgetSlice = {
   // state
@@ -51,4 +52,7 @@ export type HistorySlice = {
   redo: () => void;
 };
 
-export type RootState = WidgetSlice & ScreenSlice & ScreenSetSlice & HistorySlice;
+export type RootState = WidgetSlice &
+  ScreenSlice &
+  ScreenSetSlice &
+  HistorySlice;

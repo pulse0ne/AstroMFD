@@ -1,20 +1,28 @@
-import {MdClose, MdDesktopWindows, MdPhoneAndroid, MdPhoneIphone, MdTabletAndroid, MdTabletMac} from "react-icons/md";
+import { ChangeEvent, useState } from "react";
+import { IconType } from "react-icons";
+import {
+  MdClose,
+  MdDesktopWindows,
+  MdPhoneAndroid,
+  MdPhoneIphone,
+  MdTabletAndroid,
+  MdTabletMac,
+} from "react-icons/md";
 import Popup from "reactjs-popup";
-import {useDevices} from "../../hooks/useDevices.tsx";
-import {ChangeEvent, useState} from "react";
-import {ClientInfo} from "../../types/websocket.ts";
-import {useECStore} from "../../store";
-import {IconType} from "react-icons";
-import {ColorSwatch} from "./ColorSwatch.tsx";
-import {activeScreenSelector} from "../../store/selectors.ts";
-import {Toggle} from "./Toggle.tsx";
+
+import { useDevices } from "../../hooks/useDevices.tsx";
+import { useECStore } from "../../store";
+import { activeScreenSelector } from "../../store/selectors.ts";
+import { ClientInfo } from "../../types/websocket.ts";
+import { ColorSwatch } from "./ColorSwatch.tsx";
+import { Toggle } from "./Toggle.tsx";
 
 export function ScreenSection() {
-  const [ syncPopupOpen, setSyncPopupOpen ] = useState(false);
-  const screenSet = useECStore(state => state.screenSet);
+  const [syncPopupOpen, setSyncPopupOpen] = useState(false);
+  const screenSet = useECStore((state) => state.screenSet);
   const activeScreen = useECStore(activeScreenSelector);
-  const updateSize = useECStore(state => state.updateSize);
-  const updateScreen = useECStore(state => state.updateScreen);
+  const updateSize = useECStore((state) => state.updateSize);
+  const updateScreen = useECStore((state) => state.updateScreen);
 
   const { devices } = useDevices();
 
@@ -47,7 +55,9 @@ export function ScreenSection() {
 
   const handleCrtToggle = () => {
     if (!activeScreen) return;
-    updateScreen(Object.assign({}, activeScreen, { crtEffect: !activeScreen.crtEffect }));
+    updateScreen(
+      Object.assign({}, activeScreen, { crtEffect: !activeScreen.crtEffect }),
+    );
   };
 
   return (
@@ -75,7 +85,7 @@ export function ScreenSection() {
             <MdPhoneAndroid
               style={{
                 cursor: devices.length ? "pointer" : undefined,
-                color: devices.length ? "var(--gradient-stop1)" : "#666"
+                color: devices.length ? "var(--gradient-stop1)" : "#666",
               }}
             />
           }
@@ -86,9 +96,14 @@ export function ScreenSection() {
           disabled={!devices.length}
           position="bottom center"
         >
-          {devices.map(device => (
-            <div className="popup-menu-item row align-items-center gap-8" key={device.ipAddr} onClick={() => handleDeviceSync(device)}>
-              <DeviceIcon deviceType={device.deviceType} />{device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
+          {devices.map((device) => (
+            <div
+              className="popup-menu-item row align-items-center gap-8"
+              key={device.ipAddr}
+              onClick={() => handleDeviceSync(device)}
+            >
+              <DeviceIcon deviceType={device.deviceType} />
+              {device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
             </div>
           ))}
         </Popup>
@@ -120,7 +135,7 @@ type DeviceIconProps = {
 
 function DeviceIcon({ deviceType }: DeviceIconProps) {
   let Icon: IconType = MdDesktopWindows;
-  switch(deviceType) {
+  switch (deviceType) {
     case "android-tablet":
       Icon = MdTabletAndroid;
       break;
@@ -134,7 +149,5 @@ function DeviceIcon({ deviceType }: DeviceIconProps) {
       Icon = MdPhoneIphone;
       break;
   }
-  return (
-    <Icon />
-  );
+  return <Icon />;
 }

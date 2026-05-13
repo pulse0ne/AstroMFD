@@ -1,13 +1,17 @@
-import {Group, Layer, Rect, Stage} from "react-konva";
-import {useEffect, useMemo, useRef, useState} from "react";
-import {KonvaEventObject} from "konva/lib/Node";
-import {Konva} from "konva/lib/_FullInternals";
-import {AttributesPanel} from "./attributes-panel/AttributesPanel.tsx";
-import {WidgetRenderer} from "../widgets/WidgetRenderer.tsx";
-import {useECStore} from "../store";
-import {invoke} from "@tauri-apps/api/core";
-import {activeScreenSelector, activeWidgetSelector} from "../store/selectors.ts";
-import {Position, Size, Widget} from "@common/shared/models";
+import { Position, Size, Widget } from "@common/shared/models";
+import { invoke } from "@tauri-apps/api/core";
+import { Konva } from "konva/lib/_FullInternals";
+import { KonvaEventObject } from "konva/lib/Node";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Group, Layer, Rect, Stage } from "react-konva";
+
+import { useECStore } from "../store";
+import {
+  activeScreenSelector,
+  activeWidgetSelector,
+} from "../store/selectors.ts";
+import { WidgetRenderer } from "../widgets/WidgetRenderer.tsx";
+import { AttributesPanel } from "./attributes-panel/AttributesPanel.tsx";
 // import "./styles.css";
 import "./editor.css";
 
@@ -16,40 +20,55 @@ const SCALE_FACTOR = 1.05;
 export default function Editor() {
   const activeScreen = useECStore(activeScreenSelector);
   const activeWidget = useECStore(activeWidgetSelector);
-  const removeActiveWidget = useECStore(state => state.deleteActiveWidget);
-  const selectWidget = useECStore(state => state.setActiveWidgetIndex);
-  const unselectWidget = useECStore(state => state.unsetActiveWidgetIndex);
-  const activeWidgetIndex = useECStore(state => state.activeWidgetIndex);
-  const updateWidget = useECStore(state => state.updateWidget);
-  const size = useECStore(state => state.screenSet?.size);
-  const nudgeWidget = useECStore(state => state.nudge);
+  const removeActiveWidget = useECStore((state) => state.deleteActiveWidget);
+  const selectWidget = useECStore((state) => state.setActiveWidgetIndex);
+  const unselectWidget = useECStore((state) => state.unsetActiveWidgetIndex);
+  const activeWidgetIndex = useECStore((state) => state.activeWidgetIndex);
+  const updateWidget = useECStore((state) => state.updateWidget);
+  const size = useECStore((state) => state.screenSet?.size);
+  const nudgeWidget = useECStore((state) => state.nudge);
 
-  const [ isPressed, setPressed ] = useState(false);
-  const [ ephemeralShapeState, setEphemeralShapeState ] = useState<(Size & Position) | null>(null);
-  const [ stageSize, setStageSize ] = useState<Size>({ width: 1200, height: 800 });
-  const [ stagePosition, setStagePosition ] = useState<Position>({ x: 600, y: 400 });
-  const [ stageScale, setStageScale ] = useState<number>(1.0);
-  const stageContainerRef = useRef<HTMLDivElement|null>(null);
+  const [isPressed, setPressed] = useState(false);
+  const [ephemeralShapeState, setEphemeralShapeState] = useState<
+    (Size & Position) | null
+  >(null);
+  const [stageSize, setStageSize] = useState<Size>({
+    width: 1200,
+    height: 800,
+  });
+  const [stagePosition, setStagePosition] = useState<Position>({
+    x: 600,
+    y: 400,
+  });
+  const [stageScale, setStageScale] = useState<number>(1.0);
+  const stageContainerRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const contentGroupRef = useRef<Konva.Group>(null);
 
-  const workspaceSize = useMemo(() => size ?? { width: 1200, height: 800 }, [size]);
+  const workspaceSize = useMemo(
+    () => size ?? { width: 1200, height: 800 },
+    [size],
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (activeScreen && contentGroupRef.current) {
-        contentGroupRef.current.toBlob({
-          width: workspaceSize.width * stageScale,
-          height: workspaceSize.height * stageScale,
-          pixelRatio: 0.25
-        }).then(res => {
-            const blob = res as Blob;
-            return blob.arrayBuffer()
-              .then(buffer => {
-                return invoke("save_screen_img", { id: activeScreen.id, data: new Uint8Array(buffer) });
-              });
+        contentGroupRef.current
+          .toBlob({
+            width: workspaceSize.width * stageScale,
+            height: workspaceSize.height * stageScale,
+            pixelRatio: 0.25,
           })
-          .catch(e => console.error(e));
+          .then((res) => {
+            const blob = res as Blob;
+            return blob.arrayBuffer().then((buffer) => {
+              return invoke("save_screen_img", {
+                id: activeScreen.id,
+                data: new Uint8Array(buffer),
+              });
+            });
+          })
+          .catch((e) => console.error(e));
       }
     }, 5000);
     return () => {
@@ -106,15 +125,19 @@ export default function Editor() {
     function handleResize() {
       setStageSize({
         width: stageContainerRef.current?.offsetWidth ?? 1200,
-        height: stageContainerRef.current?.offsetHeight ?? 800
+        height: stageContainerRef.current?.offsetHeight ?? 800,
       });
     }
 
     handleResize();
 
     setStagePosition({
-      x: (stageContainerRef.current?.offsetWidth ?? 1200) / 2.0 - workspaceSize.width / 2.0,
-      y: (stageContainerRef.current?.offsetHeight ?? 800) / 2.0 - workspaceSize.height / 2.0
+      x:
+        (stageContainerRef.current?.offsetWidth ?? 1200) / 2.0 -
+        workspaceSize.width / 2.0,
+      y:
+        (stageContainerRef.current?.offsetHeight ?? 800) / 2.0 -
+        workspaceSize.height / 2.0,
     });
 
     // console.log("registering resize listener");
@@ -126,10 +149,23 @@ export default function Editor() {
     };
   }, [size]);
 
-  const handleUpdate = ({ x, y, width, height }: Size & Position, type: string) => {
+  const handleUpdate = (
+    { x, y, width, height }: Size & Position,
+    type: string,
+  ) => {
     if (activeWidget) {
       setEphemeralShapeState(null);
-      updateWidget({ ...activeWidget, shape: { ...activeWidget.shape, size: { width, height }, position: { x, y } }}, type);
+      updateWidget(
+        {
+          ...activeWidget,
+          shape: {
+            ...activeWidget.shape,
+            size: { width, height },
+            position: { x, y },
+          },
+        },
+        type,
+      );
     }
   };
 
@@ -145,10 +181,10 @@ export default function Editor() {
     }
   };
 
-  const handleStageDrag = (evt: KonvaEventObject<MouseEvent>)=> {
+  const handleStageDrag = (evt: KonvaEventObject<MouseEvent>) => {
     if (evt.target instanceof Konva.Stage) {
       const evtPos = evt.target.position();
-      setStagePosition({x: evtPos.x, y: evtPos.y});
+      setStagePosition({ x: evtPos.x, y: evtPos.y });
     }
   };
 
@@ -168,7 +204,8 @@ export default function Editor() {
     };
 
     const direction = evt.evt.deltaY > 0 ? -1 : 1;
-    const newScale = direction > 0 ? oldScale * SCALE_FACTOR : oldScale / SCALE_FACTOR;
+    const newScale =
+      direction > 0 ? oldScale * SCALE_FACTOR : oldScale / SCALE_FACTOR;
 
     setStageScale(newScale);
 
@@ -186,8 +223,16 @@ export default function Editor() {
 
   return (
     <div className="row flex-grow no-overflow">
-      <div className="flex-grow no-overflow relative" onContextMenu={(e) => e.preventDefault()}>
-        {activeScreen?.crtEffect && <div style={{ position: "absolute" }} className="fill scanlines"></div>}
+      <div
+        className="flex-grow no-overflow relative"
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        {activeScreen?.crtEffect && (
+          <div
+            style={{ position: "absolute" }}
+            className="fill scanlines"
+          ></div>
+        )}
         <div className="stage-container fill-y" ref={stageContainerRef}>
           <Stage
             ref={stageRef}
@@ -219,7 +264,7 @@ export default function Editor() {
                 {/*  gridSize={50}*/}
                 {/*  zoomLevel={stageScale}*/}
                 {/*/>*/}
-                {activeScreen?.widgets.map(((widget, ix) => (
+                {activeScreen?.widgets.map((widget, ix) => (
                   <WidgetRenderer
                     key={widget.id}
                     widget={widget}
@@ -229,7 +274,7 @@ export default function Editor() {
                     isSelected={ix === activeWidgetIndex}
                     state={isPressed ? "pressed" : "primary"}
                   />
-                )))}
+                ))}
               </Group>
             </Layer>
           </Stage>
@@ -240,12 +285,11 @@ export default function Editor() {
         selectedWidget={activeWidget}
         isPressed={isPressed}
         onUpdate={handleAttributePanelUpdate}
-        togglePressed={() => setPressed(ov => !ov)}
+        togglePressed={() => setPressed((ov) => !ov)}
       />
     </div>
   );
 }
-
 
 //// Experiment
 // type GridProps = {

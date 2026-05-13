@@ -1,13 +1,14 @@
-import {Position, Size} from "@common/shared/models";
+import { Position, Size } from "@common/shared/models";
+import { useMemo } from "react";
+import { IconType } from "react-icons";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowDown,
-  MdKeyboardDoubleArrowUp
+  MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
-import {useECStore} from "../../store";
-import {IconType} from "react-icons";
-import {useMemo} from "react";
+
+import { useECStore } from "../../store";
 
 export type SizePositionSectionProps = {
   size: Size;
@@ -16,25 +17,30 @@ export type SizePositionSectionProps = {
   onPositionChange: (position: Position) => void;
 };
 
-export function SizePositionSection({size, position, onSizeChange, onPositionChange}: SizePositionSectionProps) {
-  const sendForward = useECStore(state => state.sendForward);
-  const sendBackward = useECStore(state => state.sendBackward);
-  const sendToFront = useECStore(state => state.sendToFront);
-  const sendToBack = useECStore(state => state.sendToBack);
+export function SizePositionSection({
+  size,
+  position,
+  onSizeChange,
+  onPositionChange,
+}: SizePositionSectionProps) {
+  const sendForward = useECStore((state) => state.sendForward);
+  const sendBackward = useECStore((state) => state.sendBackward);
+  const sendToFront = useECStore((state) => state.sendToFront);
+  const sendToBack = useECStore((state) => state.sendToBack);
 
   const handleSizeChange = (key: keyof Size, value: number) => {
     if (key === "width") {
-      onSizeChange({width: value, height: size.height});
+      onSizeChange({ width: value, height: size.height });
     } else {
-      onSizeChange({width: size.width, height: value});
+      onSizeChange({ width: size.width, height: value });
     }
   };
 
   const handlePositionChange = (key: keyof Position, value: number) => {
     if (key === "x") {
-      onPositionChange({x: value, y: position.y});
+      onPositionChange({ x: value, y: position.y });
     } else {
-      onPositionChange({x: position.x, y: value});
+      onPositionChange({ x: position.x, y: value });
     }
   };
 
@@ -43,52 +49,74 @@ export function SizePositionSection({size, position, onSizeChange, onPositionCha
       <h5>SIZE / POSITION</h5>
       <div className="row gap-4">
         <div className="flex-grow row">
-          <span style={{width: 24}}>w:</span>
+          <span style={{ width: 24 }}>w:</span>
           <input
             type="number"
-            style={{width: 100}}
+            style={{ width: 100 }}
             value={size.width}
-            onChange={(event) => handleSizeChange("width", Number.parseFloat(event.target.value))}
+            onChange={(event) =>
+              handleSizeChange("width", Number.parseFloat(event.target.value))
+            }
           />
         </div>
         <div className="flex-grow row">
-          <span style={{width: 24}}>h:</span>
+          <span style={{ width: 24 }}>h:</span>
           <input
             type="number"
-            style={{width: 100}}
+            style={{ width: 100 }}
             value={size.height}
-            onChange={(event) => handleSizeChange("height", Number.parseFloat(event.target.value))}
+            onChange={(event) =>
+              handleSizeChange("height", Number.parseFloat(event.target.value))
+            }
           />
         </div>
       </div>
       <div className="row gap-4">
         <div className="flex-grow row">
-          <span style={{width: 24}}>x:</span>
+          <span style={{ width: 24 }}>x:</span>
           <input
             type="number"
-            style={{width: 100}}
+            style={{ width: 100 }}
             value={position.x}
-            onChange={(event) => handlePositionChange("x", Number.parseFloat(event.target.value))}
+            onChange={(event) =>
+              handlePositionChange("x", Number.parseFloat(event.target.value))
+            }
           />
         </div>
         <div className="flex-grow row">
-          <span style={{width: 24}}>y:</span>
+          <span style={{ width: 24 }}>y:</span>
           <input
             type="number"
-            style={{width: 100}}
+            style={{ width: 100 }}
             value={position.y}
-            onChange={(event) => handlePositionChange("y", Number.parseFloat(event.target.value))}
+            onChange={(event) =>
+              handlePositionChange("y", Number.parseFloat(event.target.value))
+            }
           />
         </div>
       </div>
       <div className="row align-items-center">
         <span>Ordering:</span>
-        <div className="flex-grow row align-items-center justify-content-space-around" style={{ padding: "0 24px" }}>
-          <ArrangeIcon type="front" title="Send To Front" onClick={sendToFront} />
-          <ArrangeIcon type="forward" title="Send Forward" onClick={sendForward} />
-          <ArrangeIcon type="backward" title="Send Backward" onClick={sendBackward} />
+        <div
+          className="flex-grow row align-items-center justify-content-space-around"
+          style={{ padding: "0 24px" }}
+        >
+          <ArrangeIcon
+            type="front"
+            title="Send To Front"
+            onClick={sendToFront}
+          />
+          <ArrangeIcon
+            type="forward"
+            title="Send Forward"
+            onClick={sendForward}
+          />
+          <ArrangeIcon
+            type="backward"
+            title="Send Backward"
+            onClick={sendBackward}
+          />
           <ArrangeIcon type="back" title="Send To Back" onClick={sendToBack} />
-
         </div>
       </div>
     </div>
@@ -96,14 +124,14 @@ export function SizePositionSection({size, position, onSizeChange, onPositionCha
 }
 
 type ArrangeIconProps = {
-  type: "back"|"backward"|"front"|"forward";
+  type: "back" | "backward" | "front" | "forward";
   title: string;
   onClick: () => void;
 };
 
 function ArrangeIcon({ type, title, onClick }: ArrangeIconProps) {
   const Icon: IconType = useMemo(() => {
-    switch(type) {
+    switch (type) {
       case "back":
         return MdKeyboardDoubleArrowDown;
       case "backward":
@@ -115,6 +143,11 @@ function ArrangeIcon({ type, title, onClick }: ArrangeIconProps) {
     }
   }, [type]);
   return (
-    <Icon size={24} className="pointer arrange-icon" title={title} onClick={onClick} />
+    <Icon
+      size={24}
+      className="pointer arrange-icon"
+      title={title}
+      onClick={onClick}
+    />
   );
 }

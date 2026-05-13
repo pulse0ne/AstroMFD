@@ -1,9 +1,9 @@
-import {LogEntry} from "../types/websocket.ts";
-import {useLogs} from "../hooks/useLogs.tsx";
-import {Modal} from "../Modal.tsx";
+import { useLogs } from "../hooks/useLogs.tsx";
+import { Modal } from "../Modal.tsx";
+import { LogEntry } from "../types/websocket.ts";
 
 export type LogsModalProps = {
-  open: boolean,
+  open: boolean;
   onClose: () => void;
 };
 
@@ -23,7 +23,9 @@ export function LogsModal({ open, onClose }: LogsModalProps) {
       <div className="col flex-grow no-overflow">
         <div className="logs-container flex-grow">
           {logs.length === 0 && "No logs"}
-          {logs.map(entry => <LogLine key={entry.timestamp} entry={entry} />)}
+          {logs.map((entry) => (
+            <LogLine key={entry.timestamp} entry={entry} />
+          ))}
         </div>
       </div>
     </Modal>
@@ -33,7 +35,7 @@ export function LogsModal({ open, onClose }: LogsModalProps) {
 const colorMap: Record<string, string> = {
   ERROR: "#ff4646",
   WARN: "#ffda56",
-  INFO: "#00c4ff"
+  INFO: "#00c4ff",
 };
 
 type LogLineProps = { entry: LogEntry };
@@ -41,7 +43,9 @@ type LogLineProps = { entry: LogEntry };
 function LogLine({ entry }: LogLineProps) {
   return (
     <div className="log-line">
-      <span style={{ color: colorMap[entry.level] ?? "white" }}>[{entry.level}] - {entry.message}</span>
+      <span style={{ color: colorMap[entry.level] ?? "white" }}>
+        [{entry.level}] - {entry.message}
+      </span>
     </div>
   );
 }

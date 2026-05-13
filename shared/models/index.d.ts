@@ -50,9 +50,9 @@ export type FontSpec = {
 
 export type SvgXmlNode = {
   name: string;
-  type: "element"|"text";
+  type: "element" | "text";
   value: string;
-  parent: SvgXmlNode|null;
+  parent: SvgXmlNode | null;
   attributes: Record<string, string>;
   children: SvgXmlNode[];
 };

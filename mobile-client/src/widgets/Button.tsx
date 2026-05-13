@@ -1,7 +1,19 @@
-import {type CSSProperties, useCallback, useMemo, useRef, useState} from "react";
-import type {ButtonAttributes, Gradient, InputKey, ShadowEffect} from "@common/shared/models";
-import {hAlignmentMap, vAlignmentMap} from "./common.ts";
-import {gradientString} from "../utils.ts";
+import type {
+  ButtonAttributes,
+  Gradient,
+  InputKey,
+  ShadowEffect,
+} from "@common/shared/models";
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+
+import { gradientString } from "../utils.ts";
+import { hAlignmentMap, vAlignmentMap } from "./common.ts";
 
 export type ButtonProps = {
   attr: ButtonAttributes;
@@ -11,13 +23,22 @@ export type ButtonProps = {
   onNavigate: (target: string) => void;
 };
 
-export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps) {
-  const [ pressed, setPressed ] = useState(false);
+export function Button({
+  attr,
+  onPress,
+  onDown,
+  onUp,
+  onNavigate,
+}: ButtonProps) {
+  const [pressed, setPressed] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize audio if sound is configured
   useMemo(() => {
-    if (attr.sound && (attr.sound.playOn === "mobile" || attr.sound.playOn === "both")) {
+    if (
+      attr.sound &&
+      (attr.sound.playOn === "mobile" || attr.sound.playOn === "both")
+    ) {
       const audioPath = `/audio/${attr.sound.source}/${attr.sound.file}`;
       audioRef.current = new Audio(audioPath);
     } else {
@@ -26,7 +47,10 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
   }, [attr.sound]);
 
   const fill = useMemo(() => {
-    const f = pressed && attr.pressed.shape.fill ? attr.pressed.shape.fill : attr.shape.fill;
+    const f =
+      pressed && attr.pressed.shape.fill
+        ? attr.pressed.shape.fill
+        : attr.shape.fill;
     console.log(f);
     if (!f) return null;
     if (f.type === "solid") {
@@ -39,16 +63,42 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
 
   const shapeStyle: CSSProperties = {
     position: "absolute",
-    left: (pressed && attr.pressed.shape.position?.x) ? attr.pressed.shape.position.x : attr.shape.position.x,
-    top: (pressed && attr.pressed.shape.position?.y) ? attr.pressed.shape.position.y : attr.shape.position.y,
-    width: (pressed && attr.pressed.shape.size?.width) ? attr.pressed.shape.size.width : attr.shape.size.width,
-    height: (pressed && attr.pressed.shape.size?.height) ? attr.pressed.shape.size.height : attr.shape.size.height,
+    left:
+      pressed && attr.pressed.shape.position?.x
+        ? attr.pressed.shape.position.x
+        : attr.shape.position.x,
+    top:
+      pressed && attr.pressed.shape.position?.y
+        ? attr.pressed.shape.position.y
+        : attr.shape.position.y,
+    width:
+      pressed && attr.pressed.shape.size?.width
+        ? attr.pressed.shape.size.width
+        : attr.shape.size.width,
+    height:
+      pressed && attr.pressed.shape.size?.height
+        ? attr.pressed.shape.size.height
+        : attr.shape.size.height,
     background: fill ?? "transparent",
-    borderWidth: (pressed && attr.pressed.shape.strokeWidth) ? attr.pressed.shape.strokeWidth : attr.shape.strokeWidth,
+    borderWidth:
+      pressed && attr.pressed.shape.strokeWidth
+        ? attr.pressed.shape.strokeWidth
+        : attr.shape.strokeWidth,
     borderStyle: "solid",
-    borderColor: (pressed && attr.pressed.shape.stroke) ? attr.pressed.shape.stroke : attr.shape.stroke ?? "transparent",
-    borderRadius: (pressed && attr.pressed.shape.cornerRadius) ? attr.pressed.shape.cornerRadius : attr.shape.cornerRadius,
-    boxShadow: (pressed && attr.pressed.shape.shadow) ? getShadow(attr.pressed.shape.shadow) : (attr.shape.shadow ? getShadow(attr.shape.shadow) : undefined),
+    borderColor:
+      pressed && attr.pressed.shape.stroke
+        ? attr.pressed.shape.stroke
+        : (attr.shape.stroke ?? "transparent"),
+    borderRadius:
+      pressed && attr.pressed.shape.cornerRadius
+        ? attr.pressed.shape.cornerRadius
+        : attr.shape.cornerRadius,
+    boxShadow:
+      pressed && attr.pressed.shape.shadow
+        ? getShadow(attr.pressed.shape.shadow)
+        : attr.shape.shadow
+          ? getShadow(attr.shape.shadow)
+          : undefined,
   };
 
   const textContainerStyle: CSSProperties = {
@@ -60,16 +110,30 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
   };
 
   const textStyle: CSSProperties = {
-    color: (pressed && attr.pressed.text.fontColor) ? attr.pressed.text.fontColor : attr.text.fontColor ?? undefined,
-    fontFamily: (pressed && attr.pressed.text.font?.name) ? attr.pressed.text.font.name : attr.text.font?.name,
-    fontSize: (pressed && attr.pressed.text.fontSize) ? attr.pressed.text.fontSize : attr.text.fontSize,
-    textShadow: (pressed && attr.pressed.text.shadow) ? getShadow(attr.pressed.text.shadow) : (attr.text.shadow ? getShadow(attr.text.shadow) : undefined),
+    color:
+      pressed && attr.pressed.text.fontColor
+        ? attr.pressed.text.fontColor
+        : (attr.text.fontColor ?? undefined),
+    fontFamily:
+      pressed && attr.pressed.text.font?.name
+        ? attr.pressed.text.font.name
+        : attr.text.font?.name,
+    fontSize:
+      pressed && attr.pressed.text.fontSize
+        ? attr.pressed.text.fontSize
+        : attr.text.fontSize,
+    textShadow:
+      pressed && attr.pressed.text.shadow
+        ? getShadow(attr.pressed.text.shadow)
+        : attr.text.shadow
+          ? getShadow(attr.text.shadow)
+          : undefined,
     userSelect: "none",
   };
 
   const handlePress = useCallback(() => {
     if (attr.buttonType === "action" || attr.buttonType === "toggle") {
-      const {key, fixedDuration, duration} = attr.input;
+      const { key, fixedDuration, duration } = attr.input;
       if (fixedDuration) {
         onPress(key, duration);
       }
@@ -82,11 +146,13 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
     // Play sound if configured
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(e => console.error("Failed to play sound:", e));
+      audioRef.current
+        .play()
+        .catch((e) => console.error("Failed to play sound:", e));
     }
 
     if (attr.buttonType === "toggle") {
-      setPressed(ov => !ov);
+      setPressed((ov) => !ov);
     } else {
       setPressed(true);
     }

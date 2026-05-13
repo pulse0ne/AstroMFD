@@ -1,7 +1,7 @@
 .stage-container {
-    background-color: var(--editor-background-color-hex);
+  background-color: var(--editor-background-color-hex);
 }
 
 .stage-container > div {
-    height: 100%;
+  height: 100%;
 }

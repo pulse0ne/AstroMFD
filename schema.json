@@ -14,11 +14,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "button",
-        "fixedDuration",
-        "duration"
-      ],
+      "required": ["button", "fixedDuration", "duration"],
       "type": "object"
     },
     "ButtonAttributes": {
@@ -31,10 +27,7 @@
           "type": "string"
         },
         "navTarget": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "pressed": {
           "additionalProperties": false,
@@ -46,10 +39,7 @@
                   "type": "number"
                 },
                 "fill": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "position": {
                   "$ref": "#/definitions/Position"
@@ -68,10 +58,7 @@
                   "$ref": "#/definitions/Size"
                 },
                 "stroke": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "strokeWidth": {
                   "type": "number"
@@ -93,20 +80,13 @@
                   ]
                 },
                 "fontColor": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "fontSize": {
                   "type": "number"
                 },
                 "horizontalAlignment": {
-                  "enum": [
-                    "left",
-                    "center",
-                    "right"
-                  ],
+                  "enum": ["left", "center", "right"],
                   "type": "string"
                 },
                 "shadow": {
@@ -120,27 +100,17 @@
                   ]
                 },
                 "text": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "verticalAlignment": {
-                  "enum": [
-                    "top",
-                    "middle",
-                    "bottom"
-                  ],
+                  "enum": ["top", "middle", "bottom"],
                   "type": "string"
                 }
               },
               "type": "object"
             }
           },
-          "required": [
-            "shape",
-            "text"
-          ],
+          "required": ["shape", "text"],
           "type": "object"
         },
         "shape": {
@@ -170,11 +140,7 @@
       "type": "object"
     },
     "ButtonType": {
-      "enum": [
-        "action",
-        "navigation",
-        "toggle"
-      ],
+      "enum": ["action", "navigation", "toggle"],
       "type": "string"
     },
     "FontSpec": {
@@ -190,11 +156,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "name",
-        "format",
-        "postscriptName"
-      ],
+      "required": ["name", "format", "postscriptName"],
       "type": "object"
     },
     "LabelAttributes": {
@@ -217,13 +179,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "shape",
-        "text",
-        "type",
-        "usesVariables"
-      ],
+      "required": ["id", "shape", "text", "type", "usesVariables"],
       "type": "object"
     },
     "PanelAttributes": {
@@ -239,10 +195,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "x",
-        "y"
-      ],
+      "required": ["x", "y"],
       "type": "object"
     },
     "Screen": {
@@ -264,12 +217,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "id",
-        "name",
-        "backgroundColor",
-        "widgets"
-      ],
+      "required": ["id", "name", "backgroundColor", "widgets"],
       "type": "object"
     },
     "ScreenSet": {
@@ -291,12 +239,7 @@
           "$ref": "#/definitions/Size"
         }
       },
-      "required": [
-        "id",
-        "name",
-        "size",
-        "screens"
-      ],
+      "required": ["id", "name", "size", "screens"],
       "type": "object"
     },
     "ShadowEffect": {
@@ -315,12 +258,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "color",
-        "strength",
-        "xOffset",
-        "yOffset"
-      ],
+      "required": ["color", "strength", "xOffset", "yOffset"],
       "type": "object"
     },
     "ShapeAttributes": {
@@ -330,10 +268,7 @@
           "type": "number"
         },
         "fill": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "position": {
           "$ref": "#/definitions/Position"
@@ -352,10 +287,7 @@
           "$ref": "#/definitions/Size"
         },
         "stroke": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "strokeWidth": {
           "type": "number"
@@ -382,10 +314,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "width",
-        "height"
-      ],
+      "required": ["width", "height"],
       "type": "object"
     },
     "TextAttributes": {
@@ -402,20 +331,13 @@
           ]
         },
         "fontColor": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "fontSize": {
           "type": "number"
         },
         "horizontalAlignment": {
-          "enum": [
-            "left",
-            "center",
-            "right"
-          ],
+          "enum": ["left", "center", "right"],
           "type": "string"
         },
         "shadow": {
@@ -429,17 +351,10 @@
           ]
         },
         "text": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "verticalAlignment": {
-          "enum": [
-            "top",
-            "middle",
-            "bottom"
-          ],
+          "enum": ["top", "middle", "bottom"],
           "type": "string"
         }
       },
@@ -481,11 +396,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "id",
-        "shape"
-      ],
+      "required": ["type", "id", "shape"],
       "type": "object"
     },
     "WidgetBase<\"label\">": {
@@ -502,11 +413,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "id",
-        "shape"
-      ],
+      "required": ["type", "id", "shape"],
       "type": "object"
     },
     "WidgetBase<\"panel\">": {
@@ -523,19 +430,11 @@
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "id",
-        "shape"
-      ],
+      "required": ["type", "id", "shape"],
       "type": "object"
     },
     "WidgetType": {
-      "enum": [
-        "button",
-        "label",
-        "panel"
-      ],
+      "enum": ["button", "label", "panel"],
       "type": "string"
     }
   }

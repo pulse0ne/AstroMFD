@@ -1,6 +1,10 @@
-import type {Position} from "@common/shared/models";
+import type { Position } from "@common/shared/models";
 
-export function coordinatesFromAngle(width: number, height: number, angle: number): { start: Position, end: Position } {
+export function coordinatesFromAngle(
+  width: number,
+  height: number,
+  angle: number,
+): { start: Position; end: Position } {
   const rad = (angle * Math.PI) / 180;
 
   const cx = width / 2;
@@ -13,6 +17,6 @@ export function coordinatesFromAngle(width: number, height: number, angle: numbe
 
   return {
     start: { x: cx - dx, y: cy - dy },
-    end:   { x: cx + dx, y: cy + dy },
+    end: { x: cx + dx, y: cy + dy },
   };
 }

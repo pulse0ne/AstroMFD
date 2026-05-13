@@ -1,15 +1,15 @@
 .attributes-panel {
-    background-color: var(--panel-color-hex);
-    width: 320px;
-    min-width: 320px;
-    border-left: var(--border-light);
+  background-color: var(--panel-color-hex);
+  width: 320px;
+  min-width: 320px;
+  border-left: var(--border-light);
 }
 
 .attribute-section {
-    padding: 16px 12px;
-    border-bottom: var(--border-light);
+  padding: 16px 12px;
+  border-bottom: var(--border-light);
 }
 
 .attributes-panel h2 {
-    padding: 12px;
+  padding: 12px;
 }

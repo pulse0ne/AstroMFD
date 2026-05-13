@@ -1,12 +1,16 @@
-import {SvgXmlNode} from "@common/shared/models";
+import { SvgXmlNode } from "@common/shared/models";
 
 export type SvgColorCoordinates = {
-  type: "fill"|"stroke";
+  type: "fill" | "stroke";
   color: string;
   path: string;
 };
 
-export function extractColors(node: SvgXmlNode, path: string[] = [], results: SvgColorCoordinates[] = []): SvgColorCoordinates[] {
+export function extractColors(
+  node: SvgXmlNode,
+  path: string[] = [],
+  results: SvgColorCoordinates[] = [],
+): SvgColorCoordinates[] {
   const currentPath = [...path, node.name];
 
   for (const [key, value] of Object.entries(node.attributes)) {
@@ -22,7 +26,11 @@ export function extractColors(node: SvgXmlNode, path: string[] = [], results: Sv
   }
 
   node.children.forEach((child, index) => {
-    extractColors(child, [...currentPath.slice(0, -1), `${node.name}[${index}]`], results);
+    extractColors(
+      child,
+      [...currentPath.slice(0, -1), `${node.name}[${index}]`],
+      results,
+    );
   });
 
   return results;
@@ -37,8 +45,8 @@ function normalizeColor(value: string): string | null {
 export function replaceSvgColor(
   node: SvgXmlNode,
   targetPath: string,
-  targetType: "fill"|"stroke",
-  newColor: string
+  targetType: "fill" | "stroke",
+  newColor: string,
 ): SvgXmlNode {
   function recursive(n: SvgXmlNode, currentPath: string[]): SvgXmlNode {
     const thisPath = [...currentPath, n.name].join(".");
@@ -55,7 +63,8 @@ export function replaceSvgColor(
 
     clone.children = n.children.map((child, i) => {
       const lastSegment = currentPath[currentPath.length - 1];
-      const path = lastSegment === n.name ? currentPath.slice(0, -1) : currentPath;
+      const path =
+        lastSegment === n.name ? currentPath.slice(0, -1) : currentPath;
       return recursive(child, [...path, `${n.name}[${i}]`]);
     });
 

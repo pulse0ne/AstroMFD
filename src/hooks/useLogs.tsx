@@ -1,5 +1,12 @@
-import {createContext, PropsWithChildren, useContext, useEffect, useState} from "react";
-import {LogEntry} from "../types/websocket.ts";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+import { LogEntry } from "../types/websocket.ts";
 import useTauriListen from "./useTauriListen.tsx";
 
 const MAX_LOGS = 5000;
@@ -16,20 +23,16 @@ function clamp(entries: LogEntry[]): LogEntry[] {
 }
 
 export function LogsProvider({ children }: PropsWithChildren<{}>) {
-  const [ logs, setLogs ] = useState<LogsContextValue>({ logs: [] });
+  const [logs, setLogs] = useState<LogsContextValue>({ logs: [] });
   const { lastEvent } = useTauriListen<LogEntry>("log-event");
 
   useEffect(() => {
     if (lastEvent) {
-      setLogs(ov => ({ logs: clamp([...ov.logs, lastEvent]) }));
+      setLogs((ov) => ({ logs: clamp([...ov.logs, lastEvent]) }));
     }
   }, [lastEvent]);
 
-  return (
-    <LogsContext.Provider value={logs}>
-      {children}
-    </LogsContext.Provider>
-  );
+  return <LogsContext.Provider value={logs}>{children}</LogsContext.Provider>;
 }
 
 export function useLogs() {

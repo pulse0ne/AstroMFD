@@ -1,17 +1,17 @@
 .status-bar {
-    background-color: var(--toolbar-color-hex);
-    border-top: var(--border-light);
-    align-items: center;
-    font-size: 12px;
-    padding: 4px 16px;
+  background-color: var(--toolbar-color-hex);
+  border-top: var(--border-light);
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 16px;
 }
 
 .qr-icon {
-    color: var(--gradient-stop1);
+  color: var(--gradient-stop1);
 }
 
 .centered-statusbar-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }

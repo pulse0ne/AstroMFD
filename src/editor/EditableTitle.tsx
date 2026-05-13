@@ -1,5 +1,5 @@
-import {CSSProperties, useEffect, useRef, useState} from "react";
-import {MdEdit} from "react-icons/md";
+import { CSSProperties, useEffect, useRef, useState } from "react";
+import { MdEdit } from "react-icons/md";
 
 export type EditableTitleProps = {
   value: string;
@@ -11,9 +11,17 @@ export type EditableTitleProps = {
   iconSize?: number;
 };
 
-export function EditableTitle({ value, onChange, className, style, inputStyle, editIcon, iconSize }: EditableTitleProps) {
-  const [ editing, setEditing ] = useState(false);
-  const [ draft, setDraft ] = useState(value);
+export function EditableTitle({
+  value,
+  onChange,
+  className,
+  style,
+  inputStyle,
+  editIcon,
+  iconSize,
+}: EditableTitleProps) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -45,12 +53,15 @@ export function EditableTitle({ value, onChange, className, style, inputStyle, e
     }
   };
 
-  const mergedStyle = Object.assign({
-    background: "transparent",
-    border: "var(--border-light)",
-    margin: 0,
-    padding: 0
-  } as CSSProperties, inputStyle ?? {});
+  const mergedStyle = Object.assign(
+    {
+      background: "transparent",
+      border: "var(--border-light)",
+      margin: 0,
+      padding: 0,
+    } as CSSProperties,
+    inputStyle ?? {},
+  );
 
   return (
     <div className={className} style={style} onDoubleClick={handleDoubleClick}>
@@ -58,7 +69,7 @@ export function EditableTitle({ value, onChange, className, style, inputStyle, e
         <input
           ref={inputRef}
           value={draft}
-          onChange={e => setDraft(e.target.value)}
+          onChange={(e) => setDraft(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           style={mergedStyle}
@@ -66,7 +77,13 @@ export function EditableTitle({ value, onChange, className, style, inputStyle, e
       ) : (
         <div className="row align-items-center gap-16">
           <span>{value}</span>
-          {editIcon && (<MdEdit className="pointer" size={iconSize} onClick={handleDoubleClick} />)}
+          {editIcon && (
+            <MdEdit
+              className="pointer"
+              size={iconSize}
+              onClick={handleDoubleClick}
+            />
+          )}
         </div>
       )}
     </div>

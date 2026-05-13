@@ -1,8 +1,10 @@
-import React, { useState, useRef } from "react";
-import { ColorSwatch } from "./ColorSwatch";
+import { Gradient, GradientStop } from "@common/shared/models";
+import React, { useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
-import {Gradient, GradientStop} from "@common/shared/models";
-import {gradientString} from "../../utils/gradientString.ts";
+
+import { gradientString } from "../../utils/gradientString.ts";
+import { ColorSwatch } from "./ColorSwatch";
+
 import "./gradient-picker.css";
 
 const defaultGradient = () => {
@@ -18,8 +20,8 @@ const defaultGradient = () => {
         id: uuid(),
         color: "#fff",
         position: 100,
-      }
-    ]
+      },
+    ],
   } as Gradient;
 };
 
@@ -42,7 +44,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
 
   const toggleType = () => {
     const nextType = gradient.type === "linear" ? "radial" : "linear";
-    onChange({ type: nextType, stops: [...gradient.stops ]});
+    onChange({ type: nextType, stops: [...gradient.stops] });
   };
 
   const handleBarClick = (e: React.MouseEvent) => {
@@ -54,7 +56,9 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
       color: "rgba(0, 0, 0, 1)",
       position: Math.min(100, Math.max(0, pos)),
     };
-    updateGradientStops([...gradient.stops, newStop].sort((a, b) => a.position - b.position));
+    updateGradientStops(
+      [...gradient.stops, newStop].sort((a, b) => a.position - b.position),
+    );
     setActiveStop(newStop.id);
   };
 
@@ -67,11 +71,13 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
       const dx = moveEvt.clientX - rect.left;
       const pos = (dx / rect.width) * 100;
       updateGradientStops(
-        gradient.stops.map((s) =>
-          s.id === id
-            ? { ...s, position: Math.min(100, Math.max(0, pos)) }
-            : s
-        ).sort((a, b) => a.position - b.position)
+        gradient.stops
+          .map((s) =>
+            s.id === id
+              ? { ...s, position: Math.min(100, Math.max(0, pos)) }
+              : s,
+          )
+          .sort((a, b) => a.position - b.position),
       );
     };
     const onUp = () => {
@@ -85,18 +91,23 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
   const handleRightClick = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     if (gradient.stops.length > 2) {
-      onChange({ ...gradient, stops: gradient.stops.filter(s => s.id !== id) })
+      onChange({
+        ...gradient,
+        stops: gradient.stops.filter((s) => s.id !== id),
+      });
     }
   };
 
   const handleAngleChange = (newAngle: number) => {
     if (!isNaN(newAngle)) {
-      onChange({...gradient, angle: newAngle});
+      onChange({ ...gradient, angle: newAngle });
     }
   };
 
   const updateStopColor = (id: string, newColor: string) => {
-    updateGradientStops(gradient.stops.map((s) => (s.id === id ? { ...s, color: newColor } : s)));
+    updateGradientStops(
+      gradient.stops.map((s) => (s.id === id ? { ...s, color: newColor } : s)),
+    );
   };
 
   return (
@@ -125,7 +136,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
             min={-180}
             max={180}
             value={gradient.angle ?? 0}
-            onChange={e => handleAngleChange(parseInt(e.target.value))}
+            onChange={(e) => handleAngleChange(parseInt(e.target.value))}
           />
           {gradient.angle ?? 0}&deg;
         </div>
@@ -135,7 +146,7 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
         className="gradient-bar"
         ref={barRef}
         onDoubleClick={handleBarClick}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault()}
         style={{ background: gradientCSS }}
       >
         {gradient.stops.map((s) => (
@@ -154,7 +165,9 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
         {activeStop && (
           <div className="stop-editor">
             <ColorSwatch
-              color={gradient.stops.find((s) => s.id === activeStop)?.color ?? ""}
+              color={
+                gradient.stops.find((s) => s.id === activeStop)?.color ?? ""
+              }
               recents={[]}
               onUpdate={(c) => updateStopColor(activeStop, c)}
               onAddRecentColor={() => {}}

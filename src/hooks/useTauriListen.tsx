@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {listen, UnlistenFn} from "@tauri-apps/api/event";
+import { listen, UnlistenFn } from "@tauri-apps/api/event";
+import { useEffect, useState } from "react";
 
 export default function useTauriListen<T>(eventType: string) {
   const [lastEvent, setLastEvent] = useState<T | null>(null);

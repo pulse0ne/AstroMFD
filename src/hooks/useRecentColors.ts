@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import { useCallback, useState } from "react";
 
 const initialColors: string[] = [];
 for (let i = 0; i < 10; i++) {
@@ -8,7 +8,7 @@ export function useRecentColors() {
   const [recents, setRecents] = useState(initialColors);
 
   const addRecentColor = useCallback((color: string) => {
-    setRecents(ov => {
+    setRecents((ov) => {
       if (ov.includes(color)) return ov;
       const r = [color, ...ov];
       r.pop();

@@ -1,5 +1,6 @@
-import {RootState} from "./types.ts";
-import {Screen} from "@common/shared/models";
+import { Screen } from "@common/shared/models";
+
+import { RootState } from "./types.ts";
 
 export function activeScreenSelector(state: RootState) {
   const { screenSet, activeScreenIndex } = state;
@@ -9,7 +10,8 @@ export function activeScreenSelector(state: RootState) {
 
 export function activeWidgetSelector(state: RootState) {
   const { screenSet, activeScreenIndex, activeWidgetIndex } = state;
-  if (!screenSet || activeScreenIndex === null || activeWidgetIndex === null) return null;
+  if (!screenSet || activeScreenIndex === null || activeWidgetIndex === null)
+    return null;
   return screenSet.screens[activeScreenIndex].widgets[activeWidgetIndex];
 }
 

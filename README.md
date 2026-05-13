@@ -1,11 +1,13 @@
 # AstroMFD
 
 ## Development
+
 `tauri dev`
 
 ## Dependency Descriptions
 
 ### Rust
+
 - tauri: UI driver
 - serde: serialization
 - tokio: async
@@ -24,6 +26,7 @@
 - dirs: common directory locations
 
 ### Typescript
+
 - react: UI framework
 - react-colorful: color picker
 - react-dom: mount React app in DOM

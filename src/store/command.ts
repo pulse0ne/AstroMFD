@@ -1,5 +1,6 @@
-import {Draft} from "immer";
-import {RootState} from "./types.ts";
+import { Draft } from "immer";
+
+import { RootState } from "./types.ts";
 
 export type UndoableCommand = {
   type: string;
