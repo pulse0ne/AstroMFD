@@ -14,7 +14,7 @@ pub async fn save_screen_img(id: String, data: Vec<u8>, app_handle: AppHandle) -
     debug!("saving screen img for {}", id);
     let file_path = dirs::data_local_dir()
         .unwrap_or_default()
-        .join("elite-control")
+        .join("AstroMFD")
         .join("thumbs")
         .join(format!("{}.png", id));
     if let Err(e) = fs::write(file_path, data) {
@@ -31,7 +31,7 @@ pub async fn get_screen_img(id: String) -> Result<Response, String> {
     debug!("loading screen img for {}", id);
     let file_path = dirs::data_local_dir()
         .unwrap_or_default()
-        .join("elite-control")
+        .join("AstroMFD")
         .join("thumbs")
         .join(format!("{}.png", id));
     match fs::read(file_path) {

@@ -5,7 +5,7 @@ pub fn data_dir() -> PathBuf {
 }
 
 pub fn ec_root() -> PathBuf {
-    data_dir().join("elite-control")
+    data_dir().join("AstroMFD")
 }
 
 pub fn log_dir() -> PathBuf {
@@ -31,7 +31,7 @@ pub fn initialize() {
     let save_dir = save_dir();
     let sounds_dir = sounds_dir();
     let dirs = vec![ec_root, log_dir, screen_img_dir, save_dir, sounds_dir];
-    
+
     dirs.iter().for_each(|dir| {
         if !dir.exists() {
             let _ = std::fs::create_dir_all(dir);

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "elite-control",
+  "productName": "AstroMFD",
   "version": "0.1.0",
-  "identifier": "com.snedi.elite-control",
+  "identifier": "com.snedi.astromfd",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Elite Control",
+        "title": "AstroMFD",
         "theme": "Dark",
         "maximized": true,
         "width": 1200,

@@ -52,31 +52,31 @@ impl LogMessage {
 
 fn make_rolling_file_appender() -> RollingFileAppender {
     let data_dir = dirs::data_local_dir().unwrap_or_default();
-    let logs_dir = data_dir.join("elite-control").join("logs");
-    
-    
+    let logs_dir = data_dir.join("AstroMFD").join("logs");
+
+
     let trigger = SizeTrigger::new(10 * 1024 * 1024);
 
     let roller = FixedWindowRoller::builder()
-        .build("elite-control.{}.log", 5)
+        .build("AstroMFD.{}.log", 5)
         .unwrap();
 
     let policy = CompoundPolicy::new(Box::new(trigger), Box::new(roller));
-    
+
     RollingFileAppender::builder()
-        .build(logs_dir.join("elite-control.log"), Box::new(policy))
+        .build(logs_dir.join("AstroMFD.log"), Box::new(policy))
         .unwrap()
 }
 
 pub fn setup_logging(app_handle: AppHandle) {
-    let log_level = env::var("ELITE_CONTROL_LOG_LEVEL")
+    let log_level = env::var("ASTRO_MFD_LOG_LEVEL")
         .ok()
         .and_then(|lvl| lvl.parse::<LevelFilter>().ok())
         .unwrap_or(LevelFilter::Debug);
-    
+
     let file_log = make_rolling_file_appender();
     let app_log = ApplicationAppender::new(app_handle.clone());
-    
+
     #[cfg(debug_assertions)]
     let stdout = ConsoleAppender::builder().build();
 
@@ -100,17 +100,17 @@ pub fn setup_logging(app_handle: AppHandle) {
                 .build("stdout", Box::new(stdout)),
         );
     }
-    
+
     let root = {
         let mut root_builder = Root::builder()
             .appender("file_log")
             .appender("app_log");
-        
+
         #[cfg(debug_assertions)]
         {
             root_builder = root_builder.appender("stdout");
         }
-        
+
         root_builder.build(log_level)
     };
 

@@ -1,6 +1,7 @@
-import {ButtonAttributes, ButtonType, InputKey} from "@common/shared/models";
+import {ButtonAttributes, ButtonSound, ButtonType, InputKey} from "@common/shared/models";
 import {Toggle} from "./Toggle.tsx";
 import {InputKeySelector} from "./InputKeySelector.tsx";
+import {SoundSelector} from "./SoundSelector.tsx";
 
 export type ScreenIdAndName = {
   id: string;
@@ -36,6 +37,10 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
 
   const handleNavTargetChange = (targetId: string) => {
     onUpdate(Object.assign({}, attr, { navTarget: targetId }), "widget.button.navTarget");
+  };
+
+  const handleSoundChange = (sound: ButtonSound) => {
+    onUpdate(Object.assign({}, attr, { sound }), "widget.button.sound");
   };
 
   return (
@@ -90,6 +95,9 @@ export function ButtonSpecificsSection({ attr, screens, isPressed, togglePressed
             </select>
           </div>
         )}
+      </div>
+      <div className="col gap-16">
+        <SoundSelector value={attr.sound} onChange={handleSoundChange} />
       </div>
       <div className="col gap-16">
         <div className="row align-items-center gap-16">

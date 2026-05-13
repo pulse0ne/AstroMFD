@@ -13,6 +13,7 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
       duration: 100
     },
     navTarget: null,
+    sound: null,
     shape: {
       svg: null,
       size: { width: 200, height: 100 },

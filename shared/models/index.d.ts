@@ -111,11 +111,18 @@ export type ButtonAction = {
   duration: number;
 };
 
+export type ButtonSound = {
+  source: string; // "resources" or "sounds"
+  file: string; // filename
+  playOn: "mobile" | "desktop" | "both"; // where to play the sound
+} | null;
+
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
   input: ButtonAction;
   navTarget: string | null;
   text: TextAttributes;
+  sound: ButtonSound;
   pressed: {
     shape: Partial<ShapeAttributes>;
     text: Partial<TextAttributes>;

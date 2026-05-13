@@ -1,4 +1,4 @@
-# Elite Control
+# AstroMFD
 
 ## Development
 `tauri dev`
