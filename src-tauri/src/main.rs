@@ -3,5 +3,5 @@
 
 #[tokio::main]
 async fn main() {
-    elite_control_lib::run().await
+    astro_mfd_lib::run().await
 }

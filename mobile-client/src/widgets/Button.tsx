@@ -1,15 +1,7 @@
-import {type CSSProperties, useCallback, useMemo, useState} from "react";
+import {type CSSProperties, useCallback, useMemo, useRef, useState} from "react";
 import type {ButtonAttributes, Gradient, InputKey, ShadowEffect} from "@common/shared/models";
 import {hAlignmentMap, vAlignmentMap} from "./common.ts";
 import {gradientString} from "../utils.ts";
-
-// TODO: remove;; just a test
-const audio = new Audio("/audio/resources/Flip.mp3");
-
-function playSound() {
-  audio.currentTime = 0;
-  audio.play().catch(e => console.error(e));
-}
 
 export type ButtonProps = {
   attr: ButtonAttributes;
@@ -21,6 +13,17 @@ export type ButtonProps = {
 
 export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps) {
   const [ pressed, setPressed ] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize audio if sound is configured
+  useMemo(() => {
+    if (attr.sound && (attr.sound.playOn === "mobile" || attr.sound.playOn === "both")) {
+      const audioPath = `/audio/${attr.sound.source}/${attr.sound.file}`;
+      audioRef.current = new Audio(audioPath);
+    } else {
+      audioRef.current = null;
+    }
+  }, [attr.sound]);
 
   const fill = useMemo(() => {
     const f = pressed && attr.pressed.shape.fill ? attr.pressed.shape.fill : attr.shape.fill;
@@ -76,7 +79,12 @@ export function Button({ attr, onPress, onDown, onUp, onNavigate }: ButtonProps)
   }, [attr, onPress, onNavigate]);
 
   const handleDown = useCallback(() => {
-    playSound();
+    // Play sound if configured
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(e => console.error("Failed to play sound:", e));
+    }
+
     if (attr.buttonType === "toggle") {
       setPressed(ov => !ov);
     } else {

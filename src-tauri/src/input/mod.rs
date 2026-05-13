@@ -111,7 +111,7 @@ pub async fn input_worker(
     info!("Input worker running...");
     while let Some(evt) = mobile_rx.recv().await {
         trace!("Received mobile event: {:?}", evt);
-        match evt {
+        match evt.clone() {
             MobileEvent::FixedPress { key, duration } => {
                 device.lock().await.press_key(&key, duration).await;
             }
@@ -121,6 +121,12 @@ pub async fn input_worker(
             MobileEvent::KeyUp { key } => {
                 device.lock().await.key_up(&key).await;
             }
+            _ => {}
+        }
+        match evt {
+            MobileEvent::FixedPress { key: _, duration: _ } | MobileEvent::KeyDown { key: _ } => {
+                // TODO: rodio play
+            },
             _ => {}
         }
     }

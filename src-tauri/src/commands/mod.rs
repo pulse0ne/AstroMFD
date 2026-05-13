@@ -4,6 +4,7 @@ mod fonts;
 mod client;
 mod screens;
 mod input;
+mod audio;
 
 use tauri::generate_handler;
 use tauri::ipc::Invoke;
@@ -24,5 +25,6 @@ pub fn command_handlers() -> (impl Fn(Invoke) -> bool + Send + Sync + 'static) {
         screens::rename_screen_set,
         screens::create_screen_set,
         input::get_available_input_keys,
+        audio::get_audio_clips,
     ]
 }

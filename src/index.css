@@ -11,12 +11,15 @@
 
     --editor-background-color-values: 51, 51, 51;
     --panel-color-values: 22, 22, 22;
-
-    /*--gradient-stop1: #bd49b7;*/
-    /*--gradient-stop2: #4956e4;*/
+/*
+    --gradient-stop1: #bd49b7;
+    --gradient-stop2: #4956e4;
 
     --gradient-stop1: #a5b60b;
-    --gradient-stop2: #59b02a;
+    --gradient-stop2: #59b02a;*/
+
+    --gradient-stop1: #dd8844;
+    --gradient-stop2: #dd6666;
 
     --border-light: 1px solid rgba(255, 255, 255, 0.2);
 
@@ -178,11 +181,16 @@ button {
 input,
 select,
 textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background: var(--editor-background-color-hex);
     border: var(--border-light);
     border-radius: 4px;
-    padding: 2px;
+    padding: 2px 4px;
     color: var(--text-color-light-hex);
+    font-family: inherit;
+    font-size: inherit;
 }
 
 input:focus {
