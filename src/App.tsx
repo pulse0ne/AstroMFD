@@ -8,6 +8,8 @@ import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
+- Action builder
+- Carousel container
 - Move Add Screen to screen list
 - Zoom controls
 - Finish Home Screen
