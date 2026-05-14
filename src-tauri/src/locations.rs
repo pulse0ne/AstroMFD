@@ -25,16 +25,13 @@ pub fn sounds_dir() -> PathBuf {
 }
 
 pub fn initialize() {
-    let ec_root = ec_root();
-    let log_dir = log_dir();
-    let screen_img_dir = screen_img_dir();
-    let save_dir = save_dir();
-    let sounds_dir = sounds_dir();
-    let dirs = vec![ec_root, log_dir, screen_img_dir, save_dir, sounds_dir];
+    let dirs = [ec_root(), log_dir(), screen_img_dir(), save_dir(), sounds_dir()];
 
-    dirs.iter().for_each(|dir| {
+    for dir in &dirs {
         if !dir.exists() {
-            let _ = std::fs::create_dir_all(dir);
+            if let Err(e) = std::fs::create_dir_all(dir) {
+                eprintln!("Failed to create directory {}: {}", dir.display(), e);
+            }
         }
-    });
+    }
 }

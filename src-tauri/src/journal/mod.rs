@@ -90,16 +90,16 @@ impl Journal {
     }
 
     pub fn read(&mut self) -> Vec<String> {
-        if let Some(journal_path) = &self.journal_path {
-            if let Ok(entries) = read_journal(&journal_path, self.offset) {
+        let Some(journal_path) = &self.journal_path else {
+            return vec![];
+        };
+        match read_journal(journal_path, self.offset) {
+            Ok(entries) => {
                 self.offset += entries.len();
                 self.log.push_all(entries.clone());
                 entries
-            } else {
-                vec![]
             }
-        } else {
-            vec![]
+            Err(_) => vec![],
         }
     }
 
@@ -107,74 +107,6 @@ impl Journal {
         self.log.snapshot()
     }
 }
-
-// pub async fn watch_journal(
-//     journal: Arc<Mutex<Journal>>,
-//     tx: Sender<Vec<String>>,
-// ) -> Result<RecommendedWatcher> {
-//     let journal_dir_path = journal.lock().await.journal_dir_path.clone();
-//     info!("watching journal dir: {}", journal_dir_path.display());
-//
-//     let (sync_tx, sync_rx) = std_mpsc::channel::<PathBuf>();
-//
-//     {
-//         let journal = Arc::clone(&journal);
-//         let tx = tx.clone();
-//         tokio::task::spawn_blocking(move || {
-//             for changed_file_path in sync_rx.iter() {
-//                 let journal = Arc::clone(&journal);
-//                 let tx = tx.clone();
-//
-//                 tokio::spawn(async move {
-//                     let journal = Arc::clone(&journal);
-//                     let tx = tx.clone();
-//                     tokio::spawn(async move {
-//                         let mut journal = journal.lock().await;
-//                         if let Some(current_journal) = &journal.journal_path {
-//                             if *current_journal != changed_file_path {
-//                                 journal.change_path(changed_file_path);
-//                             }
-//                             let entries = journal.read();
-//                             if !entries.is_empty() {
-//                                 let _ = tx.send(entries.clone()).await;
-//                             }
-//                         }
-//                     });
-//                 });
-//             }
-//         });
-//     }
-//
-//     let mut watcher = notify::recommended_watcher(move |res: notify::Result<Event>| {
-//         match res {
-//             Ok(event) => {
-//                 match event.kind {
-//                     EventKind::Modify(_) | EventKind::Create(_) => {
-//                         let mut relevant_paths = event.paths
-//                             .into_iter()
-//                             .filter(|path| {
-//                                 path.file_name()
-//                                     .map_or(false, |name| JOURNAL_RE.is_match(name.to_str().unwrap()))
-//                             })
-//                             .collect::<Vec<PathBuf>>();
-//                         if !relevant_paths.is_empty() {
-//                             relevant_paths.sort_by(|a, b| b.file_name().cmp(&a.file_name()));
-//                             let most_recent_journal = relevant_paths.first().unwrap();
-//                             let _ = sync_tx.send(most_recent_journal.clone());
-//                         }
-//                     },
-//                     _ => {
-//                         trace!("got a file change we don't care about: {:?}", event);
-//                     }
-//                 }
-//             }
-//             Err(e) => error!("watch error: {:?}", e),
-//         }
-//     })?;
-//
-//     watcher.watch(&journal_dir_path, RecursiveMode::NonRecursive)?;
-//     Ok(watcher)
-// }
 
 pub async fn watch_journal(
     journal: Arc<Mutex<Journal>>,

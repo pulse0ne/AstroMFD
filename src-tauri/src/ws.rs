@@ -70,20 +70,11 @@ async fn handle_socket(
                         MobileEvent::ClientReport { width, height, device } => {
                             info!("Got clientReport from {:?}: {}x{} ({})", addr, width, height, device);
                             let mut clients = state_clone.mobile_clients.lock().await;
-                            *clients = clients
-                                .iter()
-                                .cloned()
-                                .map(|mut f| {
-                                    if f.ip_addr == addr {
-                                        f.viewport_width = width;
-                                        f.viewport_height = height;
-                                        f.device_type = device.clone();
-                                        f
-                                    } else {
-                                        f
-                                    }
-                                })
-                                .collect();
+                            if let Some(client) = clients.iter_mut().find(|c| c.ip_addr == addr) {
+                                client.viewport_width = width;
+                                client.viewport_height = height;
+                                client.device_type = device;
+                            }
                             let _ = state_clone.app_handle.emit("clients-updated-event", DeviceList { devices: clients.clone() });
                         },
                         _ => {
@@ -104,8 +95,8 @@ async fn handle_socket(
 
     {
         let mut clients = state.mobile_clients.lock().await;
-        *clients = clients.clone().into_iter().filter(|c| c.ip_addr != addr).collect();
+        clients.retain(|c| c.ip_addr != addr);
         let _ = state.app_handle.emit("clients-updated-event", DeviceList { devices: clients.clone() });
-        info!("Websocket disconnected from {:?} ({} remaining connections)", addr, clients.clone().len());
+        info!("Websocket disconnected from {:?} ({} remaining connections)", addr, clients.len());
     }
 }

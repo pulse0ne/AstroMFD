@@ -9,7 +9,7 @@ mod audio;
 use tauri::generate_handler;
 use tauri::ipc::Invoke;
 
-pub fn command_handlers() -> (impl Fn(Invoke) -> bool + Send + Sync + 'static) {
+pub fn command_handlers() -> impl Fn(Invoke) -> bool + Send + Sync + 'static {
     generate_handler![
         journal::set_journal_path,
         journal::get_default_journal_path,

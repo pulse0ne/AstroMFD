@@ -1,4 +1,4 @@
-use crate::input::{InputDevice, InputKey, SpecialKey};
+use crate::input::{self, InputDevice, InputKey, SpecialKey};
 use evdev::{uinput::VirtualDeviceBuilder, AttributeSet, EventType, InputEvent, Key};
 use log::{debug, info, warn};
 use std::io;
@@ -118,80 +118,7 @@ impl InputDevice for EvdevDevice {
     }
 
     fn available_keys(&self) -> Vec<InputKey> {
-        let mut keys = vec![];
-
-        // Add letters A-Z
-        for c in 'A'..='Z' {
-            keys.push(InputKey::Letter { key: c });
-        }
-
-        // Add numbers 0-9
-        for n in 0..=9 {
-            keys.push(InputKey::Number { key: n });
-        }
-
-        // Add function keys F1-F24
-        for f in 1..=24 {
-            keys.push(InputKey::FunctionKey { key: f });
-        }
-
-        // Add special keys
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Enter,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Space,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Tab,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Escape,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Backspace,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Delete,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Home,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::End,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::PageUp,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::PageDown,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::ArrowUp,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::ArrowDown,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::ArrowLeft,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::ArrowRight,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Shift,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Ctrl,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::Alt,
-        });
-        keys.push(InputKey::SpecialKey {
-            key: SpecialKey::CapsLock,
-        });
-
-        keys
+        input::platform_available_keys()
     }
 
     fn device_info(&self) -> String {

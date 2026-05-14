@@ -30,6 +30,6 @@ impl<T: Clone> BoundedFifoVec<T> {
     }
 
     pub fn snapshot(&self) -> Vec<T> {
-        self.data.iter().map(|item| item.clone().into()).collect()
+        self.data.iter().cloned().collect()
     }
 }

@@ -63,6 +63,19 @@ pub enum SpecialKey {
     CapsLock,
 }
 
+impl SpecialKey {
+    pub fn all() -> &'static [SpecialKey] {
+        &[
+            SpecialKey::Enter, SpecialKey::Space, SpecialKey::Tab,
+            SpecialKey::Escape, SpecialKey::Backspace, SpecialKey::Delete,
+            SpecialKey::Home, SpecialKey::End, SpecialKey::PageUp,
+            SpecialKey::PageDown, SpecialKey::ArrowUp, SpecialKey::ArrowDown,
+            SpecialKey::ArrowLeft, SpecialKey::ArrowRight, SpecialKey::Shift,
+            SpecialKey::Ctrl, SpecialKey::Alt, SpecialKey::CapsLock,
+        ]
+    }
+}
+
 #[async_trait::async_trait]
 pub trait InputDevice: Send + Sync {
     /// Press and release a key after the specified duration
@@ -79,6 +92,51 @@ pub trait InputDevice: Send + Sync {
 
     /// Get device information as a human-readable string
     fn device_info(&self) -> String;
+}
+
+pub fn platform_available_keys() -> Vec<InputKey> {
+    #[cfg(target_os = "windows")]
+    {
+        (1..=128u8)
+            .map(|button| InputKey::JoystickButton { button })
+            .collect()
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        let mut keys = Vec::new();
+        for c in 'A'..='Z' {
+            keys.push(InputKey::Letter { key: c });
+        }
+        for n in 0..=9u8 {
+            keys.push(InputKey::Number { key: n });
+        }
+        for f in 1..=24u8 {
+            keys.push(InputKey::FunctionKey { key: f });
+        }
+        for key in SpecialKey::all() {
+            keys.push(InputKey::SpecialKey { key });
+        }
+        keys
+    }
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    {
+        let mut keys = Vec::new();
+        for c in 'A'..='Z' {
+            keys.push(InputKey::Letter { key: c });
+        }
+        for n in 0..=9u8 {
+            keys.push(InputKey::Number { key: n });
+        }
+        for f in 1..=12u8 {
+            keys.push(InputKey::FunctionKey { key: f });
+        }
+        keys.push(InputKey::SpecialKey { key: SpecialKey::Enter });
+        keys.push(InputKey::SpecialKey { key: SpecialKey::Space });
+        keys.push(InputKey::SpecialKey { key: SpecialKey::Escape });
+        keys
+    }
 }
 
 pub async fn input_worker(
@@ -111,22 +169,18 @@ pub async fn input_worker(
     info!("Input worker running...");
     while let Some(evt) = mobile_rx.recv().await {
         trace!("Received mobile event: {:?}", evt);
-        match evt.clone() {
-            MobileEvent::FixedPress { key, duration } => {
-                device.lock().await.press_key(&key, duration).await;
-            }
-            MobileEvent::KeyDown { key } => {
-                device.lock().await.key_down(&key).await;
-            }
-            MobileEvent::KeyUp { key } => {
-                device.lock().await.key_up(&key).await;
-            }
-            _ => {}
-        }
         match evt {
-            MobileEvent::FixedPress { key: _, duration: _ } | MobileEvent::KeyDown { key: _ } => {
+            MobileEvent::FixedPress { ref key, duration } => {
                 // TODO: rodio play
-            },
+                device.lock().await.press_key(key, duration).await;
+            }
+            MobileEvent::KeyDown { ref key } => {
+                // TODO: rodio play
+                device.lock().await.key_down(key).await;
+            }
+            MobileEvent::KeyUp { ref key } => {
+                device.lock().await.key_up(key).await;
+            }
             _ => {}
         }
     }
