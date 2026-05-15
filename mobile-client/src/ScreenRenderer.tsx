@@ -1,9 +1,10 @@
-import type { InputKey, Screen, Size } from "@common/shared/models";
+import type { InputKey, JoystickAxis, Screen, Size } from "@common/shared/models";
 import { Fragment, type CSSProperties } from "react";
 
 import { Button } from "./widgets/Button.tsx";
 import { Label } from "./widgets/Label.tsx";
 import { Panel } from "./widgets/Panel.tsx";
+import { Slider } from "./widgets/Slider.tsx";
 
 export type ScreenRendererProps = {
   screen: Screen;
@@ -37,6 +38,10 @@ export function ScreenRenderer({
     onMessage({ keyUp: { key } });
   };
 
+  const handleAxisMove = (axis: JoystickAxis, value: number) => {
+    onMessage({ axisMove: { axis, value } });
+  };
+
   return (
     <div style={bgStyle}>
       {screen?.crtEffect && (
@@ -52,6 +57,9 @@ export function ScreenRenderer({
               onUp={handleUp}
               onNavigate={onNavigate}
             />
+          )}
+          {widget.type === "slider" && (
+            <Slider attr={widget} onAxisMove={handleAxisMove} />
           )}
           {widget.type === "panel" && <Panel attr={widget} />}
           {widget.type === "label" && <Label attr={widget} />}

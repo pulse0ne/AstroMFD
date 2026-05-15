@@ -16,6 +16,7 @@ import { createButton } from "../utils/createButton.ts";
 import { createLabel } from "../utils/createLabel.ts";
 import { createPanel } from "../utils/createPanel.ts";
 import { createScreen } from "../utils/createScreen.ts";
+import { createSlider } from "../utils/createSlider.ts";
 import { findNextAvailableButton } from "../utils/findNextAvailableButton.ts";
 
 import "./toolbar.css";
@@ -97,6 +98,9 @@ export function Toolbar() {
           </AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createLabel)}>
             Label
+          </AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createSlider)}>
+            Slider
           </AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>
             Panel

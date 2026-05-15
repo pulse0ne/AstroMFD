@@ -21,6 +21,7 @@ import {
 import { ScreenSection } from "./ScreenSection.tsx";
 import { ShapeSection } from "./ShapeSection.tsx";
 import { SizePositionSection } from "./SizePositionSection.tsx";
+import { SliderSpecificsSection } from "./SliderSpecificsSection.tsx";
 import { TextSection } from "./TextSection.tsx";
 
 import "./attributes-panel.css";
@@ -231,6 +232,30 @@ export function AttributesPanel({
           <ShapeSection
             shapeAttr={selectedWidget.shape}
             onUpdate={handleShapeAttrChange}
+          />
+        </div>
+      )}
+      {selectedWidget?.type === "slider" && (
+        <div>
+          <h2 className="border-b p8-b">SLIDER</h2>
+          <SliderSpecificsSection
+            attr={selectedWidget}
+            onUpdate={(widget, type) => onUpdate(widget, type)}
+          />
+          <SizePositionSection
+            size={size!}
+            position={position!}
+            onSizeChange={handleSizeChange}
+            onPositionChange={handlePositionChange}
+          />
+          <ShapeSection
+            shapeAttr={selectedWidget.shape}
+            onUpdate={handleShapeAttrChange}
+          />
+          <TextSection
+            textAttr={selectedWidget.text}
+            onUpdate={handleTextAttrChange}
+            fonts={fonts}
           />
         </div>
       )}

@@ -32,7 +32,7 @@ import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 - Configuration (journal path, vjoy device, etc.)
 - Include pre-built SVGs for button shapes
 - Configurable shape # of sides (triangles, pentagons, hexagons, etc.)
-- Nav triggers (open screen on specified journal event)
+- Nav triggers (open screen on specified ED journal event)
 - Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
 - Multiselect konva components
 - User color themes?

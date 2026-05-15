@@ -95,7 +95,17 @@ export type Position = {
   y: number;
 };
 
-export type WidgetType = "button" | "label" | "panel";
+export type JoystickAxis = "x" | "y" | "z" | "rx" | "ry" | "rz" | "slider1" | "slider2";
+
+export type SliderOrientation = "horizontal" | "vertical";
+
+export type SliderAction = {
+  axis: JoystickAxis;
+  min: number;
+  max: number;
+};
+
+export type WidgetType = "button" | "label" | "panel" | "slider";
 
 export type WidgetBase<W extends WidgetType> = {
   type: W;
@@ -136,7 +146,13 @@ export type LabelAttributes = WidgetBase<"label"> & {
 
 export type PanelAttributes = WidgetBase<"panel">;
 
-export type Widget = ButtonAttributes | LabelAttributes | PanelAttributes;
+export type SliderAttributes = WidgetBase<"slider"> & {
+  orientation: SliderOrientation;
+  axis: SliderAction;
+  text: TextAttributes;
+};
+
+export type Widget = ButtonAttributes | LabelAttributes | PanelAttributes | SliderAttributes;
 
 // export type CrtEffect = {
 //   color: string;

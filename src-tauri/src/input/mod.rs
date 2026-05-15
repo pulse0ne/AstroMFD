@@ -76,21 +76,37 @@ impl SpecialKey {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum JoystickAxis {
+    X,
+    Y,
+    Z,
+    Rx,
+    Ry,
+    Rz,
+    Slider1,
+    Slider2,
+}
+
+impl JoystickAxis {
+    pub fn all() -> &'static [JoystickAxis] {
+        &[
+            JoystickAxis::X, JoystickAxis::Y, JoystickAxis::Z,
+            JoystickAxis::Rx, JoystickAxis::Ry, JoystickAxis::Rz,
+            JoystickAxis::Slider1, JoystickAxis::Slider2,
+        ]
+    }
+}
+
 #[async_trait::async_trait]
 pub trait InputDevice: Send + Sync {
-    /// Press and release a key after the specified duration
     async fn press_key(&mut self, key: &InputKey, duration_millis: u64);
-
-    /// Press a key down (hold)
     async fn key_down(&mut self, key: &InputKey);
-
-    /// Release a key
     async fn key_up(&mut self, key: &InputKey);
-
-    /// Get available input keys for this platform/device
+    async fn set_axis(&mut self, axis: JoystickAxis, value: f64);
     fn available_keys(&self) -> Vec<InputKey>;
-
-    /// Get device information as a human-readable string
+    fn available_axes(&self) -> Vec<JoystickAxis>;
     fn device_info(&self) -> String;
 }
 
@@ -180,6 +196,9 @@ pub async fn input_worker(
             }
             MobileEvent::KeyUp { ref key } => {
                 device.lock().await.key_up(key).await;
+            }
+            MobileEvent::AxisMove { axis, value } => {
+                device.lock().await.set_axis(axis, value).await;
             }
             _ => {}
         }

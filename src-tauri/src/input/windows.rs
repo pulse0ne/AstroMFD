@@ -1,6 +1,6 @@
 use log::{debug, warn};
 use vjoy::{ButtonState, VJoy};
-use crate::input::{InputDevice, InputKey};
+use crate::input::{InputDevice, InputKey, JoystickAxis};
 
 pub struct VJoyDevice {
     pub vjoy: VJoy,
@@ -77,6 +77,23 @@ impl InputDevice for VJoyDevice {
         }
     }
 
+    async fn set_axis(&mut self, axis: JoystickAxis, value: f64) {
+        let axis_id = axis_to_vjoy_id(axis);
+        let scaled = (value.clamp(0.0, 1.0) * 32767.0) as i32;
+        debug!("Set axis {:?} (vjoy id {}) to {} (raw {})", axis, axis_id, value, scaled);
+        let mut device = match self.vjoy.get_device_state(self.device_id) {
+            Ok(d) => d,
+            Err(e) => { warn!("Failed to get VJoy device state: {}", e); return; }
+        };
+        if let Err(e) = device.set_axis(axis_id, scaled) {
+            warn!("Failed to set axis {:?}: {}", axis, e);
+            return;
+        }
+        if let Err(e) = self.vjoy.update_device_state(&device) {
+            warn!("Failed to update VJoy device state: {}", e);
+        }
+    }
+
     fn available_keys(&self) -> Vec<InputKey> {
         debug!("Getting available joystick buttons");
         match self.vjoy.get_device_state(self.device_id) {
@@ -92,7 +109,24 @@ impl InputDevice for VJoyDevice {
         }
     }
 
+    fn available_axes(&self) -> Vec<JoystickAxis> {
+        JoystickAxis::all().to_vec()
+    }
+
     fn device_info(&self) -> String {
         format!("VJoy Device #{}", self.device_id)
+    }
+}
+
+fn axis_to_vjoy_id(axis: JoystickAxis) -> u32 {
+    match axis {
+        JoystickAxis::X => 1,
+        JoystickAxis::Y => 2,
+        JoystickAxis::Z => 3,
+        JoystickAxis::Rx => 4,
+        JoystickAxis::Ry => 5,
+        JoystickAxis::Rz => 6,
+        JoystickAxis::Slider1 => 7,
+        JoystickAxis::Slider2 => 8,
     }
 }

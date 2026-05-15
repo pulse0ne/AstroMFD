@@ -4,6 +4,7 @@ pub mod base;
 pub mod button;
 pub mod label;
 pub mod panel;
+pub mod slider;
 pub mod screen_set;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -12,4 +13,5 @@ pub enum Widget {
     Button(button::ButtonAttributes),
     Label(label::LabelAttributes),
     Panel(panel::PanelAttributes),
+    Slider(slider::SliderAttributes),
 }

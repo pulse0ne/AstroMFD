@@ -3,6 +3,7 @@ import { Widget } from "@common/shared/models";
 import { Button } from "./Button.tsx";
 import { Label } from "./Label.tsx";
 import { Panel } from "./Panel.tsx";
+import { Slider } from "./Slider.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type WidgetRendererProps = WidgetPropsBase & {
@@ -42,6 +43,16 @@ export function WidgetRenderer({
   } else if (widget.type === "panel") {
     return (
       <Panel
+        onSelect={onSelect}
+        onCommitUpdate={onCommitUpdate}
+        onEphemeralUpdate={onEphemeralUpdate}
+        attr={widget}
+        isSelected={isSelected}
+      />
+    );
+  } else if (widget.type === "slider") {
+    return (
+      <Slider
         onSelect={onSelect}
         onCommitUpdate={onCommitUpdate}
         onEphemeralUpdate={onEphemeralUpdate}

@@ -1,40 +1,37 @@
-use crate::input::{self, InputDevice, InputKey, SpecialKey};
-use evdev::{uinput::VirtualDeviceBuilder, AttributeSet, EventType, InputEvent, Key};
+use crate::input::{self, InputDevice, InputKey, JoystickAxis, SpecialKey};
+use evdev::{uinput::VirtualDeviceBuilder, AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, InputEvent, Key, UinputAbsSetup};
 use log::{debug, info, warn};
 use std::io;
 
 pub struct EvdevDevice {
-    device: evdev::uinput::VirtualDevice,
+    keyboard: evdev::uinput::VirtualDevice,
+    joystick: evdev::uinput::VirtualDevice,
 }
 
 impl EvdevDevice {
     pub fn new() -> io::Result<Self> {
-        info!("Creating virtual keyboard device with evdev");
+        info!("Creating virtual input devices with evdev");
 
         let mut keys = AttributeSet::<Key>::new();
 
-        // Add all letter keys
         for c in b'A'..=b'Z' {
             if let Some(key) = char_to_evdev_key(char::from(c)) {
                 keys.insert(key);
             }
         }
 
-        // Add all number keys
         for n in 0..=9 {
             if let Some(key) = number_to_evdev_key(n) {
                 keys.insert(key);
             }
         }
 
-        // Add all function keys F1-F24
         for f in 1..=24 {
             if let Some(key) = function_key_to_evdev(f) {
                 keys.insert(key);
             }
         }
 
-        // Add special keys
         keys.insert(Key::KEY_ENTER);
         keys.insert(Key::KEY_SPACE);
         keys.insert(Key::KEY_TAB);
@@ -57,19 +54,49 @@ impl EvdevDevice {
         keys.insert(Key::KEY_RIGHTALT);
         keys.insert(Key::KEY_CAPSLOCK);
 
-        let device = VirtualDeviceBuilder::new()?
-            .name("Elite Control Virtual Keyboard")
+        let keyboard = VirtualDeviceBuilder::new()?
+            .name("AstroMFD Virtual Keyboard")
             .with_keys(&keys)?
             .build()?;
 
-        info!("Virtual keyboard device created successfully");
+        info!("Virtual keyboard device created");
 
-        Ok(Self { device })
+        let abs_info = AbsInfo::new(0, 0, 32767, 0, 0, 1);
+        let axes = [
+            AbsoluteAxisCode::ABS_X,
+            AbsoluteAxisCode::ABS_Y,
+            AbsoluteAxisCode::ABS_Z,
+            AbsoluteAxisCode::ABS_RX,
+            AbsoluteAxisCode::ABS_RY,
+            AbsoluteAxisCode::ABS_RZ,
+            AbsoluteAxisCode::ABS_THROTTLE,
+            AbsoluteAxisCode::ABS_RUDDER,
+        ];
+
+        let mut joystick_builder = VirtualDeviceBuilder::new()?
+            .name("AstroMFD Virtual Joystick");
+
+        for axis in axes {
+            joystick_builder = joystick_builder
+                .with_absolute_axis(&UinputAbsSetup::new(axis, abs_info))?;
+        }
+
+        let joystick = joystick_builder.build()?;
+
+        info!("Virtual joystick device created");
+
+        Ok(Self { keyboard, joystick })
     }
 
     fn emit_key(&mut self, key: Key, value: i32) -> io::Result<()> {
         let events = [InputEvent::new(EventType::KEY, key.code(), value)];
-        self.device.emit(&events)?;
+        self.keyboard.emit(&events)?;
+        Ok(())
+    }
+
+    fn emit_axis(&mut self, axis: AbsoluteAxisCode, value: i32) -> io::Result<()> {
+        let events = [InputEvent::new(EventType::ABSOLUTE, axis.0, value)];
+        self.joystick.emit(&events)?;
         Ok(())
     }
 }
@@ -117,12 +144,25 @@ impl InputDevice for EvdevDevice {
         }
     }
 
+    async fn set_axis(&mut self, axis: JoystickAxis, value: f64) {
+        let evdev_axis = axis_to_evdev(axis);
+        let scaled = (value.clamp(0.0, 1.0) * 32767.0) as i32;
+        debug!("Set axis {:?} to {} (raw {})", axis, value, scaled);
+        if let Err(e) = self.emit_axis(evdev_axis, scaled) {
+            warn!("Failed to set axis {:?}: {}", axis, e);
+        }
+    }
+
     fn available_keys(&self) -> Vec<InputKey> {
         input::platform_available_keys()
     }
 
+    fn available_axes(&self) -> Vec<JoystickAxis> {
+        JoystickAxis::all().to_vec()
+    }
+
     fn device_info(&self) -> String {
-        "Elite Control Virtual Keyboard (evdev)".to_string()
+        "AstroMFD Virtual Input (evdev)".to_string()
     }
 }
 
@@ -235,5 +275,18 @@ fn special_key_to_evdev(key: SpecialKey) -> Option<Key> {
         SpecialKey::Ctrl => Some(Key::KEY_LEFTCTRL),
         SpecialKey::Alt => Some(Key::KEY_LEFTALT),
         SpecialKey::CapsLock => Some(Key::KEY_CAPSLOCK),
+    }
+}
+
+fn axis_to_evdev(axis: JoystickAxis) -> AbsoluteAxisCode {
+    match axis {
+        JoystickAxis::X => AbsoluteAxisCode::ABS_X,
+        JoystickAxis::Y => AbsoluteAxisCode::ABS_Y,
+        JoystickAxis::Z => AbsoluteAxisCode::ABS_Z,
+        JoystickAxis::Rx => AbsoluteAxisCode::ABS_RX,
+        JoystickAxis::Ry => AbsoluteAxisCode::ABS_RY,
+        JoystickAxis::Rz => AbsoluteAxisCode::ABS_RZ,
+        JoystickAxis::Slider1 => AbsoluteAxisCode::ABS_THROTTLE,
+        JoystickAxis::Slider2 => AbsoluteAxisCode::ABS_RUDDER,
     }
 }

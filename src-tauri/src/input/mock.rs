@@ -1,5 +1,5 @@
 use log::info;
-use crate::input::{self, InputDevice, InputKey};
+use crate::input::{self, InputDevice, InputKey, JoystickAxis};
 
 pub struct MockDevice;
 
@@ -17,8 +17,16 @@ impl InputDevice for MockDevice {
         info!("[MOCK] key_up({:?})", key);
     }
 
+    async fn set_axis(&mut self, axis: JoystickAxis, value: f64) {
+        info!("[MOCK] set_axis({:?}, {})", axis, value);
+    }
+
     fn available_keys(&self) -> Vec<InputKey> {
         input::platform_available_keys()
+    }
+
+    fn available_axes(&self) -> Vec<JoystickAxis> {
+        JoystickAxis::all().to_vec()
     }
 
     fn device_info(&self) -> String {
