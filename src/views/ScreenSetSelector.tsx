@@ -1,211 +1,239 @@
 import { invoke } from "@tauri-apps/api/core";
-import { CSSProperties, useEffect, useState } from "react";
-import { MdAdd, MdDeleteForever, MdEditDocument } from "react-icons/md";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { MdAdd, MdContentCopy, MdDelete, MdEdit } from "react-icons/md";
 import { useNavigate } from "react-router";
 
 import "./screen-set-selector.css";
 
-import { ScreenSet } from "@common/shared/models";
-
-import { EditableTitle } from "../editor/EditableTitle.tsx";
 import { Modal } from "../Modal.tsx";
-
-const bigText: CSSProperties = {
-  fontSize: 24,
-  fontWeight: "bold",
-};
 
 type ScreenSetMeta = {
   id: string;
   name: string;
   screenImgId: string | null;
+  modifiedAt: number;
 };
+
+type ContextMenuState = {
+  x: number;
+  y: number;
+  screenSet: ScreenSetMeta;
+} | null;
+
+function relativeTime(epochSecs: number): string {
+  if (!epochSecs) return "";
+  const now = Date.now() / 1000;
+  const diff = now - epochSecs;
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return new Date(epochSecs * 1000).toLocaleDateString();
+}
 
 export function ScreenSetSelector() {
   const [screenSets, setScreenSets] = useState<ScreenSetMeta[]>([]);
-  const [toDelete, setToDelete] = useState<string | null>(null);
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [createScreenSetModalOpen, setCreateScreenSetModalOpen] =
-    useState(false);
   const [screenImages, setScreenImages] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>(null);
+  const [confirmDelete, setConfirmDelete] = useState<ScreenSetMeta | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const nav = useNavigate();
 
-  useEffect(() => {
-    invoke<ScreenSetMeta[]>("list_screen_sets").then(setScreenSets);
+  const refresh = useCallback(() => {
+    invoke<ScreenSetMeta[]>("list_screen_sets")
+      .then(setScreenSets)
+      .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
 
   useEffect(() => {
     screenSets
       .filter((ss) => Boolean(ss.screenImgId))
-      .forEach((screenSet) => {
-        invoke<ArrayBuffer>("get_screen_img", {
-          id: screenSet.screenImgId,
-        }).then((buf) => {
+      .forEach((ss) => {
+        if (screenImages[ss.id]) return;
+        invoke<ArrayBuffer>("get_screen_img", { id: ss.screenImgId }).then((buf) => {
           const blob = new Blob([buf], { type: "application/octet-stream" });
           const url = URL.createObjectURL(blob);
-          setScreenImages((ov) => ({ ...ov, [screenSet.id]: url }));
+          setScreenImages((prev) => ({ ...prev, [ss.id]: url }));
         });
       });
   }, [screenSets]);
 
-  const handleRename = (id: string, name: string) => {
-    invoke<ScreenSetMeta[]>("rename_screen_set", { id, name }).then(
-      setScreenSets,
-    );
+  const handleContextMenu = (e: React.MouseEvent, ss: ScreenSetMeta) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY, screenSet: ss });
   };
 
-  const handleDelete = (id: string) => {
-    setToDelete(id);
-    setConfirmModalOpen(true);
+  const closeContextMenu = () => setContextMenu(null);
+
+  useEffect(() => {
+    if (contextMenu) {
+      const handler = () => closeContextMenu();
+      document.addEventListener("click", handler);
+      document.addEventListener("contextmenu", handler);
+      return () => {
+        document.removeEventListener("click", handler);
+        document.removeEventListener("contextmenu", handler);
+      };
+    }
+  }, [contextMenu]);
+
+  const handleRename = (ss: ScreenSetMeta) => {
+    closeContextMenu();
+    const name = prompt("Rename screen set:", ss.name);
+    if (name && name !== ss.name) {
+      invoke<ScreenSetMeta[]>("rename_screen_set", { id: ss.id, name }).then(setScreenSets);
+    }
   };
 
-  const doDelete = () => {
-    if (!toDelete) return;
-    invoke<ScreenSetMeta[]>("delete_screen_set", { id: toDelete })
+  const handleDuplicate = (ss: ScreenSetMeta) => {
+    closeContextMenu();
+    invoke<ScreenSetMeta[]>("duplicate_screen_set", { id: ss.id }).then(setScreenSets);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!confirmDelete) return;
+    invoke<ScreenSetMeta[]>("delete_screen_set", { id: confirmDelete.id })
       .then(setScreenSets)
-      .finally(() => setToDelete(null));
+      .finally(() => setConfirmDelete(null));
   };
 
-  const createScreenSet = (name: string) => {
-    invoke<ScreenSet>("create_screen_set", { name }).then((ss) =>
+  const handleCreate = (name: string) => {
+    invoke<{ id: string }>("create_screen_set", { name }).then((ss) =>
       nav(`/creator/${ss.id}`),
     );
   };
 
-  const handleCreate = () => {
-    setCreateScreenSetModalOpen(true);
-  };
+  const filtered = search
+    ? screenSets.filter((ss) => ss.name.toLowerCase().includes(search.toLowerCase()))
+    : screenSets;
 
   return (
-    <div className="no-overflow fill">
-      <h1 className="text-center p16 border-b">Screen Sets</h1>
-      <div className="scroll-y">
-        <div className="screen-set-selector-container gap-24">
-          {screenSets.map((ss) => (
-            <ScreenSetItem
-              key={ss.id}
-              screenSet={ss}
-              imgUrl={screenImages[ss.id]}
-              onEdit={(id) => nav(`/creator/${id}`)}
-              onRename={handleRename}
-              onDelete={handleDelete}
+    <div className="screen-set-selector">
+      <div className="screen-set-selector-header">
+        <h1>Screen Sets</h1>
+        <div className="row gap-12 align-items-center">
+          {screenSets.length > 4 && (
+            <input
+              className="screen-set-search"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-          ))}
-          <div className="col align-items-center gap-8 p24">
-            <div
-              className="pointer col justify-content-center align-items-center screen-set-add-new-container border"
-              onClick={handleCreate}
-            >
-              <MdAdd size={128} style={{ opacity: 0.7 }} />
+          )}
+          <button onClick={() => setCreateModalOpen(true)}>
+            <div className="row gap-4 align-items-center">
+              <MdAdd size={14} />
+              <span>NEW</span>
             </div>
-            <span style={bigText}>New</span>
-          </div>
-        </div>
-      </div>
-      <DeleteConfirmation
-        open={confirmModalOpen}
-        onClose={() => setConfirmModalOpen(false)}
-        onConfirm={doDelete}
-      />
-      <CreateModal
-        open={createScreenSetModalOpen}
-        onClose={() => setCreateScreenSetModalOpen(false)}
-        onConfirm={createScreenSet}
-      />
-    </div>
-  );
-}
-
-type ScreenSetItemProps = {
-  screenSet: ScreenSetMeta;
-  imgUrl: string | undefined;
-  onEdit: (id: string) => void;
-  onRename: (id: string, name: string) => void;
-  onDelete: (id: string) => void;
-};
-
-function ScreenSetItem({
-  screenSet,
-  imgUrl,
-  onEdit,
-  onRename,
-  onDelete,
-}: ScreenSetItemProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  return (
-    <div className="col align-items-center gap-8 p24">
-      <div
-        className="screen-set-img-container border relative"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {imgUrl && (
-          <img src={imgUrl} alt={screenSet.id} width="100%" height="100%" />
-        )}
-        {isHovered && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backdropFilter: "blur(3px)",
-            }}
-            className="row justify-content-space-around p16"
-          >
-            <MdEditDocument
-              onClick={() => onEdit(screenSet.id)}
-              className="pointer"
-              color="rgba(255, 255, 255, 0.8)"
-              size={64}
-            />
-            <MdDeleteForever
-              onClick={() => onDelete(screenSet.id)}
-              className="pointer"
-              color="rgba(255, 0, 0, 0.8)"
-              size={64}
-            />
-          </div>
-        )}
-      </div>
-      <EditableTitle
-        className="text-center"
-        style={bigText}
-        inputStyle={{ textAlign: "center", ...bigText }}
-        value={screenSet.name}
-        onChange={(name) => onRename(screenSet.id, name)}
-      />
-    </div>
-  );
-}
-
-type DeleteConfirmationProps = {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-};
-
-function DeleteConfirmation({
-  open,
-  onClose,
-  onConfirm,
-}: DeleteConfirmationProps) {
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      header={<h2 className="text-center">Confirm Delete</h2>}
-      footer={
-        <div className="row align-items-center justify-content-center gap-12">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={onConfirm} style={{ background: "rgb(255,0,59)" }}>
-            Delete
           </button>
         </div>
-      }
-    >
-      <div>Are you sure you want to permanently delete this Screen Set?</div>
-    </Modal>
+      </div>
+
+      <div className="scroll-y flex-grow">
+        {loading ? (
+          <div className="row justify-content-center p24">
+            <div className="loader" />
+          </div>
+        ) : screenSets.length === 0 ? (
+          <div className="screen-set-empty">
+            <h2>No screen sets yet</h2>
+            <p>Create your first screen set to get started.</p>
+            <button onClick={() => setCreateModalOpen(true)}>
+              <MdAdd size={14} style={{ marginRight: 4 }} />
+              Create Screen Set
+            </button>
+          </div>
+        ) : (
+          <div className="screen-set-grid">
+            {filtered.map((ss) => (
+              <div
+                key={ss.id}
+                className="screen-set-card"
+                onClick={() => nav(`/creator/${ss.id}`)}
+                onContextMenu={(e) => handleContextMenu(e, ss)}
+              >
+                <div className="screen-set-card-thumb">
+                  {screenImages[ss.id] && (
+                    <img src={screenImages[ss.id]} alt={ss.name} />
+                  )}
+                </div>
+                <div className="screen-set-card-body">
+                  <div className="screen-set-card-name">{ss.name}</div>
+                  <div className="screen-set-card-meta">
+                    {relativeTime(ss.modifiedAt)}
+                  </div>
+                </div>
+                <div className="screen-set-card-overlay">
+                  <button onClick={(e) => { e.stopPropagation(); nav(`/creator/${ss.id}`); }}>
+                    <MdEdit size={14} /> Edit
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); handleDuplicate(ss); }}>
+                    <MdContentCopy size={14} /> Duplicate
+                  </button>
+                </div>
+              </div>
+            ))}
+            <div
+              className="screen-set-add-card"
+              onClick={() => setCreateModalOpen(true)}
+            >
+              <MdAdd size={36} style={{ opacity: 0.4 }} />
+              <span>New Screen Set</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {contextMenu && (
+        <div
+          className="context-menu"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+        >
+          <div className="context-menu-item" onClick={() => { nav(`/creator/${contextMenu.screenSet.id}`); closeContextMenu(); }}>
+            <MdEdit size={14} /> Edit
+          </div>
+          <div className="context-menu-item" onClick={() => handleRename(contextMenu.screenSet)}>
+            Rename
+          </div>
+          <div className="context-menu-item" onClick={() => handleDuplicate(contextMenu.screenSet)}>
+            <MdContentCopy size={14} /> Duplicate
+          </div>
+          <div className="context-menu-separator" />
+          <div className="context-menu-item danger" onClick={() => { setConfirmDelete(contextMenu.screenSet); closeContextMenu(); }}>
+            <MdDelete size={14} /> Delete
+          </div>
+        </div>
+      )}
+
+      <Modal
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        header={<h4 style={{ margin: 0 }}>Delete Screen Set</h4>}
+        footer={
+          <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
+            <button onClick={() => setConfirmDelete(null)}>Cancel</button>
+            <button onClick={handleDeleteConfirm} style={{ borderColor: "#ff4444", color: "#ff4444" }}>
+              Delete
+            </button>
+          </div>
+        }
+      >
+        <p>
+          Permanently delete <strong>{confirmDelete?.name}</strong>? This cannot be undone.
+        </p>
+      </Modal>
+
+      <CreateModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onConfirm={handleCreate}
+      />
+    </div>
   );
 }
 
@@ -216,31 +244,47 @@ type CreateModalProps = {
 };
 
 function CreateModal({ open, onClose, onConfirm }: CreateModalProps) {
-  const [proposedName, setProposedName] = useState("Untitled ScreenSet");
+  const [name, setName] = useState("Untitled Screen Set");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      setName("Untitled Screen Set");
+      setTimeout(() => inputRef.current?.select(), 50);
+    }
+  }, [open]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onConfirm(name.trim());
+      onClose();
+    }
+  };
+
   return (
     <Modal
       open={open}
       onClose={onClose}
-      header={<h2 className="text-center">Create ScreenSet</h2>}
+      header={<h4 style={{ margin: 0 }}>New Screen Set</h4>}
       footer={
-        <div className="row align-items-center justify-content-center gap-16">
+        <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
           <button onClick={onClose}>Cancel</button>
-          <button
-            onClick={() => onConfirm(proposedName)}
-            disabled={!proposedName}
-          >
-            Create
-          </button>
+          <button onClick={handleSubmit} disabled={!name.trim()}>Create</button>
         </div>
       }
     >
-      <div>
-        <p>Enter a name for the new ScreenSet:</p>
-        <input
-          value={proposedName}
-          onChange={(evt) => setProposedName(evt.target.value)}
-        />
-      </div>
+      <form onSubmit={handleSubmit}>
+        <label className="col gap-8">
+          <span style={{ fontSize: 12, opacity: 0.6 }}>Name</span>
+          <input
+            ref={inputRef}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{ width: "100%" }}
+          />
+        </label>
+      </form>
     </Modal>
   );
 }

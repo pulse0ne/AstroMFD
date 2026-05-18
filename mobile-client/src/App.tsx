@@ -3,8 +3,6 @@ import { ScreenSetManager } from "./ScreenSetManager.tsx";
 import { ViewportReporter } from "./ViewportReporter.tsx";
 import { WebsocketProvider } from "./websocket/WebsocketContext.tsx";
 
-console.log(window.navigator.userAgent);
-
 function App() {
   return (
     <WebsocketProvider>

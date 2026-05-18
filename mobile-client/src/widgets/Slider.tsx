@@ -2,6 +2,7 @@ import type { JoystickAxis, SliderAttributes } from "@common/shared/models";
 import { useCallback, useRef, type CSSProperties } from "react";
 
 import { hAlignmentMap, vAlignmentMap } from "./common.ts";
+import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type SliderProps = {
   attr: SliderAttributes;
@@ -73,6 +74,13 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
 
   return (
     <div style={shapeStyle}>
+      {attr.shape.svg && (
+        <SvgRenderer
+          svg={attr.shape.svg}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+        />
+      )}
       {attr.text.text && (
         <div style={textContainerStyle}>
           <span style={textStyle}>{attr.text.text}</span>

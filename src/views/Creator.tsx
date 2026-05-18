@@ -1,6 +1,6 @@
 import { ScreenSet } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 
 import Editor from "../editor/Editor.tsx";
@@ -20,7 +20,7 @@ function debounce<T extends (...args: any[]) => any>(
     }
     timeout = setTimeout(() => {
       callback(...args);
-      timeout = null; // Clear timeout after execution
+      timeout = null;
     }, waitFor);
   };
 }
@@ -29,30 +29,49 @@ function update(screenSet: ScreenSet) {
   invoke("update_clients", { screenSet }).catch((e) => console.error(e));
 }
 
-function save(screenSet: ScreenSet) {
-  invoke("save_screen_set", { screenSet }).catch((e) => console.error(e));
-}
-
 const debouncedUpdate = debounce(update, 250);
-const debouncedSave = debounce(save, 5000);
 
 export function Creator() {
   const { screenSetId } = useParams();
   const screenSet = useECStore((state) => state.screenSet);
   const selectScreenSet = useECStore((state) => state.setActiveScreenSet);
+  const dirtyRef = useRef(false);
+  const initialLoadRef = useRef(true);
 
   useEffect(() => {
     invoke<ScreenSet>("get_screen_set_by_id", { id: screenSetId }).then(
       (value) => selectScreenSet(value),
-    ); // TODO: error handling
+    );
   }, [screenSetId]);
 
   useEffect(() => {
-    if (screenSet) {
-      debouncedUpdate(screenSet);
-      debouncedSave(screenSet);
+    if (!screenSet) return;
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false;
+      return;
     }
+
+    dirtyRef.current = true;
+    debouncedUpdate(screenSet);
+
+    const saveTimeout = setTimeout(() => {
+      invoke("save_screen_set", { screenSet })
+        .then(() => { dirtyRef.current = false; })
+        .catch((e) => console.error(e));
+    }, 3000);
+
+    return () => clearTimeout(saveTimeout);
   }, [screenSet]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (dirtyRef.current) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
 
   return (
     <div className="creator flex-grow col no-overflow">
@@ -63,7 +82,7 @@ export function Creator() {
       )}
       {screenSet && (
         <>
-          <Toolbar />
+          <Toolbar dirtyRef={dirtyRef} />
           <div className="row flex-grow no-overflow">
             <ScreenSelector />
             <Editor />

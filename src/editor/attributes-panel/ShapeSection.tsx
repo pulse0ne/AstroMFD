@@ -4,10 +4,12 @@ import {
   ShadowEffect,
   ShapeAttributes,
 } from "@common/shared/models";
+import { useRef } from "react";
 import { v4 as uuid } from "uuid";
 
 import { useRecentColors } from "../../hooks/useRecentColors.ts";
 import { gradientString } from "../../utils/gradientString.ts";
+import { SvgUtils } from "../../utils/svg/parseSvg.ts";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { GradientPicker } from "./GradientPicker.tsx";
 import { Toggle } from "./Toggle.tsx";
@@ -171,6 +173,34 @@ export function ShapeSection({
   const shadow =
     isPressed && pressedAttr?.shadow ? pressedAttr.shadow : shapeAttr.shadow;
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSvgImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const svg = SvgUtils.parse(reader.result as string);
+        onUpdate(
+          Object.assign({}, shapeAttr, { svg }),
+          "widget.shape.svg",
+        );
+      } catch (err) {
+        console.error("Failed to parse SVG:", err);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const handleSvgRemove = () => {
+    onUpdate(
+      Object.assign({}, shapeAttr, { svg: null }),
+      "widget.shape.svg",
+    );
+  };
+
   const fillValue = !fill
     ? null
     : fill.type === "solid"
@@ -180,6 +210,28 @@ export function ShapeSection({
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>SHAPE</h5>
+      <div className="col gap-8">
+        <div className="row align-items-center gap-16">
+          <span>SVG:</span>
+          {shapeAttr.svg ? (
+            <div className="row align-items-center gap-8">
+              <span style={{ fontSize: 11, opacity: 0.6 }}>Imported</span>
+              <button className="btn btn-sm" onClick={handleSvgRemove}>Remove</button>
+            </div>
+          ) : (
+            <button className="btn btn-sm" onClick={() => fileInputRef.current?.click()}>
+              Import SVG
+            </button>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".svg"
+            style={{ display: "none" }}
+            onChange={handleSvgImport}
+          />
+        </div>
+      </div>
       <div className="col gap-16">
         <div className="row align-items-center gap-16">
           <span>Fill Type:</span>

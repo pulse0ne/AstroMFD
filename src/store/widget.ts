@@ -1,4 +1,5 @@
 import { Widget } from "@common/shared/models";
+import { v4 as uuid } from "uuid";
 import { StateCreator } from "zustand/vanilla";
 
 import { fastCopy } from "../utils/fastCopy.ts";
@@ -189,6 +190,24 @@ export const createWidgetSlice: StateCreator<
       state.executeCommand(cmd);
       set((state) => {
         state.activeWidgetIndex = null;
+      });
+    }
+  },
+  duplicateActiveWidget: () => {
+    const state = get();
+    if (canModifyWidget(state)) {
+      const screen = state.screenSet.screens[state.activeScreenIndex];
+      const widget = fastCopy(screen.widgets[state.activeWidgetIndex]);
+      widget.id = uuid();
+      widget.shape.position = {
+        x: widget.shape.position.x + 20,
+        y: widget.shape.position.y + 20,
+      };
+      const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
+      state.executeCommand(cmd);
+      set((state) => {
+        state.activeWidgetIndex =
+          state.screenSet!.screens[state.activeScreenIndex!].widgets.length - 1;
       });
     }
   },

@@ -271,9 +271,12 @@ fn special_key_to_evdev(key: SpecialKey) -> Option<Key> {
         SpecialKey::ArrowDown => Some(Key::KEY_DOWN),
         SpecialKey::ArrowLeft => Some(Key::KEY_LEFT),
         SpecialKey::ArrowRight => Some(Key::KEY_RIGHT),
-        SpecialKey::Shift => Some(Key::KEY_LEFTSHIFT),
-        SpecialKey::Ctrl => Some(Key::KEY_LEFTCTRL),
-        SpecialKey::Alt => Some(Key::KEY_LEFTALT),
+        SpecialKey::LeftShift => Some(Key::KEY_LEFTSHIFT),
+        SpecialKey::RightShift => Some(Key::KEY_RIGHTSHIFT),
+        SpecialKey::LeftCtrl => Some(Key::KEY_LEFTCTRL),
+        SpecialKey::RightCtrl => Some(Key::KEY_RIGHTCTRL),
+        SpecialKey::LeftAlt => Some(Key::KEY_LEFTALT),
+        SpecialKey::RightAlt => Some(Key::KEY_RIGHTALT),
         SpecialKey::CapsLock => Some(Key::KEY_CAPSLOCK),
     }
 }

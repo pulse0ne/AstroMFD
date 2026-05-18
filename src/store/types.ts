@@ -13,6 +13,7 @@ export type WidgetSlice = {
   updateWidget: (widget: Widget, changeType: string) => void;
   nudge: (x: number, y: number) => void;
   deleteActiveWidget: () => void;
+  duplicateActiveWidget: () => void;
   addWidget: (widget: Widget) => void;
   sendForward: () => void;
   sendBackward: () => void;

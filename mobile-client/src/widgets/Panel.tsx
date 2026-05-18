@@ -2,6 +2,7 @@ import type { Gradient, PanelAttributes } from "@common/shared/models";
 import { useMemo, type CSSProperties } from "react";
 
 import { gradientString } from "../utils.ts";
+import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type PanelProps = {
   attr: PanelAttributes;
@@ -32,5 +33,15 @@ export function Panel({ attr }: PanelProps) {
     borderRadius: attr.shape.cornerRadius,
   };
 
-  return <div style={shapeStyle}></div>;
+  return (
+    <div style={shapeStyle}>
+      {attr.shape.svg && (
+        <SvgRenderer
+          svg={attr.shape.svg}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+        />
+      )}
+    </div>
+  );
 }

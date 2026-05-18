@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::widget::base::{Color, FontSpec, HorizontalAlignment, Position, ShadowEffect, Size, SvgXmlNode, TextAttributes, VerticalAlignment, WidgetBase};
-use crate::input::InputKey;
+use crate::input::{ActionStep, InputKey};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -45,44 +45,42 @@ pub struct PressedOverrides {
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ButtonAction {
-    pub key: InputKey,
-    pub fixed_duration: bool,
-    pub duration: u64,
+pub struct ActionSequence {
+    pub steps: Vec<ActionStep>,
 }
 
-// Custom deserializer to handle legacy format
-impl<'de> Deserialize<'de> for ButtonAction {
+impl<'de> Deserialize<'de> for ActionSequence {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        #[derive(Deserialize)]
-        #[serde(rename_all = "camelCase")]
-        struct LegacyButtonAction {
-            #[serde(default)]
-            button: Option<u8>,
-            #[serde(default)]
-            key: Option<InputKey>,
-            fixed_duration: bool,
-            duration: u64,
+        let value = serde_json::Value::deserialize(deserializer)
+            .map_err(serde::de::Error::custom)?;
+
+        // New format: { "steps": [...] }
+        if let Some(steps_val) = value.get("steps") {
+            let steps: Vec<ActionStep> = serde_json::from_value(steps_val.clone())
+                .map_err(serde::de::Error::custom)?;
+            return Ok(ActionSequence { steps });
         }
 
-        let legacy = LegacyButtonAction::deserialize(deserializer)?;
-
-        // If key exists, use it (new format)
-        // Otherwise, migrate from button number (old format)
-        let key = match (legacy.key, legacy.button) {
-            (Some(key), _) => key,
-            (None, Some(button)) => InputKey::JoystickButton { button },
-            (None, None) => InputKey::JoystickButton { button: 1 }, // Default fallback
+        // Legacy format: { "key": {...}, "fixedDuration": bool, "duration": u64 }
+        // or even older: { "button": u8, "fixedDuration": bool, "duration": u64 }
+        let key = if let Some(key_val) = value.get("key") {
+            serde_json::from_value::<InputKey>(key_val.clone())
+                .map_err(serde::de::Error::custom)?
+        } else if let Some(button) = value.get("button").and_then(|v| v.as_u64()) {
+            InputKey::JoystickButton { button: button as u8 }
+        } else {
+            InputKey::JoystickButton { button: 1 }
         };
 
-        Ok(ButtonAction {
-            key,
-            fixed_duration: legacy.fixed_duration,
-            duration: legacy.duration,
-        })
+        let duration = value.get("duration")
+            .and_then(|v| v.as_u64())
+            .unwrap_or(100);
+
+        let step = ActionStep::Press { key, duration };
+        Ok(ActionSequence { steps: vec![step] })
     }
 }
 
@@ -108,8 +106,8 @@ pub struct ButtonAttributes {
     #[serde(flatten)]
     pub widget: WidgetBase,
     pub button_type: ButtonType,
-    #[serde(alias = "vjoyButton")] // Support old format
-    pub input: ButtonAction,
+    #[serde(alias = "vjoyButton")]
+    pub input: ActionSequence,
     pub nav_target: Option<String>,
     #[serde(default)]
     pub sound: Option<ButtonSound>,

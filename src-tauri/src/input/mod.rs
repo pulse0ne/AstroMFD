@@ -57,9 +57,12 @@ pub enum SpecialKey {
     ArrowDown,
     ArrowLeft,
     ArrowRight,
-    Shift,
-    Ctrl,
-    Alt,
+    LeftShift,
+    RightShift,
+    LeftCtrl,
+    RightCtrl,
+    LeftAlt,
+    RightAlt,
     CapsLock,
 }
 
@@ -70,8 +73,11 @@ impl SpecialKey {
             SpecialKey::Escape, SpecialKey::Backspace, SpecialKey::Delete,
             SpecialKey::Home, SpecialKey::End, SpecialKey::PageUp,
             SpecialKey::PageDown, SpecialKey::ArrowUp, SpecialKey::ArrowDown,
-            SpecialKey::ArrowLeft, SpecialKey::ArrowRight, SpecialKey::Shift,
-            SpecialKey::Ctrl, SpecialKey::Alt, SpecialKey::CapsLock,
+            SpecialKey::ArrowLeft, SpecialKey::ArrowRight,
+            SpecialKey::LeftShift, SpecialKey::RightShift,
+            SpecialKey::LeftCtrl, SpecialKey::RightCtrl,
+            SpecialKey::LeftAlt, SpecialKey::RightAlt,
+            SpecialKey::CapsLock,
         ]
     }
 }
@@ -98,6 +104,17 @@ impl JoystickAxis {
         ]
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum ActionStep {
+    Press { key: InputKey, #[serde(default = "default_press_duration")] duration: u64 },
+    KeyDown { key: InputKey },
+    KeyUp { key: InputKey },
+    Pause { duration: u64 },
+}
+
+fn default_press_duration() -> u64 { 100 }
 
 #[async_trait::async_trait]
 pub trait InputDevice: Send + Sync {
@@ -199,6 +216,27 @@ pub async fn input_worker(
             }
             MobileEvent::AxisMove { axis, value } => {
                 device.lock().await.set_axis(axis, value).await;
+            }
+            MobileEvent::ExecuteActions { steps } => {
+                let device = device.clone();
+                tokio::spawn(async move {
+                    for step in steps {
+                        match step {
+                            ActionStep::Press { ref key, duration } => {
+                                device.lock().await.press_key(key, duration).await;
+                            }
+                            ActionStep::KeyDown { ref key } => {
+                                device.lock().await.key_down(key).await;
+                            }
+                            ActionStep::KeyUp { ref key } => {
+                                device.lock().await.key_up(key).await;
+                            }
+                            ActionStep::Pause { duration } => {
+                                tokio::time::sleep(std::time::Duration::from_millis(duration)).await;
+                            }
+                        }
+                    }
+                });
             }
             _ => {}
         }

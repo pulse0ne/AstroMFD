@@ -1,6 +1,6 @@
 import { Widget } from "@common/shared/models";
-import { PropsWithChildren, useState } from "react";
-import { MdAdd, MdArrowBackIos, MdRedo, MdUndo } from "react-icons/md";
+import { type MutableRefObject, PropsWithChildren, useMemo, useState } from "react";
+import { MdAdd, MdArrowBackIos, MdRedo, MdUndo, MdWarning, MdError } from "react-icons/md";
 import { useNavigate } from "react-router";
 import Popup from "reactjs-popup";
 
@@ -18,6 +18,7 @@ import { createPanel } from "../utils/createPanel.ts";
 import { createScreen } from "../utils/createScreen.ts";
 import { createSlider } from "../utils/createSlider.ts";
 import { findNextAvailableButton } from "../utils/findNextAvailableButton.ts";
+import { validateScreenSet, type ValidationIssue } from "../utils/validateScreenSet.ts";
 
 import "./toolbar.css";
 
@@ -25,7 +26,7 @@ import { IconType } from "react-icons";
 
 import { EditableTitle } from "./EditableTitle.tsx";
 
-export function Toolbar() {
+export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
   const screenSet = useECStore((state) => state.screenSet);
   const selectedScreen = useECStore(activeScreenSelector);
@@ -57,17 +58,20 @@ export function Toolbar() {
     setAddPopupOpen(false);
     const newWidget = createWidgetFn();
     if (newWidget.type === "button") {
-      // If the default key is a joystick button, find the next available one
       if (defaultKey.type === "joystickButton") {
         const nextButton = findNextAvailableButton(widgets ?? []);
-        newWidget.input.key = { type: "joystickButton", button: nextButton };
+        newWidget.input = {
+          steps: [{ type: "press", key: { type: "joystickButton", button: nextButton }, duration: 100 }],
+        };
       }
-      // Otherwise, use the default key as-is
     }
     addWidget(newWidget);
   };
 
   const goBack = () => {
+    if (dirtyRef.current) {
+      if (!window.confirm("You have unsaved changes. Leave anyway?")) return;
+    }
     navigate("/");
   };
 
@@ -122,6 +126,7 @@ export function Toolbar() {
         />
       </div>
       <div className="row align-items-center gap-16">
+        {screenSet && <ValidationIndicator screenSet={screenSet} />}
         <UndoRedoButton type="undo" disabled={!hasUndos} onClick={undo} />
         <UndoRedoButton type="redo" disabled={!hasRedos} onClick={redo} />
       </div>
@@ -165,5 +170,70 @@ function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
         color: disabled ? "#666" : "var(--gradient-stop1)",
       }}
     />
+  );
+}
+
+import { ScreenSet } from "@common/shared/models";
+
+function ValidationIndicator({ screenSet }: { screenSet: ScreenSet }) {
+  const result = useMemo(() => validateScreenSet(screenSet), [screenSet]);
+
+  const errors = result.issues.filter((i) => i.level === "error");
+  const warnings = result.issues.filter((i) => i.level === "warning");
+
+  if (result.issues.length === 0) return null;
+
+  return (
+    <Popup
+      trigger={
+        <div className="row align-items-center gap-4 pointer" style={{ fontSize: 11 }}>
+          {errors.length > 0 && (
+            <span className="row align-items-center gap-4" style={{ color: "#ff4444" }}>
+              <MdError size={14} /> {errors.length}
+            </span>
+          )}
+          {warnings.length > 0 && (
+            <span className="row align-items-center gap-4" style={{ color: "#ffaa00" }}>
+              <MdWarning size={14} /> {warnings.length}
+            </span>
+          )}
+        </div>
+      }
+      position="bottom right"
+      arrow={false}
+      closeOnDocumentClick
+      contentStyle={{
+        background: "var(--panel-color-hex)",
+        border: "var(--border-light)",
+        borderRadius: 6,
+        maxHeight: 300,
+        overflowY: "auto",
+        width: 320,
+        padding: 0,
+      }}
+    >
+      <div className="col" style={{ fontSize: 12 }}>
+        {result.issues.map((issue, i) => (
+          <ValidationIssueRow key={i} issue={issue} />
+        ))}
+      </div>
+    </Popup>
+  );
+}
+
+function ValidationIssueRow({ issue }: { issue: ValidationIssue }) {
+  const color = issue.level === "error" ? "#ff4444" : "#ffaa00";
+  const Icon = issue.level === "error" ? MdError : MdWarning;
+  return (
+    <div
+      className="row align-items-center gap-8"
+      style={{ padding: "8px 12px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+    >
+      <Icon size={13} color={color} style={{ flexShrink: 0 }} />
+      <div className="col" style={{ minWidth: 0 }}>
+        <span style={{ opacity: 0.5 }}>{issue.screen}</span>
+        <span>{issue.message}</span>
+      </div>
+    </div>
   );
 }

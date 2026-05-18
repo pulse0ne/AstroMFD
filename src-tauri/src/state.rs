@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::{broadcast, mpsc, Mutex};
 use crate::journal::JournalHandle;
 use crate::widget::screen_set::ScreenSet;
-use crate::input::{InputKey, JoystickAxis};
+use crate::input::{ActionStep, InputKey, JoystickAxis};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -24,6 +24,7 @@ pub enum MobileEvent {
     KeyUp { key: InputKey },
     FixedPress { key: InputKey, duration: u64 },
     AxisMove { axis: JoystickAxis, value: f64 },
+    ExecuteActions { steps: Vec<ActionStep> },
     ClientReport { width: u64, height: u64, device: String },
 }
 

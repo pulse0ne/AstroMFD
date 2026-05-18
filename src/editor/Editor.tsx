@@ -21,12 +21,15 @@ export default function Editor() {
   const activeScreen = useECStore(activeScreenSelector);
   const activeWidget = useECStore(activeWidgetSelector);
   const removeActiveWidget = useECStore((state) => state.deleteActiveWidget);
+  const duplicateWidget = useECStore((state) => state.duplicateActiveWidget);
   const selectWidget = useECStore((state) => state.setActiveWidgetIndex);
   const unselectWidget = useECStore((state) => state.unsetActiveWidgetIndex);
   const activeWidgetIndex = useECStore((state) => state.activeWidgetIndex);
   const updateWidget = useECStore((state) => state.updateWidget);
   const size = useECStore((state) => state.screenSet?.size);
   const nudgeWidget = useECStore((state) => state.nudge);
+  const undo = useECStore((state) => state.undo);
+  const redo = useECStore((state) => state.redo);
 
   const [isPressed, setPressed] = useState(false);
   const [ephemeralShapeState, setEphemeralShapeState] = useState<
@@ -77,16 +80,37 @@ export default function Editor() {
   }, [activeScreen, size]);
 
   useEffect(() => {
-    if (activeWidgetIndex === null) return;
-
     const handler = (e: KeyboardEvent) => {
       const tagName = (e.target as HTMLElement).tagName;
-      if (tagName === "INPUT" || tagName === "TEXTAREA") {
+      if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT") {
         return;
       }
 
-      const amount = e.ctrlKey ? 10 : 1;
+      const ctrl = e.ctrlKey || e.metaKey;
 
+      if (ctrl && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+        return;
+      }
+      if (ctrl && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
+        e.preventDefault();
+        redo();
+        return;
+      }
+      if (ctrl && e.key === "d") {
+        e.preventDefault();
+        duplicateWidget();
+        return;
+      }
+      if (e.key === "Escape") {
+        unselectWidget();
+        return;
+      }
+
+      if (activeWidgetIndex === null) return;
+
+      const amount = ctrl ? 10 : 1;
       switch (e.key) {
         case "ArrowUp":
           e.preventDefault();
@@ -109,17 +133,12 @@ export default function Editor() {
           e.preventDefault();
           removeActiveWidget();
           break;
-        // TODO: ctrl-c, ctrl-v, ctrl-x, ctrl-z
       }
     };
 
-    // console.log("registering key handlers");
     window.addEventListener("keydown", handler);
-    return () => {
-      // console.log("removing key handlers");
-      window.removeEventListener("keydown", handler);
-    };
-  }, [activeWidgetIndex, removeActiveWidget]);
+    return () => window.removeEventListener("keydown", handler);
+  }, [activeWidgetIndex, removeActiveWidget, duplicateWidget, unselectWidget, undo, redo]);
 
   useEffect(() => {
     function handleResize() {
@@ -257,13 +276,6 @@ export default function Editor() {
                   height={workspaceSize.height}
                   fill={activeScreen?.backgroundColor}
                 />
-                {/*<Grid*/}
-                {/*  color="rgba(255, 0, 0, 0.3)"*/}
-                {/*  width={workspaceSize.width}*/}
-                {/*  height={workspaceSize.height}*/}
-                {/*  gridSize={50}*/}
-                {/*  zoomLevel={stageScale}*/}
-                {/*/>*/}
                 {activeScreen?.widgets.map((widget, ix) => (
                   <WidgetRenderer
                     key={widget.id}
@@ -290,39 +302,3 @@ export default function Editor() {
     </div>
   );
 }
-
-//// Experiment
-// type GridProps = {
-//   color: string;
-//   width: number;
-//   height: number;
-//   gridSize: number;
-//   zoomLevel: number;
-// };
-// const Grid = ({ color, width, height, gridSize, zoomLevel }: GridProps) => {
-//   console.log(zoomLevel);
-//   const lines = [];
-//   // Vertical lines
-//   for (let i = 0; i < width / gridSize; i++) {
-//     lines.push(
-//       <Line
-//         key={i}
-//         points={[i * gridSize, 0, i * gridSize, height]}
-//         stroke={color}
-//         strokeWidth={1 / zoomLevel}
-//       />
-//     );
-//   }
-//   // Horizontal lines
-//   for (let i = 0; i < height / gridSize; i++) {
-//     lines.push(
-//       <Line
-//         key={i + width / gridSize}
-//         points={[0, i * gridSize, width, i * gridSize]}
-//         stroke={color}
-//         strokeWidth={1 / zoomLevel}
-//       />
-//     );
-//   }
-//   return <>{lines}</>;
-// }

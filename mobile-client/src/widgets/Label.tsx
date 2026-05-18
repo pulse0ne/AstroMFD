@@ -3,6 +3,7 @@ import { useMemo, type CSSProperties } from "react";
 
 import { gradientString } from "../utils.ts";
 import { hAlignmentMap, vAlignmentMap } from "./common.ts";
+import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type LabelProps = {
   attr: LabelAttributes;
@@ -50,6 +51,13 @@ export function Label({ attr }: LabelProps) {
 
   return (
     <div style={shapeStyle}>
+      {attr.shape.svg && (
+        <SvgRenderer
+          svg={attr.shape.svg}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+        />
+      )}
       {attr.text.text && (
         <div style={textContainerStyle}>
           <div style={textStyle}>{attr.text.text}</div>

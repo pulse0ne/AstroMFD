@@ -1,4 +1,4 @@
-import type { InputKey, JoystickAxis, Screen, Size } from "@common/shared/models";
+import type { ActionStep, InputKey, JoystickAxis, Screen, Size } from "@common/shared/models";
 import { Fragment, type CSSProperties } from "react";
 
 import { Button } from "./widgets/Button.tsx";
@@ -26,8 +26,8 @@ export function ScreenRenderer({
     height: size.height,
   };
 
-  const handlePress = (key: InputKey, duration: number) => {
-    onMessage({ fixedPress: { key, duration } });
+  const handleExecuteActions = (steps: ActionStep[]) => {
+    onMessage({ executeActions: { steps } });
   };
 
   const handleDown = (key: InputKey) => {
@@ -52,7 +52,7 @@ export function ScreenRenderer({
           {widget.type === "button" && (
             <Button
               attr={widget}
-              onPress={handlePress}
+              onExecuteActions={handleExecuteActions}
               onDown={handleDown}
               onUp={handleUp}
               onNavigate={onNavigate}

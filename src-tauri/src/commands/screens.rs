@@ -14,6 +14,7 @@ pub struct ScreenSetMeta {
     pub id: String,
     pub name: String,
     pub screen_img_id: Option<String>,
+    pub modified_at: u64,
 }
 
 #[tauri::command]
@@ -31,6 +32,11 @@ pub async fn list_screen_sets() -> Result<Vec<ScreenSetMeta>, String> {
             continue;
         }
 
+        let modified_at = path.metadata()
+            .and_then(|m| m.modified())
+            .map(|t| t.duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs())
+            .unwrap_or(0);
+
         let file = File::open(&path)
             .map_err(|e| format!("Failed to open {:?}: {e}", path))?;
 
@@ -38,16 +44,18 @@ pub async fn list_screen_sets() -> Result<Vec<ScreenSetMeta>, String> {
 
         let screen_set: ScreenSet = serde_json::from_reader(reader)
             .map_err(|e| format!("Failed to deserialize {:?}: {e}", path))?;
-        
+
         let img_id = screen_set.screens.first().map(|s| s.id.clone());
 
         screen_sets.push(ScreenSetMeta {
             id: screen_set.id,
             name: screen_set.name,
             screen_img_id: img_id,
+            modified_at,
         });
     }
 
+    screen_sets.sort_by(|a, b| b.modified_at.cmp(&a.modified_at));
     Ok(screen_sets)
 }
 
@@ -126,4 +134,20 @@ pub async fn create_screen_set(name: String) -> Result<ScreenSet, String> {
     };
     save_screen_set(screen_set.clone()).await?;
     Ok(screen_set)
+}
+
+#[tauri::command]
+pub async fn duplicate_screen_set(id: String) -> Result<Vec<ScreenSetMeta>, String> {
+    let source = get_screen_set_by_id(id).await?;
+    let new_set = ScreenSet {
+        id: Uuid::new_v4().to_string(),
+        name: format!("{} (Copy)", source.name),
+        screens: source.screens.into_iter().map(|s| Screen {
+            id: Uuid::new_v4().to_string(),
+            ..s
+        }).collect(),
+        size: source.size,
+    };
+    save_screen_set(new_set).await?;
+    list_screen_sets().await
 }

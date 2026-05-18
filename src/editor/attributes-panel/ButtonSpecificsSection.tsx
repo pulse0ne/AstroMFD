@@ -1,11 +1,12 @@
+import { useState } from "react";
 import {
+  ActionSequence,
   ButtonAttributes,
   ButtonSound,
   ButtonType,
-  InputKey,
 } from "@common/shared/models";
 
-import { InputKeySelector } from "./InputKeySelector.tsx";
+import { ActionSequenceEditor } from "./ActionSequenceEditor.tsx";
 import { SoundSelector } from "./SoundSelector.tsx";
 import { Toggle } from "./Toggle.tsx";
 
@@ -22,6 +23,26 @@ export type ButtonSpecificsSectionProps = {
   onUpdate: (attr: ButtonAttributes, type: string) => void;
 };
 
+function summarizeSteps(input: ActionSequence): string {
+  const count = input.steps.length;
+  if (count === 0) return "No actions configured";
+  if (count === 1) {
+    const step = input.steps[0];
+    if (step.type === "press") {
+      const k = step.key;
+      const label =
+        k.type === "joystickButton" ? `Button ${k.button}` :
+        k.type === "letter" ? `Key ${k.key}` :
+        k.type === "number" ? `Key ${k.key}` :
+        k.type === "functionKey" ? `F${k.key}` :
+        k.key;
+      return `Press ${label} (${step.duration}ms)`;
+    }
+    return `1 step`;
+  }
+  return `${count} steps`;
+}
+
 export function ButtonSpecificsSection({
   attr,
   screens,
@@ -29,32 +50,12 @@ export function ButtonSpecificsSection({
   togglePressed,
   onUpdate,
 }: ButtonSpecificsSectionProps) {
+  const [editorOpen, setEditorOpen] = useState(false);
+
   const handleButtonTypeChange = (value: ButtonType) => {
     onUpdate(
       Object.assign({}, attr, { buttonType: value }),
       "widget.button.type",
-    );
-  };
-
-  const handleInputKeyChange = (key: InputKey) => {
-    onUpdate(
-      Object.assign({}, attr, { input: { ...attr.input, key } }),
-      "widget.button.button.key",
-    );
-  };
-
-  const handleDurationChange = (duration: number) => {
-    onUpdate(
-      Object.assign({}, attr, { input: { ...attr.input, duration } }),
-      "widget.button.button.duration",
-    );
-  };
-
-  const toggleFixedDuration = () => {
-    const fixedDuration = !attr.input.fixedDuration;
-    onUpdate(
-      Object.assign({}, attr, { input: { ...attr.input, fixedDuration } }),
-      "widget.button.button.fixedDuration",
     );
   };
 
@@ -67,6 +68,10 @@ export function ButtonSpecificsSection({
 
   const handleSoundChange = (sound: ButtonSound) => {
     onUpdate(Object.assign({}, attr, { sound }), "widget.button.sound");
+  };
+
+  const handleActionsChange = (input: ActionSequence) => {
+    onUpdate(Object.assign({}, attr, { input }), "widget.button.input");
   };
 
   return (
@@ -87,35 +92,20 @@ export function ButtonSpecificsSection({
       </div>
       <div className="col gap-16">
         {(attr.buttonType === "action" || attr.buttonType === "toggle") && (
-          <>
-            <InputKeySelector
-              value={attr.input.key}
-              onChange={handleInputKeyChange}
-            />
+          <div className="col gap-8">
             <div className="row gap-16 align-items-center">
-              <span>Fixed Duration:</span>
-              <Toggle
-                onToggle={toggleFixedDuration}
-                value={attr.input.fixedDuration}
-              />
+              <span>Actions:</span>
+              <span style={{ opacity: 0.7, fontSize: 12 }}>
+                {summarizeSteps(attr.input)}
+              </span>
             </div>
-            {attr.input.fixedDuration && (
-              <div className="row gap-16 align-items-center">
-                <span>Duration (ms):</span>
-                <input
-                  type="number"
-                  min={50}
-                  max={5000}
-                  step={10}
-                  disabled={!attr.input.fixedDuration}
-                  value={attr.input.duration}
-                  onChange={(evt) =>
-                    handleDurationChange(Number.parseInt(evt.target.value))
-                  }
-                />
-              </div>
-            )}
-          </>
+            <button
+              className="btn btn-sm"
+              onClick={() => setEditorOpen(true)}
+            >
+              Edit Actions
+            </button>
+          </div>
         )}
         {attr.buttonType === "navigation" && (
           <div className="row gap-16">
@@ -155,6 +145,12 @@ export function ButtonSpecificsSection({
           />
         </div>
       </div>
+      <ActionSequenceEditor
+        open={editorOpen}
+        onClose={() => setEditorOpen(false)}
+        value={attr.input}
+        onChange={handleActionsChange}
+      />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Group, Rect, Text, Transformer } from "react-konva";
 
 import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { SvgContent } from "./SvgContent.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type ButtonProps = WidgetPropsBase & {
@@ -214,6 +215,13 @@ export function Button({
           }
           {...gradientProps}
         />
+        {attr.shape.svg && (
+          <SvgContent
+            svg={attr.shape.svg}
+            targetWidth={attr.shape.size.width}
+            targetHeight={attr.shape.size.height}
+          />
+        )}
         <Text
           width={attr.shape.size.width}
           height={attr.shape.size.height}

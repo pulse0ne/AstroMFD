@@ -24,6 +24,7 @@ pub fn command_handlers() -> impl Fn(Invoke) -> bool + Send + Sync + 'static {
         screens::delete_screen_set,
         screens::rename_screen_set,
         screens::create_screen_set,
+        screens::duplicate_screen_set,
         input::get_available_input_keys,
         input::get_available_axes,
         audio::get_audio_clips,

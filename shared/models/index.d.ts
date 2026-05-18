@@ -13,9 +13,12 @@ export type SpecialKey =
   | "arrowDown"
   | "arrowLeft"
   | "arrowRight"
-  | "shift"
-  | "ctrl"
-  | "alt"
+  | "leftShift"
+  | "rightShift"
+  | "leftCtrl"
+  | "rightCtrl"
+  | "leftAlt"
+  | "rightAlt"
   | "capsLock";
 
 export type InputKey =
@@ -115,10 +118,14 @@ export type WidgetBase<W extends WidgetType> = {
 
 export type ButtonType = "action" | "navigation" | "toggle";
 
-export type ButtonAction = {
-  key: InputKey;
-  fixedDuration: boolean;
-  duration: number;
+export type ActionStep =
+  | { type: "press"; key: InputKey; duration: number }
+  | { type: "keyDown"; key: InputKey }
+  | { type: "keyUp"; key: InputKey }
+  | { type: "pause"; duration: number };
+
+export type ActionSequence = {
+  steps: ActionStep[];
 };
 
 export type ButtonSound = {
@@ -129,7 +136,7 @@ export type ButtonSound = {
 
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
-  input: ButtonAction;
+  input: ActionSequence;
   navTarget: string | null;
   text: TextAttributes;
   sound: ButtonSound;

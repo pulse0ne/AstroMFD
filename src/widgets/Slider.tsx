@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Group, Line, Rect, Text, Transformer } from "react-konva";
 
 import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { SvgContent } from "./SvgContent.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 
 export type SliderProps = WidgetPropsBase & {
@@ -173,6 +174,13 @@ export function Slider({
           cornerRadius={attr.shape.cornerRadius}
           {...gradientProps}
         />
+        {attr.shape.svg && (
+          <SvgContent
+            svg={attr.shape.svg}
+            targetWidth={attr.shape.size.width}
+            targetHeight={attr.shape.size.height}
+          />
+        )}
         <Line
           points={trackPoints}
           stroke={attr.shape.stroke ?? "#888"}

@@ -20,9 +20,12 @@ const SPECIAL_KEYS: Array<{ value: SpecialKey; label: string }> = [
   { value: "arrowDown", label: "Arrow Down" },
   { value: "arrowLeft", label: "Arrow Left" },
   { value: "arrowRight", label: "Arrow Right" },
-  { value: "shift", label: "Shift" },
-  { value: "ctrl", label: "Ctrl" },
-  { value: "alt", label: "Alt" },
+  { value: "leftShift", label: "Left Shift" },
+  { value: "rightShift", label: "Right Shift" },
+  { value: "leftCtrl", label: "Left Ctrl" },
+  { value: "rightCtrl", label: "Right Ctrl" },
+  { value: "leftAlt", label: "Left Alt" },
+  { value: "rightAlt", label: "Right Alt" },
   { value: "capsLock", label: "Caps Lock" },
 ];
 
@@ -69,8 +72,8 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
   };
 
   return (
-    <div className="col gap-16">
-      <div className="row gap-16">
+    <div className="row gap-16">
+      <div className="row align-items-center gap-16">
         <span>Input Type:</span>
         <select
           value={value.type}
@@ -85,7 +88,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       </div>
 
       {value.type === "joystickButton" && (
-        <div className="row gap-16">
+        <div className="row align-items-center gap-16">
           <span>Button #:</span>
           <input
             type="number"
@@ -99,7 +102,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "letter" && (
-        <div className="row gap-16">
+        <div className="row align-items-center gap-16">
           <span>Letter:</span>
           <select
             value={value.key}
@@ -115,7 +118,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "number" && (
-        <div className="row gap-16">
+        <div className="row align-items-center gap-16">
           <span>Number:</span>
           <select
             value={value.key}
@@ -131,7 +134,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "functionKey" && (
-        <div className="row gap-16">
+        <div className="row align-items-center gap-16">
           <span>Function Key:</span>
           <select
             value={value.key}
@@ -147,7 +150,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "specialKey" && (
-        <div className="row gap-16">
+        <div className="row align-items-center gap-16">
           <span>Special Key:</span>
           <select
             value={value.key}

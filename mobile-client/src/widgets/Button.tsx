@@ -1,4 +1,5 @@
 import type {
+  ActionStep,
   ButtonAttributes,
   Gradient,
   InputKey,
@@ -14,10 +15,11 @@ import {
 
 import { gradientString } from "../utils.ts";
 import { hAlignmentMap, vAlignmentMap } from "./common.ts";
+import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type ButtonProps = {
   attr: ButtonAttributes;
-  onPress: (key: InputKey, duration: number) => void;
+  onExecuteActions: (steps: ActionStep[]) => void;
   onDown: (key: InputKey) => void;
   onUp: (key: InputKey) => void;
   onNavigate: (target: string) => void;
@@ -25,7 +27,7 @@ export type ButtonProps = {
 
 export function Button({
   attr,
-  onPress,
+  onExecuteActions,
   onDown,
   onUp,
   onNavigate,
@@ -51,7 +53,6 @@ export function Button({
       pressed && attr.pressed.shape.fill
         ? attr.pressed.shape.fill
         : attr.shape.fill;
-    console.log(f);
     if (!f) return null;
     if (f.type === "solid") {
       return f.value as string;
@@ -131,19 +132,26 @@ export function Button({
     userSelect: "none",
   };
 
+  const firstKey = useMemo(() => {
+    const first = attr.input.steps[0];
+    if (!first) return null;
+    if (first.type === "press" || first.type === "keyDown" || first.type === "keyUp") {
+      return first.key;
+    }
+    return null;
+  }, [attr.input.steps]);
+
   const handlePress = useCallback(() => {
-    if (attr.buttonType === "action" || attr.buttonType === "toggle") {
-      const { key, fixedDuration, duration } = attr.input;
-      if (fixedDuration) {
-        onPress(key, duration);
-      }
+    if (attr.buttonType === "action") {
+      onExecuteActions(attr.input.steps);
     } else if (attr.buttonType === "navigation" && attr.navTarget) {
       onNavigate(attr.navTarget);
     }
-  }, [attr, onPress, onNavigate]);
+  }, [attr, onExecuteActions, onNavigate]);
 
   const handleDown = useCallback(() => {
-    // Play sound if configured
+    navigator.vibrate?.(20);
+
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       audioRef.current
@@ -156,19 +164,19 @@ export function Button({
     } else {
       setPressed(true);
     }
-    if (!attr.input.fixedDuration && attr.buttonType !== "navigation") {
-      onDown(attr.input.key);
+    if (attr.buttonType === "toggle" && firstKey) {
+      onDown(firstKey);
     }
-  }, [attr, onDown]);
+  }, [attr, firstKey, onDown]);
 
   const handleUp = useCallback(() => {
     if (attr.buttonType !== "toggle") {
       setPressed(false);
     }
-    if (!attr.input.fixedDuration && attr.buttonType !== "navigation") {
-      onUp(attr.input.key);
+    if (attr.buttonType === "toggle" && firstKey) {
+      onUp(firstKey);
     }
-  }, [attr, onUp]);
+  }, [attr, firstKey, onUp]);
 
   return (
     <div
@@ -177,6 +185,13 @@ export function Button({
       onPointerDown={handleDown}
       onPointerUp={handleUp}
     >
+      {attr.shape.svg && (
+        <SvgRenderer
+          svg={attr.shape.svg}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+        />
+      )}
       {attr.text.text && (
         <div style={textContainerStyle}>
           <div style={textStyle}>{attr.text.text}</div>

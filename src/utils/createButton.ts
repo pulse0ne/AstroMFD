@@ -8,9 +8,7 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
     type: "button",
     buttonType: "action",
     input: {
-      key,
-      fixedDuration: false,
-      duration: 100,
+      steps: [{ type: "press", key, duration: 100 }],
     },
     navTarget: null,
     sound: null,
