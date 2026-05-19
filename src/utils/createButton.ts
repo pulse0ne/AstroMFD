@@ -11,7 +11,6 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
       steps: [{ type: "press", key, duration: 100 }],
     },
     navTarget: null,
-    sound: null,
     shape: {
       svg: null,
       size: { width: 200, height: 100 },
@@ -32,7 +31,9 @@ export function createButton(defaultKey?: InputKey): ButtonAttributes {
       verticalAlignment: "middle",
     },
     pressed: {
-      shape: {},
+      shape: {
+        fill: { type: "solid", value: "rgba(81, 113, 147, 1)"}
+      },
       text: {},
     },
   };

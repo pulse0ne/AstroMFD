@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod base;
 pub mod button;
+pub mod carousel;
 pub mod label;
 pub mod panel;
 pub mod slider;
@@ -14,4 +15,5 @@ pub enum Widget {
     Label(label::LabelAttributes),
     Panel(panel::PanelAttributes),
     Slider(slider::SliderAttributes),
+    Carousel(carousel::CarouselAttributes),
 }

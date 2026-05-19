@@ -28,5 +28,6 @@ pub fn command_handlers() -> impl Fn(Invoke) -> bool + Send + Sync + 'static {
         input::get_available_input_keys,
         input::get_available_axes,
         audio::get_audio_clips,
+        audio::preview_sound,
     ]
 }

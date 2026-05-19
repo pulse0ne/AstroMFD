@@ -5,6 +5,7 @@ export function createPanel(): PanelAttributes {
   return {
     id: uuid(),
     type: "panel",
+    widgets: [],
     shape: {
       svg: null,
       size: { width: 250, height: 150 },

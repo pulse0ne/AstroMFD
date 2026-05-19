@@ -2,11 +2,12 @@ import { Gradient, PanelAttributes } from "@common/shared/models";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Shape } from "konva/lib/Shape";
 import { useEffect, useMemo, useRef } from "react";
-import { Group, Rect, Transformer } from "react-konva";
+import { Group, Rect, Text, Transformer } from "react-konva";
 
 import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
 import { SvgContent } from "./SvgContent.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
+import { WidgetRenderer } from "./WidgetRenderer.tsx";
 
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
@@ -167,6 +168,21 @@ export function Panel({
             targetWidth={attr.shape.size.width}
             targetHeight={attr.shape.size.height}
           />
+          {attr.widgets.length > 0 && (
+            <Group listening={false}>
+              {attr.widgets.map((widget) => (
+                <WidgetRenderer
+                  key={widget.id}
+                  widget={widget}
+                  onSelect={() => {}}
+                  onCommitUpdate={() => {}}
+                  onEphemeralUpdate={() => {}}
+                  isSelected={false}
+                  state="primary"
+                />
+              ))}
+            </Group>
+          )}
         </Group>
         {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
       </>
@@ -195,9 +211,33 @@ export function Panel({
           stroke={attr.shape.stroke ?? undefined}
           strokeWidth={attr.shape.strokeWidth}
           cornerRadius={attr.shape.cornerRadius}
-          // TODO: shadows
           {...gradientProps}
         />
+        {attr.widgets.length > 0 ? (
+          <Group listening={false}>
+            {attr.widgets.map((widget) => (
+              <WidgetRenderer
+                key={widget.id}
+                widget={widget}
+                onSelect={() => {}}
+                onCommitUpdate={() => {}}
+                onEphemeralUpdate={() => {}}
+                isSelected={false}
+                state="primary"
+              />
+            ))}
+          </Group>
+        ) : (
+          <Text
+            text="Panel (empty)"
+            width={attr.shape.size.width}
+            height={attr.shape.size.height}
+            align="center"
+            verticalAlign="middle"
+            fontSize={12}
+            fill="rgba(255,255,255,0.3)"
+          />
+        )}
       </Group>
       {isSelected && <Transformer ref={trRef} rotateEnabled={false} />}
     </>

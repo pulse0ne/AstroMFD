@@ -27,7 +27,7 @@ pub struct AudioEntry {
 static MOBILE_ASSETS: Dir = include_dir!("$CARGO_MANIFEST_DIR/../mobile-client/dist");
 
 #[cfg(not(debug_assertions))]
-static AUDIO_ASSETS: Dir = include_dir!("$CARGO_MANIFEST_DIR/../sfx");
+pub static AUDIO_ASSETS: Dir = include_dir!("$CARGO_MANIFEST_DIR/../sfx");
 
 #[cfg(not(debug_assertions))]
 pub async fn static_handler(

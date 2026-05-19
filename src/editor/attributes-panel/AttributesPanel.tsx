@@ -18,6 +18,7 @@ import {
   ButtonSpecificsSection,
   ScreenIdAndName,
 } from "./ButtonSpecificsSection.tsx";
+import { CarouselSection } from "./CarouselSection.tsx";
 import { ScreenSection } from "./ScreenSection.tsx";
 import { ShapeSection } from "./ShapeSection.tsx";
 import { SizePositionSection } from "./SizePositionSection.tsx";
@@ -252,6 +253,25 @@ export function AttributesPanel({
             textAttr={selectedWidget.text}
             onUpdate={handleTextAttrChange}
             fonts={fonts}
+          />
+        </div>
+      )}
+      {selectedWidget?.type === "carousel" && (
+        <div>
+          <h2 className="border-b p8-b">CAROUSEL</h2>
+          <CarouselSection
+            attr={selectedWidget}
+            onUpdate={(widget, type) => onUpdate(widget, type)}
+          />
+          <SizePositionSection
+            size={size!}
+            position={position!}
+            onSizeChange={handleSizeChange}
+            onPositionChange={handlePositionChange}
+          />
+          <ShapeSection
+            shapeAttr={selectedWidget.shape}
+            onUpdate={handleShapeAttrChange}
           />
         </div>
       )}

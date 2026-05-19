@@ -1,4 +1,5 @@
 import { Widget } from "@common/shared/models";
+import { Draft } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator } from "zustand/vanilla";
 
@@ -18,11 +19,30 @@ function canModifyWidget(state: RootState): state is RootState & {
   );
 }
 
+function getWidgetList(state: Draft<RootState>): Widget[] | null {
+  if (!state.screenSet || state.activeScreenIndex === null) return null;
+  const screen = state.screenSet.screens[state.activeScreenIndex];
+  if (state.editingContainerId) {
+    return getContainerWidgets(screen.widgets, state.editingContainerId);
+  }
+  return screen.widgets;
+}
+
+function getWidgetListFromState(state: RootState): Widget[] | null {
+  if (!state.screenSet || state.activeScreenIndex === null) return null;
+  const screen = state.screenSet.screens[state.activeScreenIndex];
+  if (state.editingContainerId) {
+    return getContainerWidgets(screen.widgets, state.editingContainerId);
+  }
+  return screen.widgets;
+}
+
 function makeCommand(
   command: string,
   widget: Widget,
   originalWidget: Widget,
   screenId: string,
+  carouselId: string | null,
 ): UndoableCommand {
   const widgetId = widget.id;
   return {
@@ -31,20 +51,24 @@ function makeCommand(
     do: (state) => {
       const screen = state.screenSet!.screens.find((s) => s.id === screenId);
       if (!screen) return;
-
-      const widgetIndex = screen.widgets.findIndex((w) => w.id === widgetId);
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
+      const widgetIndex = widgets.findIndex((w) => w.id === widgetId);
       if (widgetIndex < 0) return;
-
-      screen.widgets.splice(widgetIndex, 1, widget);
+      widgets.splice(widgetIndex, 1, widget);
     },
     undo: (state) => {
       const screen = state.screenSet!.screens.find((s) => s.id === screenId);
       if (!screen) return;
-
-      const widgetIndex = screen.widgets.findIndex((w) => w.id === widgetId);
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
+      const widgetIndex = widgets.findIndex((w) => w.id === widgetId);
       if (widgetIndex < 0) return;
-
-      screen.widgets.splice(widgetIndex, 1, originalWidget);
+      widgets.splice(widgetIndex, 1, originalWidget);
     },
   };
 }
@@ -53,6 +77,7 @@ function makeDeleteWidgetCommand(
   widget: Widget,
   screenId: string,
   originalWidgetIndex: number,
+  carouselId: string | null,
 ): UndoableCommand {
   const originalWidget = fastCopy(widget);
   const widgetId = originalWidget.id;
@@ -62,22 +87,27 @@ function makeDeleteWidgetCommand(
     do: (state) => {
       const screen = state.screenSet!.screens.find((i) => i.id === screenId);
       if (!screen) return;
-
-      const widgetIndex = screen.widgets.findIndex((w) => w.id === widgetId);
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
+      const widgetIndex = widgets.findIndex((w) => w.id === widgetId);
       if (widgetIndex < 0) return;
-
-      screen.widgets.splice(widgetIndex, 1);
+      widgets.splice(widgetIndex, 1);
       state.activeWidgetIndex = null;
     },
     undo: (state) => {
       const screen = state.screenSet!.screens.find((s) => s.id === screenId);
       if (!screen) return;
-
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
       const insertAt = Math.max(
         0,
-        Math.min(originalWidgetIndex, screen.widgets.length),
+        Math.min(originalWidgetIndex, widgets.length),
       );
-      screen.widgets.splice(insertAt, 0, originalWidget);
+      widgets.splice(insertAt, 0, originalWidget);
     },
   };
 }
@@ -85,18 +115,28 @@ function makeDeleteWidgetCommand(
 function makeAddWidgetCommand(
   widget: Widget,
   screenIndex: number,
+  carouselId: string | null,
 ): UndoableCommand {
   const id = widget.id;
   return {
     type: "widget.add",
     targetId: id,
     do: (state) => {
-      state.screenSet!.screens[screenIndex].widgets.push(widget);
+      const screen = state.screenSet!.screens[screenIndex];
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
+      widgets.push(widget);
     },
     undo: (state) => {
-      state.screenSet!.screens[screenIndex].widgets = state.screenSet!.screens[
-        screenIndex
-      ].widgets.filter((w) => w.id !== id);
+      const screen = state.screenSet!.screens[screenIndex];
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
+      const idx = widgets.findIndex((w) => w.id === id);
+      if (idx >= 0) widgets.splice(idx, 1);
     },
   };
 }
@@ -106,12 +146,17 @@ function makeReorderWidgetCommand(
   from: number,
   to: number,
   screenIndex: number,
+  carouselId: string | null,
 ): UndoableCommand {
   return {
     type: "widget.reorder",
     targetId: widgetId,
     do: (state) => {
-      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const screen = state.screenSet!.screens[screenIndex];
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
       const currentIndex = widgets.findIndex((w) => w.id === widgetId);
       if (currentIndex < 0) return;
       const [widget] = widgets.splice(currentIndex, 1);
@@ -119,7 +164,11 @@ function makeReorderWidgetCommand(
       state.activeWidgetIndex = to;
     },
     undo: (state) => {
-      const widgets = state.screenSet!.screens[screenIndex].widgets;
+      const screen = state.screenSet!.screens[screenIndex];
+      const widgets = carouselId
+        ? getContainerWidgets(screen.widgets, carouselId)
+        : screen.widgets;
+      if (!widgets) return;
       const currentIndex = widgets.findIndex((w) => w.id === widgetId);
       if (currentIndex < 0) return;
       const [widget] = widgets.splice(currentIndex, 1);
@@ -127,6 +176,21 @@ function makeReorderWidgetCommand(
       state.activeWidgetIndex = from;
     },
   };
+}
+
+function getContainerWidgets(
+  screenWidgets: Widget[],
+  containerId: string,
+): Widget[] | null {
+  const container = screenWidgets.find((w) => w.id === containerId);
+  if (!container) return null;
+  if (container.type === "carousel") {
+    return container.pages[container.activePageIndex]?.widgets ?? null;
+  }
+  if (container.type === "panel") {
+    return container.widgets;
+  }
+  return null;
 }
 
 export const createWidgetSlice: StateCreator<
@@ -137,6 +201,7 @@ export const createWidgetSlice: StateCreator<
 > = (set, get) => ({
   // state
   activeWidgetIndex: null,
+  editingContainerId: null,
 
   // mutators
   setActiveWidgetIndex: (index: number) => {
@@ -153,8 +218,16 @@ export const createWidgetSlice: StateCreator<
     const state = get();
     if (canModifyWidget(state)) {
       const screen = state.screenSet.screens[state.activeScreenIndex];
-      const originalWidget = fastCopy(screen.widgets[state.activeWidgetIndex]);
-      const cmd = makeCommand(changeType, widget, originalWidget, screen.id);
+      const widgets = getWidgetListFromState(state);
+      if (!widgets) return;
+      const originalWidget = fastCopy(widgets[state.activeWidgetIndex]);
+      const cmd = makeCommand(
+        changeType,
+        widget,
+        originalWidget,
+        screen.id,
+        state.editingContainerId,
+      );
       state.executeCommand(cmd);
     }
   },
@@ -162,7 +235,9 @@ export const createWidgetSlice: StateCreator<
     const state = get();
     if (canModifyWidget(state)) {
       const screen = state.screenSet.screens[state.activeScreenIndex];
-      const originalWidget = fastCopy(screen.widgets[state.activeWidgetIndex]);
+      const widgets = getWidgetListFromState(state);
+      if (!widgets) return;
+      const originalWidget = fastCopy(widgets[state.activeWidgetIndex]);
       const copy = fastCopy(originalWidget);
       copy.shape.position = {
         x: copy.shape.position.x + byX,
@@ -173,6 +248,7 @@ export const createWidgetSlice: StateCreator<
         copy,
         originalWidget,
         screen.id,
+        state.editingContainerId,
       );
       state.executeCommand(cmd);
     }
@@ -181,11 +257,14 @@ export const createWidgetSlice: StateCreator<
     const state = get();
     if (canModifyWidget(state)) {
       const screen = state.screenSet.screens[state.activeScreenIndex];
-      const widget = fastCopy(screen.widgets[state.activeWidgetIndex]);
+      const widgets = getWidgetListFromState(state);
+      if (!widgets) return;
+      const widget = fastCopy(widgets[state.activeWidgetIndex]);
       const cmd = makeDeleteWidgetCommand(
         widget,
         screen.id,
         state.activeWidgetIndex,
+        state.editingContainerId,
       );
       state.executeCommand(cmd);
       set((state) => {
@@ -196,95 +275,119 @@ export const createWidgetSlice: StateCreator<
   duplicateActiveWidget: () => {
     const state = get();
     if (canModifyWidget(state)) {
-      const screen = state.screenSet.screens[state.activeScreenIndex];
-      const widget = fastCopy(screen.widgets[state.activeWidgetIndex]);
+      const widgets = getWidgetListFromState(state);
+      if (!widgets) return;
+      const widget = fastCopy(widgets[state.activeWidgetIndex]);
       widget.id = uuid();
       widget.shape.position = {
         x: widget.shape.position.x + 20,
         y: widget.shape.position.y + 20,
       };
-      const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
+      const cmd = makeAddWidgetCommand(
+        widget,
+        state.activeScreenIndex,
+        state.editingContainerId,
+      );
       state.executeCommand(cmd);
       set((state) => {
-        state.activeWidgetIndex =
-          state.screenSet!.screens[state.activeScreenIndex!].widgets.length - 1;
+        const ws = getWidgetList(state);
+        state.activeWidgetIndex = ws ? ws.length - 1 : null;
       });
     }
   },
   addWidget: (widget: Widget) => {
     const state = get();
     if (state.screenSet && state.activeScreenIndex !== null) {
-      const cmd = makeAddWidgetCommand(widget, state.activeScreenIndex);
+      const cmd = makeAddWidgetCommand(
+        widget,
+        state.activeScreenIndex,
+        state.editingContainerId,
+      );
       state.executeCommand(cmd);
-
       set((state) => {
-        state.activeWidgetIndex =
-          state.screenSet!.screens[state.activeScreenIndex!].widgets.length - 1;
+        const ws = getWidgetList(state);
+        state.activeWidgetIndex = ws ? ws.length - 1 : null;
       });
     }
   },
   sendForward: () => {
     const state = get();
     if (!canModifyWidget(state)) return;
-    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const widgets = getWidgetListFromState(state);
+    if (!widgets) return;
     const from = state.activeWidgetIndex;
     const to = from + 1;
-    if (to >= screen.widgets.length) return;
-
+    if (to >= widgets.length) return;
     const cmd = makeReorderWidgetCommand(
-      screen.widgets[from].id,
+      widgets[from].id,
       from,
       to,
       state.activeScreenIndex,
+      state.editingContainerId,
     );
     state.executeCommand(cmd);
   },
   sendBackward: () => {
     const state = get();
     if (!canModifyWidget(state)) return;
-    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const widgets = getWidgetListFromState(state);
+    if (!widgets) return;
     const from = state.activeWidgetIndex;
     const to = from - 1;
     if (to < 0) return;
-
     const cmd = makeReorderWidgetCommand(
-      screen.widgets[from].id,
+      widgets[from].id,
       from,
       to,
       state.activeScreenIndex,
+      state.editingContainerId,
     );
     state.executeCommand(cmd);
   },
   sendToFront: () => {
     const state = get();
     if (!canModifyWidget(state)) return;
-    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const widgets = getWidgetListFromState(state);
+    if (!widgets) return;
     const from = state.activeWidgetIndex;
-    const to = screen.widgets.length - 1;
+    const to = widgets.length - 1;
     if (from === to) return;
-
     const cmd = makeReorderWidgetCommand(
-      screen.widgets[from].id,
+      widgets[from].id,
       from,
       to,
       state.activeScreenIndex,
+      state.editingContainerId,
     );
     state.executeCommand(cmd);
   },
   sendToBack: () => {
     const state = get();
     if (!canModifyWidget(state)) return;
-    const screen = state.screenSet!.screens[state.activeScreenIndex];
+    const widgets = getWidgetListFromState(state);
+    if (!widgets) return;
     const from = state.activeWidgetIndex;
     const to = 0;
     if (from === to) return;
-
     const cmd = makeReorderWidgetCommand(
-      screen.widgets[from].id,
+      widgets[from].id,
       from,
       to,
       state.activeScreenIndex,
+      state.editingContainerId,
     );
     state.executeCommand(cmd);
+  },
+  enterContainer: (id: string) => {
+    set((state) => {
+      state.editingContainerId = id;
+      state.activeWidgetIndex = null;
+    });
+  },
+  exitContainer: () => {
+    set((state) => {
+      state.editingContainerId = null;
+      state.activeWidgetIndex = null;
+    });
   },
 });

@@ -5,7 +5,7 @@ export function createScreen(screenNum: number = 1): Screen {
   return {
     id: uuid(),
     name: `Untitled screen ${screenNum}`,
-    backgroundColor: "black",
+    backgroundColor: "rgba(13, 20, 24, 1)",
     crtEffect: false,
     widgets: [],
   };

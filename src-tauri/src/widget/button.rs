@@ -86,22 +86,6 @@ impl<'de> Deserialize<'de> for ActionSequence {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ButtonSound {
-    pub source: String,
-    pub file: String,
-    pub play_on: PlayOn,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub enum PlayOn {
-    Mobile,
-    Desktop,
-    Both,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct ButtonAttributes {
     #[serde(flatten)]
     pub widget: WidgetBase,
@@ -109,8 +93,8 @@ pub struct ButtonAttributes {
     #[serde(alias = "vjoyButton")]
     pub input: ActionSequence,
     pub nav_target: Option<String>,
-    #[serde(default)]
-    pub sound: Option<ButtonSound>,
+    #[serde(default, skip_serializing)]
+    pub sound: Option<serde_json::Value>,
     pub text: TextAttributes,
     pub pressed: PressedOverrides,
 }

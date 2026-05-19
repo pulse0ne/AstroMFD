@@ -6,6 +6,7 @@ import { History } from "./history.ts";
 export type WidgetSlice = {
   // state
   activeWidgetIndex: number | null;
+  editingContainerId: string | null;
 
   // mutators
   setActiveWidgetIndex: (index: number) => void;
@@ -19,6 +20,8 @@ export type WidgetSlice = {
   sendBackward: () => void;
   sendToFront: () => void;
   sendToBack: () => void;
+  enterContainer: (id: string) => void;
+  exitContainer: () => void;
 };
 
 export type ScreenSlice = {

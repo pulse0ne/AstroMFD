@@ -1,13 +1,11 @@
 import {
   ActionSequence,
   ButtonAttributes,
-  ButtonSound,
   ButtonType,
 } from "@common/shared/models";
 import { useState } from "react";
 
 import { ActionSequenceEditor } from "./ActionSequenceEditor.tsx";
-import { SoundSelector } from "./SoundSelector.tsx";
 import { Toggle } from "./Toggle.tsx";
 
 export type ScreenIdAndName = {
@@ -70,10 +68,6 @@ export function ButtonSpecificsSection({
     );
   };
 
-  const handleSoundChange = (sound: ButtonSound) => {
-    onUpdate(Object.assign({}, attr, { sound }), "widget.button.sound");
-  };
-
   const handleActionsChange = (input: ActionSequence) => {
     onUpdate(Object.assign({}, attr, { input }), "widget.button.input");
   };
@@ -130,9 +124,6 @@ export function ButtonSpecificsSection({
             </select>
           </div>
         )}
-      </div>
-      <div className="col gap-16">
-        <SoundSelector value={attr.sound} onChange={handleSoundChange} />
       </div>
       <div className="col gap-16">
         <div className="row align-items-center gap-16">

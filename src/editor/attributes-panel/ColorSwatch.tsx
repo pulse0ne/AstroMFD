@@ -180,7 +180,9 @@ export function ColorSwatch({
         style={{ padding: 12, flexWrap: "wrap", width: 176 }}
       >
         {recents.map((c, i) => (
-          <Swatch key={i} color={c} width={24} height={24} />
+          <div key={i} onClick={() => onUpdate(c)} style={{ cursor: "pointer" }}>
+            <Swatch color={c} width={24} height={24} />
+          </div>
         ))}
       </div>
     </Popup>

@@ -150,39 +150,6 @@
   margin: 0;
 }
 
-.context-menu {
-  position: fixed;
-  z-index: 9999;
-  min-width: 160px;
-  background: var(--panel-color-hex);
-  border: var(--border-light);
-  border-radius: 6px;
-  padding: 4px 0;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.context-menu-item {
-  padding: 8px 16px;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.context-menu-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.context-menu-item.danger {
-  color: #ff4444;
-}
-
-.context-menu-separator {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
-}
 
 .screen-set-search {
   padding: 6px 12px;

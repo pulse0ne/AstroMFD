@@ -1,20 +1,29 @@
-import { useCallback, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-const initialColors: string[] = [];
-for (let i = 0; i < 10; i++) {
-  initialColors.push("rgba(255, 255, 255, 1.0)");
+const MAX_RECENTS = 10;
+let recents: string[] = [];
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((l) => l());
 }
+
+export function addRecentColor(color: string) {
+  if (recents[0] === color) return;
+  recents = [color, ...recents.filter((c) => c !== color)].slice(0, MAX_RECENTS);
+  notify();
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+
+function getSnapshot() {
+  return recents;
+}
+
 export function useRecentColors() {
-  const [recents, setRecents] = useState(initialColors);
-
-  const addRecentColor = useCallback((color: string) => {
-    setRecents((ov) => {
-      if (ov.includes(color)) return ov;
-      const r = [color, ...ov];
-      r.pop();
-      return r;
-    });
-  }, []);
-
-  return { recentColors: recents, addRecentColor };
+  const recentColors = useSyncExternalStore(subscribe, getSnapshot);
+  return { recentColors, addRecentColor };
 }

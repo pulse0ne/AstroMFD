@@ -8,7 +8,6 @@ import type {
 import {
   useCallback,
   useMemo,
-  useRef,
   useState,
   type CSSProperties,
 } from "react";
@@ -33,20 +32,6 @@ export function Button({
   onNavigate,
 }: ButtonProps) {
   const [pressed, setPressed] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize audio if sound is configured
-  useMemo(() => {
-    if (
-      attr.sound &&
-      (attr.sound.playOn === "mobile" || attr.sound.playOn === "both")
-    ) {
-      const audioPath = `/audio/${attr.sound.source}/${attr.sound.file}`;
-      audioRef.current = new Audio(audioPath);
-    } else {
-      audioRef.current = null;
-    }
-  }, [attr.sound]);
 
   const fill = useMemo(() => {
     const f =
@@ -161,13 +146,6 @@ export function Button({
 
   const handleDown = useCallback(() => {
     navigator.vibrate?.(20);
-
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current
-        .play()
-        .catch((e) => console.error("Failed to play sound:", e));
-    }
 
     if (attr.buttonType === "toggle") {
       setPressed((ov) => !ov);

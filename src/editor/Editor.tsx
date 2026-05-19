@@ -8,7 +8,9 @@ import { Group, Layer, Rect, Stage } from "react-konva";
 import { useECStore } from "../store";
 import {
   activeScreenSelector,
+  activeWidgetListSelector,
   activeWidgetSelector,
+  editingContainerSelector,
 } from "../store/selectors.ts";
 import { WidgetRenderer } from "../widgets/WidgetRenderer.tsx";
 import { AttributesPanel } from "./attributes-panel/AttributesPanel.tsx";
@@ -19,6 +21,9 @@ const SCALE_FACTOR = 1.05;
 export default function Editor() {
   const activeScreen = useECStore(activeScreenSelector);
   const activeWidget = useECStore(activeWidgetSelector);
+  const editingContainer = useECStore(editingContainerSelector);
+  const editingContainerId = useECStore((state) => state.editingContainerId);
+  const visibleWidgets = useECStore(activeWidgetListSelector);
   const removeActiveWidget = useECStore((state) => state.deleteActiveWidget);
   const duplicateWidget = useECStore((state) => state.duplicateActiveWidget);
   const selectWidget = useECStore((state) => state.setActiveWidgetIndex);
@@ -29,6 +34,8 @@ export default function Editor() {
   const nudgeWidget = useECStore((state) => state.nudge);
   const undo = useECStore((state) => state.undo);
   const redo = useECStore((state) => state.redo);
+  const enterContainer = useECStore((state) => state.enterContainer);
+  const exitContainer = useECStore((state) => state.exitContainer);
 
   const [isPressed, setPressed] = useState(false);
   const [ephemeralShapeState, setEphemeralShapeState] = useState<
@@ -107,7 +114,11 @@ export default function Editor() {
         return;
       }
       if (e.key === "Escape") {
-        unselectWidget();
+        if (editingContainerId) {
+          exitContainer();
+        } else {
+          unselectWidget();
+        }
         return;
       }
 
@@ -146,6 +157,8 @@ export default function Editor() {
     removeActiveWidget,
     duplicateWidget,
     unselectWidget,
+    editingContainerId,
+    exitContainer,
     undo,
     redo,
   ]);
@@ -210,6 +223,13 @@ export default function Editor() {
     }
   };
 
+  const handleDoubleClick = () => {
+    if (editingContainerId) return;
+    if (activeWidget && (activeWidget.type === "carousel" || activeWidget.type === "panel")) {
+      enterContainer(activeWidget.id);
+    }
+  };
+
   const handleStageDrag = (evt: KonvaEventObject<MouseEvent>) => {
     if (evt.target instanceof Konva.Stage) {
       const evtPos = evt.target.position();
@@ -253,9 +273,39 @@ export default function Editor() {
   return (
     <div className="row flex-grow no-overflow">
       <div
-        className="flex-grow no-overflow relative"
+        className="flex-grow col no-overflow relative"
         onContextMenu={(e) => e.preventDefault()}
       >
+        {editingContainer && (
+          <div
+            style={{
+              padding: "4px 12px",
+              background: "rgba(79, 195, 247, 0.15)",
+              borderBottom: "1px solid #4fc3f7",
+              fontSize: 12,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span style={{ opacity: 0.7 }}>
+              Editing {editingContainer.type === "carousel" ? "Carousel" : "Panel"}
+            </span>
+            {editingContainer.type === "carousel" && (
+              <span style={{ opacity: 0.4 }}>
+                Page {editingContainer.activePageIndex + 1} of{" "}
+                {editingContainer.pages.length}
+              </span>
+            )}
+            <button
+              className="btn btn-sm"
+              style={{ marginLeft: "auto", fontSize: 11 }}
+              onClick={exitContainer}
+            >
+              Exit (Esc)
+            </button>
+          </div>
+        )}
         {activeScreen?.crtEffect && (
           <div
             style={{ position: "absolute" }}
@@ -273,6 +323,7 @@ export default function Editor() {
             y={stagePosition.y}
             draggable
             onClick={handleDeselect}
+            onDblClick={handleDoubleClick}
             onDragEnd={handleStageDrag}
             onWheel={handleWheel}
           >
@@ -286,17 +337,61 @@ export default function Editor() {
                   height={workspaceSize.height}
                   fill={activeScreen?.backgroundColor}
                 />
-                {activeScreen?.widgets.map((widget, ix) => (
-                  <WidgetRenderer
-                    key={widget.id}
-                    widget={widget}
-                    onSelect={() => selectWidget(ix)}
-                    onCommitUpdate={handleUpdate}
-                    onEphemeralUpdate={handleEphemeralUpdate}
-                    isSelected={ix === activeWidgetIndex}
-                    state={isPressed ? "pressed" : "primary"}
-                  />
-                ))}
+                {editingContainer ? (
+                  <>
+                    <Group listening={false} opacity={0.4}>
+                      {activeScreen?.widgets.map((widget) => (
+                        <WidgetRenderer
+                          key={widget.id}
+                          widget={widget}
+                          onSelect={() => {}}
+                          onCommitUpdate={() => {}}
+                          onEphemeralUpdate={() => {}}
+                          isSelected={false}
+                          state="primary"
+                        />
+                      ))}
+                    </Group>
+                    <Rect
+                      x={editingContainer.shape.position.x}
+                      y={editingContainer.shape.position.y}
+                      width={editingContainer.shape.size.width}
+                      height={editingContainer.shape.size.height}
+                      stroke="#4fc3f7"
+                      strokeWidth={2}
+                      dash={[6, 3]}
+                      listening={false}
+                    />
+                    <Group
+                      x={editingContainer.shape.position.x}
+                      y={editingContainer.shape.position.y}
+                    >
+                      {visibleWidgets?.map((widget, ix) => (
+                        <WidgetRenderer
+                          key={widget.id}
+                          widget={widget}
+                          onSelect={() => selectWidget(ix)}
+                          onCommitUpdate={handleUpdate}
+                          onEphemeralUpdate={handleEphemeralUpdate}
+                          isSelected={ix === activeWidgetIndex}
+                          state={isPressed ? "pressed" : "primary"}
+                        />
+                      ))}
+                    </Group>
+                  </>
+                ) : (
+                  activeScreen?.widgets.map((widget, ix) => (
+                    <WidgetRenderer
+                      key={widget.id}
+                      widget={widget}
+                      onSelect={() => selectWidget(ix)}
+                      onCommitUpdate={handleUpdate}
+                      onEphemeralUpdate={handleEphemeralUpdate}
+                      isSelected={ix === activeWidgetIndex}
+                      state={isPressed ? "pressed" : "primary"}
+                    />
+                  ))
+                )}
               </Group>
             </Layer>
           </Stage>

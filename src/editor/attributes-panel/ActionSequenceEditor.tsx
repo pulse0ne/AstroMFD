@@ -1,10 +1,13 @@
 import { ActionSequence, ActionStep, InputKey } from "@common/shared/models";
+import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
+import { MdAdd, MdPlayArrow } from "react-icons/md";
+import { PiArrowDown, PiArrowUp, PiX } from "react-icons/pi";
 
 import { Modal } from "../../Modal.tsx";
 import { InputKeySelector } from "./InputKeySelector.tsx";
-import { MdAdd } from "react-icons/md";
-import { PiArrowDown, PiArrowUp, PiX } from "react-icons/pi";
+
+type AudioEntry = { source: string; file: string };
 
 export type ActionSequenceEditorProps = {
   open: boolean;
@@ -58,6 +61,8 @@ function changeStepType(step: ActionStep, newType: StepType): ActionStep {
       return { type: "keyUp", key };
     case "pause":
       return { type: "pause", duration: 200 };
+    case "playSound":
+      return { type: "playSound", file: "", source: "sounds", volume: 1.0 };
   }
 }
 
@@ -68,10 +73,14 @@ export function ActionSequenceEditor({
   onChange,
 }: ActionSequenceEditorProps) {
   const [draft, setDraft] = useState<ActionStep[]>(() => [...value.steps]);
+  const [audioClips, setAudioClips] = useState<AudioEntry[]>([]);
 
   useEffect(() => {
     if (open) {
       setDraft([...value.steps]);
+      invoke<AudioEntry[]>("get_audio_clips")
+        .then(setAudioClips)
+        .catch(() => {});
     }
   }, [open]);
 
@@ -152,6 +161,7 @@ export function ActionSequenceEditor({
                 <option value="keyDown">Key Down</option>
                 <option value="keyUp">Key Up</option>
                 <option value="pause">Pause</option>
+                <option value="playSound">Play Sound</option>
               </select>
             </div>
             {(step.type === "press" ||
@@ -198,6 +208,61 @@ export function ActionSequenceEditor({
                   }
                   style={{ width: 80 }}
                 />
+              </div>
+            )}
+            {step.type === "playSound" && (
+              <div className="row gap-8 align-items-center">
+                <select
+                  value={`${step.source}:${step.file}`}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "") {
+                      updateStep(index, { ...step, file: "", source: "sounds" });
+                    } else {
+                      const [source, file] = val.split(":");
+                      updateStep(index, { ...step, file, source });
+                    }
+                  }}
+                >
+                  <option value="">Select sound...</option>
+                  {audioClips.map((clip) => (
+                    <option key={`${clip.source}:${clip.file}`} value={`${clip.source}:${clip.file}`}>
+                      {clip.file.replace(/\.(mp3|wav|ogg)$/i, "")}
+                    </option>
+                  ))}
+                </select>
+                <span>Vol:</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={2}
+                  step={0.05}
+                  value={step.volume}
+                  onChange={(e) =>
+                    updateStep(index, {
+                      ...step,
+                      volume: Number(e.target.value),
+                    })
+                  }
+                  style={{ width: 80 }}
+                />
+                <span style={{ fontSize: 11, opacity: 0.7, minWidth: 32 }}>
+                  {Math.round(step.volume * 100)}%
+                </span>
+                <button
+                  className="btn btn-sm"
+                  title="Preview sound"
+                  disabled={!step.file}
+                  onClick={() =>
+                    invoke("preview_sound", {
+                      source: step.source,
+                      file: step.file,
+                      volume: step.volume,
+                    })
+                  }
+                >
+                  <MdPlayArrow />
+                </button>
               </div>
             )}
             <div className="row gap-4" style={{ marginLeft: "auto" }}>

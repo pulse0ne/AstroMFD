@@ -1,5 +1,7 @@
 .screen-selector {
   min-width: 100px;
+  max-width: 100px;
+  overflow: hidden;
   background: var(--toolbar-color-hex);
   border-right: var(--border-light);
 }

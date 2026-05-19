@@ -44,10 +44,20 @@ export const createScreenSetSlice: StateCreator<
   deleteScreen: (id: string) => {
     set((state) => {
       if (state.screenSet) {
+        const oldIndex = state.screenSet.screens.findIndex((s) => s.id === id);
         state.screenSet.screens = state.screenSet.screens.filter(
           (s) => s.id !== id,
         );
-        state.activeScreenIndex = null;
+        if (state.screenSet.screens.length === 0) {
+          state.activeScreenIndex = null;
+        } else {
+          state.activeScreenIndex = Math.min(
+            oldIndex,
+            state.screenSet.screens.length - 1,
+          );
+        }
+        state.activeWidgetIndex = null;
+        state.editingContainerId = null;
         const histories = state.histories;
         if (histories.get(id)) {
           histories.delete(id);

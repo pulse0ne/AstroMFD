@@ -124,7 +124,7 @@ export type SliderAction = {
   max: number;
 };
 
-export type WidgetType = "button" | "label" | "panel" | "slider";
+export type WidgetType = "button" | "label" | "panel" | "slider" | "carousel";
 
 export type WidgetBase<W extends WidgetType> = {
   type: W;
@@ -138,24 +138,18 @@ export type ActionStep =
   | { type: "press"; key: InputKey; duration: number }
   | { type: "keyDown"; key: InputKey }
   | { type: "keyUp"; key: InputKey }
-  | { type: "pause"; duration: number };
+  | { type: "pause"; duration: number }
+  | { type: "playSound"; file: string; source: string; volume: number };
 
 export type ActionSequence = {
   steps: ActionStep[];
 };
-
-export type ButtonSound = {
-  source: string; // "resources" or "sounds"
-  file: string; // filename
-  playOn: "mobile" | "desktop" | "both"; // where to play the sound
-} | null;
 
 export type ButtonAttributes = WidgetBase<"button"> & {
   buttonType: ButtonType;
   input: ActionSequence;
   navTarget: string | null;
   text: TextAttributes;
-  sound: ButtonSound;
   pressed: {
     shape: Partial<ShapeAttributes>;
     text: Partial<TextAttributes>;
@@ -167,7 +161,9 @@ export type LabelAttributes = WidgetBase<"label"> & {
   text: TextAttributes;
 };
 
-export type PanelAttributes = WidgetBase<"panel">;
+export type PanelAttributes = WidgetBase<"panel"> & {
+  widgets: Widget[];
+};
 
 export type SliderAttributes = WidgetBase<"slider"> & {
   orientation: SliderOrientation;
@@ -176,11 +172,25 @@ export type SliderAttributes = WidgetBase<"slider"> & {
   text: TextAttributes;
 };
 
+export type CarouselPage = {
+  id: string;
+  widgets: Widget[];
+};
+
+export type CarouselNavigation = "swipe" | "buttons" | "both";
+
+export type CarouselAttributes = WidgetBase<"carousel"> & {
+  pages: CarouselPage[];
+  activePageIndex: number;
+  navigation: CarouselNavigation;
+};
+
 export type Widget =
   | ButtonAttributes
   | LabelAttributes
   | PanelAttributes
-  | SliderAttributes;
+  | SliderAttributes
+  | CarouselAttributes;
 
 // export type CrtEffect = {
 //   color: string;

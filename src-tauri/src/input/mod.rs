@@ -15,9 +15,14 @@ mod mock;
 #[cfg(not(any(target_os = "windows", target_os = "linux")))]
 pub use mock::MockDevice;
 
+use crate::locations::sounds_dir;
 use crate::state::{MobileEvent, ServerEvent};
-use log::{info, trace};
+use log::{info, trace, warn};
+use rodio::{Decoder, DeviceSinkBuilder, MixerDeviceSink};
+use rodio::mixer::Mixer;
 use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::{BufReader, Cursor};
 use std::sync::Arc;
 use tokio::sync::{broadcast, mpsc, Mutex};
 
@@ -112,9 +117,12 @@ pub enum ActionStep {
     KeyDown { key: InputKey },
     KeyUp { key: InputKey },
     Pause { duration: u64 },
+    PlaySound { file: String, #[serde(default = "default_sound_source")] source: String, #[serde(default = "default_volume")] volume: f32 },
 }
 
 fn default_press_duration() -> u64 { 100 }
+fn default_volume() -> f32 { 1.0 }
+fn default_sound_source() -> String { "sounds".to_string() }
 
 #[async_trait::async_trait]
 pub trait InputDevice: Send + Sync {
@@ -172,6 +180,47 @@ pub fn platform_available_keys() -> Vec<InputKey> {
     }
 }
 
+fn play_sound(mixer: &Mixer, source_type: &str, file: &str, volume: f32) {
+    use rodio::Source;
+    match source_type {
+        "resources" => {
+            #[cfg(not(debug_assertions))]
+            {
+                if let Some(entry) = crate::mobile_assets::AUDIO_ASSETS.get_file(file) {
+                    let cursor = Cursor::new(entry.contents().to_vec());
+                    match Decoder::new(cursor) {
+                        Ok(src) => mixer.add(src.amplify(volume)),
+                        Err(e) => warn!("Failed to decode resource audio {}: {}", file, e),
+                    }
+                } else {
+                    warn!("Resource audio file not found: {}", file);
+                }
+            }
+            #[cfg(debug_assertions)]
+            {
+                let path = std::path::PathBuf::from(format!("{}/{}", env!("CARGO_MANIFEST_DIR"), "../sfx")).join(file);
+                match File::open(&path) {
+                    Ok(f) => match Decoder::new(BufReader::new(f)) {
+                        Ok(src) => mixer.add(src.amplify(volume)),
+                        Err(e) => warn!("Failed to decode audio {}: {}", path.display(), e),
+                    },
+                    Err(e) => warn!("Failed to open audio {}: {}", path.display(), e),
+                }
+            }
+        }
+        _ => {
+            let path = sounds_dir().join(file);
+            match File::open(&path) {
+                Ok(f) => match Decoder::new(BufReader::new(f)) {
+                    Ok(src) => mixer.add(src.amplify(volume)),
+                    Err(e) => warn!("Failed to decode audio {}: {}", path.display(), e),
+                },
+                Err(e) => warn!("Failed to open sound file {}: {}", path.display(), e),
+            }
+        }
+    }
+}
+
 pub async fn input_worker(
     mut mobile_rx: mpsc::Receiver<MobileEvent>,
     _server_tx: broadcast::Sender<ServerEvent>,
@@ -199,6 +248,15 @@ pub async fn input_worker(
             Arc::new(Mutex::new(MockDevice))
         }
     };
+
+    let audio_device: Option<Arc<MixerDeviceSink>> = match DeviceSinkBuilder::open_default_sink() {
+        Ok(sink) => Some(Arc::new(sink)),
+        Err(e) => {
+            warn!("No audio output available: {}. Sound playback disabled.", e);
+            None
+        }
+    };
+
     info!("Input worker running...");
     while let Some(evt) = mobile_rx.recv().await {
         trace!("Received mobile event: {:?}", evt);
@@ -219,6 +277,7 @@ pub async fn input_worker(
             }
             MobileEvent::ExecuteActions { steps } => {
                 let device = device.clone();
+                let audio_device = audio_device.clone();
                 tokio::spawn(async move {
                     for step in steps {
                         match step {
@@ -233,6 +292,11 @@ pub async fn input_worker(
                             }
                             ActionStep::Pause { duration } => {
                                 tokio::time::sleep(std::time::Duration::from_millis(duration)).await;
+                            }
+                            ActionStep::PlaySound { ref file, ref source, volume } => {
+                                if let Some(ref dev) = audio_device {
+                                    play_sound(dev.mixer(), source, file, volume);
+                                }
                             }
                         }
                     }

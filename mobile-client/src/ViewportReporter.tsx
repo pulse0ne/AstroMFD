@@ -34,32 +34,39 @@ export function ViewportReporter() {
   const { sendMessage } = useAppWebsocket();
 
   useEffect(() => {
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
     function sendClientReport() {
       const { clientWidth: width, clientHeight: height } =
         document.documentElement;
-      if (
-        lastViewportSize.width !== width ||
-        lastViewportSize.height !== height
-      ) {
-        sendMessage({
-          clientReport: { width, height, device: detectedDevice },
-        });
-        lastViewportSize.width = width;
-        lastViewportSize.height = height;
+      if (width === 0 || height === 0) {
+        retryTimer = setTimeout(sendClientReport, 100);
+        return;
       }
+      if (
+        lastViewportSize.width === width &&
+        lastViewportSize.height === height
+      ) {
+        return;
+      }
+      sendMessage({
+        clientReport: { width, height, device: detectedDevice },
+      });
+      lastViewportSize.width = width;
+      lastViewportSize.height = height;
     }
-    console.log("sending initial client report");
-    sendClientReport();
+
+    requestAnimationFrame(sendClientReport);
 
     function resizeWatcher() {
-      console.log("got resize event");
       sendClientReport();
     }
 
     window.addEventListener("resize", resizeWatcher);
 
     return () => {
-      document.removeEventListener("resize", resizeWatcher);
+      window.removeEventListener("resize", resizeWatcher);
+      if (retryTimer) clearTimeout(retryTimer);
     };
   }, []);
 

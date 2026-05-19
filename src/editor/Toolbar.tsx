@@ -9,8 +9,6 @@ import {
   MdAdd,
   MdArrowBackIos,
   MdError,
-  MdRedo,
-  MdUndo,
   MdWarning,
 } from "react-icons/md";
 import { useNavigate } from "react-router";
@@ -25,6 +23,7 @@ import {
   hasUndosSelector,
 } from "../store/selectors.ts";
 import { createButton } from "../utils/createButton.ts";
+import { createCarousel } from "../utils/createCarousel.ts";
 import { createLabel } from "../utils/createLabel.ts";
 import { createPanel } from "../utils/createPanel.ts";
 import { createScreen } from "../utils/createScreen.ts";
@@ -131,6 +130,9 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
           </AddWidgetMenuItem>
           <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>
             Panel
+          </AddWidgetMenuItem>
+          <AddWidgetMenuItem onClick={() => handleAddWidget(createCarousel)}>
+            Carousel
           </AddWidgetMenuItem>
           <div style={{ borderBottom: "var(--border-light)" }}></div>
           <AddWidgetMenuItem onClick={handleAddScreen}>

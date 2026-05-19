@@ -15,13 +15,13 @@ export function validateScreenSet(s: ScreenSet): ScreenSetValidationResult {
   const issues: ValidationIssue[] = [];
 
   const screenIds = s.screens.map((screen) => screen.id);
-  const screenIdToName = s.screens.reduce(
-    (acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
+  // const screenIdToName = s.screens.reduce(
+  //   (acc, item) => {
+  //     acc[item.id] = item.name;
+  //     return acc;
+  //   },
+  //   {} as Record<string, string>,
+  // );
 
   // Duplicate screen IDs
   const seenScreenIds = new Set<string>();

@@ -8,6 +8,7 @@ import type {
 import { Fragment, type CSSProperties } from "react";
 
 import { Button } from "./widgets/Button.tsx";
+import { Carousel } from "./widgets/Carousel.tsx";
 import { Label } from "./widgets/Label.tsx";
 import { Panel } from "./widgets/Panel.tsx";
 import { Slider } from "./widgets/Slider.tsx";
@@ -67,8 +68,27 @@ export function ScreenRenderer({
           {widget.type === "slider" && (
             <Slider attr={widget} onAxisMove={handleAxisMove} />
           )}
-          {widget.type === "panel" && <Panel attr={widget} />}
+          {widget.type === "panel" && (
+            <Panel
+              attr={widget}
+              onExecuteActions={handleExecuteActions}
+              onDown={handleDown}
+              onUp={handleUp}
+              onNavigate={onNavigate}
+              onAxisMove={handleAxisMove}
+            />
+          )}
           {widget.type === "label" && <Label attr={widget} />}
+          {widget.type === "carousel" && (
+            <Carousel
+              attr={widget}
+              onExecuteActions={handleExecuteActions}
+              onDown={handleDown}
+              onUp={handleUp}
+              onNavigate={onNavigate}
+              onAxisMove={handleAxisMove}
+            />
+          )}
         </Fragment>
       ))}
     </div>

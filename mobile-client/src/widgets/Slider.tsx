@@ -1,5 +1,5 @@
 import type { JoystickAxis, SliderAttributes } from "@common/shared/models";
-import { useCallback, useRef, type CSSProperties } from "react";
+import { useCallback, useRef, useState, type CSSProperties } from "react";
 
 import { hAlignmentMap, vAlignmentMap } from "./common.ts";
 import { SvgRenderer } from "./SvgRenderer.tsx";
@@ -13,6 +13,7 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const activeRef = useRef(false);
+  const [position, setPosition] = useState(0.5);
 
   const { trackColor, activeColor, thumbColor, trackThickness, thumbSize } =
     attr.appearance;
@@ -48,6 +49,7 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
       activeRef.current = true;
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
       const normalized = getNormalized(e.clientX, e.clientY);
+      setPosition(normalized);
       sendValue(normalized);
     },
     [getNormalized, sendValue],
@@ -60,6 +62,7 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null;
         const normalized = getNormalized(e.clientX, e.clientY);
+        setPosition(normalized);
         sendValue(normalized);
       });
     },
@@ -92,13 +95,15 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
     backgroundColor: trackColor,
   };
 
+  const pct = `${position * 100}%`;
+
   const activeTrackStyle: CSSProperties = {
     position: "absolute",
     borderRadius: trackThickness / 2,
     backgroundColor: activeColor,
     ...(isVertical
-      ? { bottom: 0, left: 0, width: "100%", height: "50%" }
-      : { top: 0, left: 0, height: "100%", width: "50%" }),
+      ? { bottom: 0, left: 0, width: "100%", height: pct }
+      : { top: 0, left: 0, height: "100%", width: pct }),
   };
 
   const thumbStyle: CSSProperties = {
@@ -109,8 +114,8 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
     backgroundColor: thumbColor,
     transform: "translate(-50%, -50%)",
     ...(isVertical
-      ? { left: "50%", top: "50%" }
-      : { top: "50%", left: "50%" }),
+      ? { left: "50%", bottom: pct }
+      : { top: "50%", left: pct }),
   };
 
   const textContainerStyle: CSSProperties = {

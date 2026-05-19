@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::widget::Widget;
 use crate::widget::base::WidgetBase;
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -6,5 +7,6 @@ use crate::widget::base::WidgetBase;
 pub struct PanelAttributes {
     #[serde(flatten)]
     pub widget: WidgetBase,
-    // TODO: background?
+    #[serde(default)]
+    pub widgets: Vec<Widget>,
 }
