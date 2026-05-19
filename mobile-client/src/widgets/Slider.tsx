@@ -10,8 +10,13 @@ export type SliderProps = {
 };
 
 export function Slider({ attr, onAxisMove }: SliderProps) {
-  const lastSentRef = useRef<number>(0);
+  const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const activeRef = useRef(false);
+
+  const { trackColor, activeColor, thumbColor, trackThickness, thumbSize } =
+    attr.appearance;
+  const isVertical = attr.orientation === "vertical";
 
   const sendValue = useCallback(
     (normalized: number) => {
@@ -23,46 +28,99 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
     [attr.axis, onAxisMove],
   );
 
-  const handleInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const normalized = Number(e.target.value) / 1000;
+  const getNormalized = useCallback(
+    (clientX: number, clientY: number): number => {
+      const el = trackRef.current;
+      if (!el) return 0;
+      const rect = el.getBoundingClientRect();
+      if (isVertical) {
+        const ratio = 1 - (clientY - rect.top) / rect.height;
+        return Math.max(0, Math.min(1, ratio));
+      }
+      const ratio = (clientX - rect.left) / rect.width;
+      return Math.max(0, Math.min(1, ratio));
+    },
+    [isVertical],
+  );
 
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      activeRef.current = true;
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      const normalized = getNormalized(e.clientX, e.clientY);
+      sendValue(normalized);
+    },
+    [getNormalized, sendValue],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!activeRef.current) return;
       if (rafRef.current !== null) return;
-
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null;
-        lastSentRef.current = normalized;
+        const normalized = getNormalized(e.clientX, e.clientY);
         sendValue(normalized);
       });
     },
-    [sendValue],
+    [getNormalized, sendValue],
   );
 
-  const shapeStyle: CSSProperties = {
+  const handlePointerUp = useCallback(() => {
+    activeRef.current = false;
+  }, []);
+
+  const padding = thumbSize + 4;
+
+  const containerStyle: CSSProperties = {
     position: "absolute",
     left: attr.shape.position.x,
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    display: "flex",
-    flexDirection: attr.orientation === "vertical" ? "column" : "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    touchAction: "none",
   };
 
-  const inputStyle: CSSProperties = {
-    writingMode: attr.orientation === "vertical" ? "vertical-lr" : undefined,
-    direction: attr.orientation === "vertical" ? "rtl" : undefined,
-    width: attr.orientation === "horizontal" ? "80%" : undefined,
-    height: attr.orientation === "vertical" ? "80%" : undefined,
-    accentColor: attr.shape.stroke ?? undefined,
+  const trackAreaStyle: CSSProperties = {
+    position: "absolute",
+    left: isVertical ? "50%" : padding,
+    top: isVertical ? padding : "50%",
+    width: isVertical ? trackThickness : `calc(100% - ${padding * 2}px)`,
+    height: isVertical ? `calc(100% - ${padding * 2}px)` : trackThickness,
+    transform: isVertical ? "translateX(-50%)" : "translateY(-50%)",
+    borderRadius: trackThickness / 2,
+    backgroundColor: trackColor,
+  };
+
+  const activeTrackStyle: CSSProperties = {
+    position: "absolute",
+    borderRadius: trackThickness / 2,
+    backgroundColor: activeColor,
+    ...(isVertical
+      ? { bottom: 0, left: 0, width: "100%", height: "50%" }
+      : { top: 0, left: 0, height: "100%", width: "50%" }),
+  };
+
+  const thumbStyle: CSSProperties = {
+    position: "absolute",
+    width: thumbSize * 2,
+    height: thumbSize * 2,
+    borderRadius: "50%",
+    backgroundColor: thumbColor,
+    transform: "translate(-50%, -50%)",
+    ...(isVertical
+      ? { left: "50%", top: "50%" }
+      : { top: "50%", left: "50%" }),
   };
 
   const textContainerStyle: CSSProperties = {
+    position: "relative",
+    width: "100%",
+    height: "100%",
     display: "flex",
     justifyContent: vAlignmentMap[attr.text.verticalAlignment],
     alignItems: hAlignmentMap[attr.text.horizontalAlignment],
+    pointerEvents: "none",
   };
 
   const textStyle: CSSProperties = {
@@ -73,7 +131,13 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
   };
 
   return (
-    <div style={shapeStyle}>
+    <div
+      style={containerStyle}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
       {attr.shape.svg && (
         <SvgRenderer
           svg={attr.shape.svg}
@@ -81,19 +145,15 @@ export function Slider({ attr, onAxisMove }: SliderProps) {
           height={attr.shape.size.height}
         />
       )}
+      <div ref={trackRef} style={trackAreaStyle}>
+        <div style={activeTrackStyle} />
+        <div style={thumbStyle} />
+      </div>
       {attr.text.text && (
         <div style={textContainerStyle}>
           <span style={textStyle}>{attr.text.text}</span>
         </div>
       )}
-      <input
-        type="range"
-        min={0}
-        max={1000}
-        defaultValue={0}
-        style={inputStyle}
-        onInput={handleInput}
-      />
     </div>
   );
 }

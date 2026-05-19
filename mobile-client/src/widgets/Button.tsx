@@ -62,6 +62,8 @@ export function Button({
     return null;
   }, [attr, pressed]);
 
+  const hasSvg = Boolean(attr.shape.svg);
+
   const shapeStyle: CSSProperties = {
     position: "absolute",
     left:
@@ -80,26 +82,30 @@ export function Button({
       pressed && attr.pressed.shape.size?.height
         ? attr.pressed.shape.size.height
         : attr.shape.size.height,
-    background: fill ?? "transparent",
-    borderWidth:
+    background: hasSvg ? undefined : (fill ?? "transparent"),
+    borderWidth: hasSvg ? undefined : (
       pressed && attr.pressed.shape.strokeWidth
         ? attr.pressed.shape.strokeWidth
-        : attr.shape.strokeWidth,
-    borderStyle: "solid",
-    borderColor:
+        : attr.shape.strokeWidth
+    ),
+    borderStyle: hasSvg ? undefined : "solid",
+    borderColor: hasSvg ? undefined : (
       pressed && attr.pressed.shape.stroke
         ? attr.pressed.shape.stroke
-        : (attr.shape.stroke ?? "transparent"),
-    borderRadius:
+        : (attr.shape.stroke ?? "transparent")
+    ),
+    borderRadius: hasSvg ? undefined : (
       pressed && attr.pressed.shape.cornerRadius
         ? attr.pressed.shape.cornerRadius
-        : attr.shape.cornerRadius,
-    boxShadow:
+        : attr.shape.cornerRadius
+    ),
+    boxShadow: hasSvg ? undefined : (
       pressed && attr.pressed.shape.shadow
         ? getShadow(attr.pressed.shape.shadow)
         : attr.shape.shadow
           ? getShadow(attr.shape.shadow)
-          : undefined,
+          : undefined
+    ),
   };
 
   const textContainerStyle: CSSProperties = {

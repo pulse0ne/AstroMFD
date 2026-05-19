@@ -117,13 +117,13 @@ export function GradientPicker({ value, onChange }: GradientPickerProps) {
           onClick={toggleType}
           className={gradient.type === "linear" ? "active" : ""}
         >
-          Linear
+          LINEAR
         </button>
         <button
           onClick={toggleType}
           className={gradient.type === "radial" ? "active" : ""}
         >
-          Radial
+          RADIAL
         </button>
       </div>
 

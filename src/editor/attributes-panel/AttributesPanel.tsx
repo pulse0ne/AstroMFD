@@ -248,10 +248,6 @@ export function AttributesPanel({
             onSizeChange={handleSizeChange}
             onPositionChange={handlePositionChange}
           />
-          <ShapeSection
-            shapeAttr={selectedWidget.shape}
-            onUpdate={handleShapeAttrChange}
-          />
           <TextSection
             textAttr={selectedWidget.text}
             onUpdate={handleTextAttrChange}

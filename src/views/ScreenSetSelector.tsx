@@ -1,11 +1,12 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MdAdd, MdContentCopy, MdDelete, MdEdit } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router";
 
 import "./screen-set-selector.css";
 
 import { Modal } from "../Modal.tsx";
+import { PiCopySimple, PiCursorText, PiPencilSimple, PiTrashSimple } from "react-icons/pi";
 
 type ScreenSetMeta = {
   id: string;
@@ -138,8 +139,8 @@ export function ScreenSetSelector() {
             />
           )}
           <button onClick={() => setCreateModalOpen(true)}>
-            <div className="row gap-4 align-items-center">
-              <MdAdd size={14} />
+            <div className="row gap-8 align-items-center">
+              <MdAdd size={12} />
               <span>NEW</span>
             </div>
           </button>
@@ -156,8 +157,10 @@ export function ScreenSetSelector() {
             <h2>No screen sets yet</h2>
             <p>Create your first screen set to get started.</p>
             <button onClick={() => setCreateModalOpen(true)}>
-              <MdAdd size={14} style={{ marginRight: 4 }} />
-              Create Screen Set
+              <div className="row align-items-center gap-8">
+                <MdAdd size={12} />
+                <span>CREATE SCREEN SET</span>
+              </div>
             </button>
           </div>
         ) : (
@@ -179,24 +182,6 @@ export function ScreenSetSelector() {
                   <div className="screen-set-card-meta">
                     {relativeTime(ss.modifiedAt)}
                   </div>
-                </div>
-                <div className="screen-set-card-overlay">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      nav(`/creator/${ss.id}`);
-                    }}
-                  >
-                    <MdEdit size={14} /> Edit
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDuplicate(ss);
-                    }}
-                  >
-                    <MdContentCopy size={14} /> Duplicate
-                  </button>
                 </div>
               </div>
             ))}
@@ -223,19 +208,19 @@ export function ScreenSetSelector() {
               closeContextMenu();
             }}
           >
-            <MdEdit size={14} /> Edit
+            <PiPencilSimple size={14} /> Edit
           </div>
           <div
             className="context-menu-item"
             onClick={() => handleRename(contextMenu.screenSet)}
           >
-            Rename
+            <PiCursorText /> Rename
           </div>
           <div
             className="context-menu-item"
             onClick={() => handleDuplicate(contextMenu.screenSet)}
           >
-            <MdContentCopy size={14} /> Duplicate
+            <PiCopySimple size={14} /> Duplicate
           </div>
           <div className="context-menu-separator" />
           <div
@@ -245,7 +230,7 @@ export function ScreenSetSelector() {
               closeContextMenu();
             }}
           >
-            <MdDelete size={14} /> Delete
+            <PiTrashSimple size={14} /> Delete
           </div>
         </div>
       )}
@@ -256,12 +241,12 @@ export function ScreenSetSelector() {
         header={<h4 style={{ margin: 0 }}>Delete Screen Set</h4>}
         footer={
           <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
-            <button onClick={() => setConfirmDelete(null)}>Cancel</button>
+            <button onClick={() => setConfirmDelete(null)}>CANCEL</button>
             <button
               onClick={handleDeleteConfirm}
               style={{ borderColor: "#ff4444", color: "#ff4444" }}
             >
-              Delete
+              DELETE
             </button>
           </div>
         }
@@ -313,9 +298,9 @@ function CreateModal({ open, onClose, onConfirm }: CreateModalProps) {
       header={<h4 style={{ margin: 0 }}>New Screen Set</h4>}
       footer={
         <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
-          <button onClick={onClose}>Cancel</button>
+          <button onClick={onClose}>CANCEL</button>
           <button onClick={handleSubmit} disabled={!name.trim()}>
-            Create
+            CREATE
           </button>
         </div>
       }

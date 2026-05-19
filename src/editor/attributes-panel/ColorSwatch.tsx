@@ -172,7 +172,7 @@ export function ColorSwatch({
       </table>
       <div className="col" style={{ paddingLeft: 12, paddingRight: 12 }}>
         <button onClick={handleCopy} disabled={wasCopied}>
-          {wasCopied ? "Copied" : "Copy"}
+          {wasCopied ? "COPIED" : "COPY"}
         </button>
       </div>
       <div

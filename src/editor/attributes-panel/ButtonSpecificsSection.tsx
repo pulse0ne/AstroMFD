@@ -104,7 +104,7 @@ export function ButtonSpecificsSection({
               </span>
             </div>
             <button className="btn btn-sm" onClick={() => setEditorOpen(true)}>
-              Edit Actions
+              EDIT ACTIONS
             </button>
           </div>
         )}

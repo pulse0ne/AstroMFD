@@ -200,26 +200,27 @@ export function Button({
         onTransform={handleTransform}
         onTransformEnd={handleTransformEnd}
       >
-        <Rect
-          width={attr.shape.size.width}
-          height={attr.shape.size.height}
-          fill={fill ?? undefined}
-          stroke={extractShapeAttr("stroke") ?? undefined}
-          strokeWidth={extractShapeAttr("strokeWidth")}
-          cornerRadius={extractShapeAttr("cornerRadius")}
-          shadowColor={shapeShadow?.color ?? undefined}
-          shadowOffsetX={shapeShadow?.xOffset ?? undefined}
-          shadowOffsetY={shapeShadow?.yOffset ?? undefined}
-          shadowBlur={
-            shapeShadow?.strength ? shapeShadow.strength * 6 : undefined
-          }
-          {...gradientProps}
-        />
-        {attr.shape.svg && (
+        {attr.shape.svg ? (
           <SvgContent
             svg={attr.shape.svg}
             targetWidth={attr.shape.size.width}
             targetHeight={attr.shape.size.height}
+          />
+        ) : (
+          <Rect
+            width={attr.shape.size.width}
+            height={attr.shape.size.height}
+            fill={fill ?? undefined}
+            stroke={extractShapeAttr("stroke") ?? undefined}
+            strokeWidth={extractShapeAttr("strokeWidth")}
+            cornerRadius={extractShapeAttr("cornerRadius")}
+            shadowColor={shapeShadow?.color ?? undefined}
+            shadowOffsetX={shapeShadow?.xOffset ?? undefined}
+            shadowOffsetY={shapeShadow?.yOffset ?? undefined}
+            shadowBlur={
+              shapeShadow?.strength ? shapeShadow.strength * 6 : undefined
+            }
+            {...gradientProps}
           />
         )}
         <Text

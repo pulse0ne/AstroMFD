@@ -73,7 +73,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
 
   return (
     <div className="row gap-16">
-      <div className="row align-items-center gap-16">
+      <div className="row align-items-center gap-4">
         <span>Input Type:</span>
         <select
           value={value.type}
@@ -88,7 +88,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       </div>
 
       {value.type === "joystickButton" && (
-        <div className="row align-items-center gap-16">
+        <div className="row align-items-center gap-4">
           <span>Button #:</span>
           <input
             type="number"
@@ -102,7 +102,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "letter" && (
-        <div className="row align-items-center gap-16">
+        <div className="row align-items-center gap-4">
           <span>Letter:</span>
           <select
             value={value.key}
@@ -118,7 +118,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "number" && (
-        <div className="row align-items-center gap-16">
+        <div className="row align-items-center gap-4">
           <span>Number:</span>
           <select
             value={value.key}
@@ -134,7 +134,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "functionKey" && (
-        <div className="row align-items-center gap-16">
+        <div className="row align-items-center gap-4">
           <span>Function Key:</span>
           <select
             value={value.key}
@@ -150,7 +150,7 @@ export function InputKeySelector({ value, onChange }: InputKeySelectorProps) {
       )}
 
       {value.type === "specialKey" && (
-        <div className="row align-items-center gap-16">
+        <div className="row align-items-center gap-4">
           <span>Special Key:</span>
           <select
             value={value.key}

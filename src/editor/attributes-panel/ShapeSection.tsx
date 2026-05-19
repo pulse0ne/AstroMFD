@@ -3,6 +3,7 @@ import {
   Gradient,
   ShadowEffect,
   ShapeAttributes,
+  SvgXmlNode,
 } from "@common/shared/models";
 import { useRef } from "react";
 import { v4 as uuid } from "uuid";
@@ -12,6 +13,7 @@ import { gradientString } from "../../utils/gradientString.ts";
 import { SvgUtils } from "../../utils/svg/parseSvg.ts";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { GradientPicker } from "./GradientPicker.tsx";
+import { SvgColorEditor } from "./SvgColorEditor.tsx";
 import { Toggle } from "./Toggle.tsx";
 
 export type ShapeSectionProps = {
@@ -195,6 +197,10 @@ export function ShapeSection({
     onUpdate(Object.assign({}, shapeAttr, { svg: null }), "widget.shape.svg");
   };
 
+  const handleSvgUpdate = (svg: SvgXmlNode) => {
+    onUpdate(Object.assign({}, shapeAttr, { svg }), "widget.shape.svg");
+  };
+
   const fillValue = !fill
     ? null
     : fill.type === "solid"
@@ -211,7 +217,7 @@ export function ShapeSection({
             <div className="row align-items-center gap-8">
               <span style={{ fontSize: 11, opacity: 0.6 }}>Imported</span>
               <button className="btn btn-sm" onClick={handleSvgRemove}>
-                Remove
+                REMOVE
               </button>
             </div>
           ) : (
@@ -219,7 +225,7 @@ export function ShapeSection({
               className="btn btn-sm"
               onClick={() => fileInputRef.current?.click()}
             >
-              Import SVG
+              IMPORT SVG
             </button>
           )}
           <input
@@ -231,138 +237,144 @@ export function ShapeSection({
           />
         </div>
       </div>
-      <div className="col gap-16">
-        <div className="row align-items-center gap-16">
-          <span>Fill Type:</span>
-          <Toggle
-            onToggle={handleFillTypeChange}
-            value={Boolean(fill) && fill?.type !== "solid"}
-            leftLabel="Solid"
-            rightLabel="Gradient"
-          />
-        </div>
-        {fill?.type === "gradient" && (
-          <GradientPicker
-            value={fill.value as Gradient}
-            onChange={(v) => handleFill("gradient", v)}
-          />
-        )}
-        {!fill ||
-          (fill?.type === "solid" && (
-            <div className="row align-items-center gap-16">
-              <span>Fill Color:</span>
-              <ColorSwatch
-                color={fillValue ?? undefined}
-                recents={recentColors}
-                onUpdate={(c) => handleFill("solid", c)}
-                onAddRecentColor={addRecentColor}
-              />
-            </div>
-          ))}
-      </div>
-      <div className="row align-items-center gap-16">
-        <span style={{ width: 50 }}>Stroke:</span>
-        <ColorSwatch
-          color={stroke ?? undefined}
-          recents={recentColors}
-          onUpdate={(c) => handleStroke(c)}
-          onAddRecentColor={addRecentColor}
-        />
-      </div>
-      <div className="row align-items-center gap-16">
-        <span style={{ width: 100 }}>Stroke Width:</span>
-        <input
-          type="number"
-          min={0}
-          style={{ width: 75 }}
-          value={strokeWidth}
-          onChange={(evt) =>
-            handleNumericalChange(
-              "strokeWidth",
-              Number.parseInt(evt.target.value),
-            )
-          }
-        />
-      </div>
-      <div className="row align-items-center gap-16">
-        <span style={{ width: 100 }}>Corner Radius:</span>
-        <input
-          type="number"
-          min={0}
-          style={{ width: 75 }}
-          value={cornerRadius}
-          onChange={(evt) =>
-            handleNumericalChange(
-              "cornerRadius",
-              Number.parseInt(evt.target.value),
-            )
-          }
-        />
-      </div>
-      <div className="col gap-16">
-        <div className="row gap-16 align-items-center">
-          <span>Shadow:</span>
-          <Toggle onToggle={handleShadowToggle} value={Boolean(shadow)} />
-        </div>
-        {shadow && (
+      {shapeAttr.svg ? (
+        <SvgColorEditor svg={shapeAttr.svg} onUpdate={handleSvgUpdate} />
+      ) : (
+        <>
           <div className="col gap-16">
-            <div className="row gap-16">
-              <span>Color:</span>
-              <ColorSwatch
-                color={shadow.color}
-                recents={recentColors}
-                onUpdate={handleShadowColor}
-                onAddRecentColor={addRecentColor}
+            <div className="row align-items-center gap-16">
+              <span>Fill Type:</span>
+              <Toggle
+                onToggle={handleFillTypeChange}
+                value={Boolean(fill) && fill?.type !== "solid"}
+                leftLabel="Solid"
+                rightLabel="Gradient"
               />
             </div>
-            <div className="row gap-16">
-              <span>Strength:</span>
-              <input
-                type="number"
-                min={0}
-                step={1}
-                value={shadow.strength}
-                onChange={(evt) =>
-                  handleShadowValue(
-                    "strength",
-                    Number.parseFloat(evt.target.value),
-                  )
-                }
+            {fill?.type === "gradient" && (
+              <GradientPicker
+                value={fill.value as Gradient}
+                onChange={(v) => handleFill("gradient", v)}
               />
-            </div>
-            <div className="row gap-16">
-              <span>x Offset:</span>
-              <input
-                type="number"
-                min={0}
-                step={1}
-                value={shadow.xOffset}
-                onChange={(evt) =>
-                  handleShadowValue(
-                    "xOffset",
-                    Number.parseFloat(evt.target.value),
-                  )
-                }
-              />
-            </div>
-            <div className="row gap-16">
-              <span>y Offset:</span>
-              <input
-                type="number"
-                min={0}
-                step={1}
-                value={shadow.yOffset}
-                onChange={(evt) =>
-                  handleShadowValue(
-                    "yOffset",
-                    Number.parseFloat(evt.target.value),
-                  )
-                }
-              />
-            </div>
+            )}
+            {!fill ||
+              (fill?.type === "solid" && (
+                <div className="row align-items-center gap-16">
+                  <span>Fill Color:</span>
+                  <ColorSwatch
+                    color={fillValue ?? undefined}
+                    recents={recentColors}
+                    onUpdate={(c) => handleFill("solid", c)}
+                    onAddRecentColor={addRecentColor}
+                  />
+                </div>
+              ))}
           </div>
-        )}
-      </div>
+          <div className="row align-items-center gap-16">
+            <span style={{ width: 50 }}>Stroke:</span>
+            <ColorSwatch
+              color={stroke ?? undefined}
+              recents={recentColors}
+              onUpdate={(c) => handleStroke(c)}
+              onAddRecentColor={addRecentColor}
+            />
+          </div>
+          <div className="row align-items-center gap-16">
+            <span style={{ width: 100 }}>Stroke Width:</span>
+            <input
+              type="number"
+              min={0}
+              style={{ width: 75 }}
+              value={strokeWidth}
+              onChange={(evt) =>
+                handleNumericalChange(
+                  "strokeWidth",
+                  Number.parseInt(evt.target.value),
+                )
+              }
+            />
+          </div>
+          <div className="row align-items-center gap-16">
+            <span style={{ width: 100 }}>Corner Radius:</span>
+            <input
+              type="number"
+              min={0}
+              style={{ width: 75 }}
+              value={cornerRadius}
+              onChange={(evt) =>
+                handleNumericalChange(
+                  "cornerRadius",
+                  Number.parseInt(evt.target.value),
+                )
+              }
+            />
+          </div>
+          <div className="col gap-16">
+            <div className="row gap-16 align-items-center">
+              <span>Shadow:</span>
+              <Toggle onToggle={handleShadowToggle} value={Boolean(shadow)} />
+            </div>
+            {shadow && (
+              <div className="col gap-16">
+                <div className="row gap-16">
+                  <span>Color:</span>
+                  <ColorSwatch
+                    color={shadow.color}
+                    recents={recentColors}
+                    onUpdate={handleShadowColor}
+                    onAddRecentColor={addRecentColor}
+                  />
+                </div>
+                <div className="row gap-16">
+                  <span>Strength:</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={shadow.strength}
+                    onChange={(evt) =>
+                      handleShadowValue(
+                        "strength",
+                        Number.parseFloat(evt.target.value),
+                      )
+                    }
+                  />
+                </div>
+                <div className="row gap-16">
+                  <span>x Offset:</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={shadow.xOffset}
+                    onChange={(evt) =>
+                      handleShadowValue(
+                        "xOffset",
+                        Number.parseFloat(evt.target.value),
+                      )
+                    }
+                  />
+                </div>
+                <div className="row gap-16">
+                  <span>y Offset:</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={shadow.yOffset}
+                    onChange={(evt) =>
+                      handleShadowValue(
+                        "yOffset",
+                        Number.parseFloat(evt.target.value),
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

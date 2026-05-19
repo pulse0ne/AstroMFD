@@ -20,7 +20,7 @@ export function QrCodeModal({ open, serverIp, onClose }: QrCodeModalProps) {
       onClose={onClose}
       footer={
         <div className="col align-items-center justify-content-center">
-          <button onClick={onClose}>Close</button>
+          <button onClick={onClose}>CLOSE</button>
         </div>
       }
     >

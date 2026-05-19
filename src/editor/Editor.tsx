@@ -12,7 +12,6 @@ import {
 } from "../store/selectors.ts";
 import { WidgetRenderer } from "../widgets/WidgetRenderer.tsx";
 import { AttributesPanel } from "./attributes-panel/AttributesPanel.tsx";
-// import "./styles.css";
 import "./editor.css";
 
 const SCALE_FACTOR = 1.05;

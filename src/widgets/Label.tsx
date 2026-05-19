@@ -158,20 +158,21 @@ export function Label({
         onTransform={handleTransform}
         onTransformEnd={handleTransformEnd}
       >
-        <Rect
-          width={attr.shape.size.width}
-          height={attr.shape.size.height}
-          fill={fill ?? undefined}
-          stroke={attr.shape.stroke ?? undefined}
-          strokeWidth={attr.shape.strokeWidth}
-          cornerRadius={attr.shape.cornerRadius}
-          {...gradientProps}
-        />
-        {attr.shape.svg && (
+        {attr.shape.svg ? (
           <SvgContent
             svg={attr.shape.svg}
             targetWidth={attr.shape.size.width}
             targetHeight={attr.shape.size.height}
+          />
+        ) : (
+          <Rect
+            width={attr.shape.size.width}
+            height={attr.shape.size.height}
+            fill={fill ?? undefined}
+            stroke={attr.shape.stroke ?? undefined}
+            strokeWidth={attr.shape.strokeWidth}
+            cornerRadius={attr.shape.cornerRadius}
+            {...gradientProps}
           />
         )}
         <Text

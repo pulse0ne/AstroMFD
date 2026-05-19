@@ -28,14 +28,15 @@ export function Label({ attr }: LabelProps) {
     top: attr.shape.position.y,
     width: attr.shape.size.width,
     height: attr.shape.size.height,
-    background: fill ?? "transparent",
-    borderWidth: attr.shape.strokeWidth,
-    borderStyle: "solid",
-    borderColor: attr.shape.stroke ?? "transparent",
-    borderRadius: attr.shape.cornerRadius,
+    background: attr.shape.svg ? undefined : (fill ?? "transparent"),
+    borderWidth: attr.shape.svg ? undefined : attr.shape.strokeWidth,
+    borderStyle: attr.shape.svg ? undefined : "solid",
+    borderColor: attr.shape.svg ? undefined : (attr.shape.stroke ?? "transparent"),
+    borderRadius: attr.shape.svg ? undefined : attr.shape.cornerRadius,
   };
 
   const textContainerStyle: CSSProperties = {
+    position: "relative",
     width: "100%",
     height: "100%",
     display: "flex",

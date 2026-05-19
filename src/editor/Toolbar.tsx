@@ -41,6 +41,7 @@ import { ScreenSet } from "@common/shared/models";
 import { IconType } from "react-icons";
 
 import { EditableTitle } from "./EditableTitle.tsx";
+import { PiArrowUUpLeft, PiArrowUUpRight } from "react-icons/pi";
 
 export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
@@ -111,8 +112,8 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
           trigger={
             <button className="p16-l">
               <div className="row align-items-center gap-4">
-                <MdAdd size={15} />
-                <span>Add</span>
+                <MdAdd size={12} />
+                <span>ADD</span>
               </div>
             </button>
           }
@@ -175,7 +176,7 @@ type UndoRedoButtonProps = {
 };
 
 function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
-  const Icon: IconType = type === "undo" ? MdUndo : MdRedo;
+  const Icon: IconType = type === "undo" ? PiArrowUUpLeft : PiArrowUUpRight;
 
   const handleClick = () => {
     if (!disabled) {
@@ -187,6 +188,7 @@ function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
     <Icon
       size={20}
       onClick={handleClick}
+      title={type === "undo" ? "Undo" : "Redo"}
       style={{
         cursor: disabled ? undefined : "pointer",
         color: disabled ? "#666" : "var(--gradient-stop1)",

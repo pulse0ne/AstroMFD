@@ -4,6 +4,9 @@ import {
   SliderOrientation,
 } from "@common/shared/models";
 
+import { useRecentColors } from "../../hooks/useRecentColors.ts";
+import { ColorSwatch } from "./ColorSwatch.tsx";
+
 export type SliderSpecificsSectionProps = {
   attr: SliderAttributes;
   onUpdate: (attr: SliderAttributes, type: string) => void;
@@ -24,6 +27,8 @@ export function SliderSpecificsSection({
   attr,
   onUpdate,
 }: SliderSpecificsSectionProps) {
+  const { recentColors, addRecentColor } = useRecentColors();
+
   const handleOrientationChange = (orientation: SliderOrientation) => {
     onUpdate({ ...attr, orientation }, "widget.slider.orientation");
   };
@@ -40,9 +45,29 @@ export function SliderSpecificsSection({
     onUpdate({ ...attr, axis: { ...attr.axis, max } }, "widget.slider.max");
   };
 
+  const handleAppearanceColor = (
+    key: "trackColor" | "activeColor" | "thumbColor",
+    value: string,
+  ) => {
+    onUpdate(
+      { ...attr, appearance: { ...attr.appearance, [key]: value } },
+      `widget.slider.appearance.${key}`,
+    );
+  };
+
+  const handleAppearanceNumber = (
+    key: "trackThickness" | "thumbSize",
+    value: number,
+  ) => {
+    onUpdate(
+      { ...attr, appearance: { ...attr.appearance, [key]: value } },
+      `widget.slider.appearance.${key}`,
+    );
+  };
+
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>ATTRIBUTES</h5>
+      <h5>SLIDER</h5>
       <div className="row gap-16">
         <span>Orientation:</span>
         <select
@@ -88,6 +113,63 @@ export function SliderSpecificsSection({
           step={0.01}
           value={attr.axis.max}
           onChange={(e) => handleMaxChange(Number(e.target.value))}
+        />
+      </div>
+
+      <h5 style={{ marginTop: 8 }}>APPEARANCE</h5>
+      <div className="row gap-16 align-items-center">
+        <span style={{ width: 100 }}>Track:</span>
+        <ColorSwatch
+          color={attr.appearance.trackColor}
+          recents={recentColors}
+          onUpdate={(c) => handleAppearanceColor("trackColor", c)}
+          onAddRecentColor={addRecentColor}
+        />
+      </div>
+      <div className="row gap-16 align-items-center">
+        <span style={{ width: 100 }}>Active:</span>
+        <ColorSwatch
+          color={attr.appearance.activeColor}
+          recents={recentColors}
+          onUpdate={(c) => handleAppearanceColor("activeColor", c)}
+          onAddRecentColor={addRecentColor}
+        />
+      </div>
+      <div className="row gap-16 align-items-center">
+        <span style={{ width: 100 }}>Thumb:</span>
+        <ColorSwatch
+          color={attr.appearance.thumbColor}
+          recents={recentColors}
+          onUpdate={(c) => handleAppearanceColor("thumbColor", c)}
+          onAddRecentColor={addRecentColor}
+        />
+      </div>
+      <div className="row gap-16 align-items-center">
+        <span style={{ width: 100 }}>Track Width:</span>
+        <input
+          type="number"
+          min={1}
+          max={30}
+          step={1}
+          style={{ width: 60 }}
+          value={attr.appearance.trackThickness}
+          onChange={(e) =>
+            handleAppearanceNumber("trackThickness", Number(e.target.value))
+          }
+        />
+      </div>
+      <div className="row gap-16 align-items-center">
+        <span style={{ width: 100 }}>Thumb Size:</span>
+        <input
+          type="number"
+          min={4}
+          max={30}
+          step={1}
+          style={{ width: 60 }}
+          value={attr.appearance.thumbSize}
+          onChange={(e) =>
+            handleAppearanceNumber("thumbSize", Number(e.target.value))
+          }
         />
       </div>
     </div>

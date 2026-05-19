@@ -31,6 +31,16 @@ export function SvgContent({
   );
 }
 
+function svgColor(value: string | undefined): string | undefined {
+  if (!value || value === "none" || value === "transparent") return undefined;
+  return value;
+}
+
+function getStrokeWidth(attributes: Record<string, string>): number {
+  const raw = attributes.strokeWidth ?? attributes["stroke-width"];
+  return raw ? parseFloat(raw) : 0;
+}
+
 function renderSvgNode(node: SvgXmlNode, key?: string | number) {
   if (node.type === "text") return null;
 
@@ -47,10 +57,10 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
         <Path
           key={key}
           data={attributes.d || ""}
-          fill={attributes.fill || undefined}
+          fill={svgColor(attributes.fill)}
           fillRule={(attributes.fillRule as CanvasFillRule) || undefined}
-          stroke={attributes.stroke || undefined}
-          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
+          stroke={svgColor(attributes.stroke)}
+          strokeWidth={getStrokeWidth(attributes)}
         />
       );
 
@@ -62,9 +72,9 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           y={parseFloat(attributes.y || "0")}
           width={parseFloat(attributes.width || "0")}
           height={parseFloat(attributes.height || "0")}
-          fill={attributes.fill || undefined}
-          stroke={attributes.stroke || undefined}
-          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
+          fill={svgColor(attributes.fill)}
+          stroke={svgColor(attributes.stroke)}
+          strokeWidth={getStrokeWidth(attributes)}
         />
       );
 
@@ -75,9 +85,9 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           x={parseFloat(attributes.cx || "0")}
           y={parseFloat(attributes.cy || "0")}
           radius={parseFloat(attributes.r || "0")}
-          fill={attributes.fill || undefined}
-          stroke={attributes.stroke || undefined}
-          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
+          fill={svgColor(attributes.fill)}
+          stroke={svgColor(attributes.stroke)}
+          strokeWidth={getStrokeWidth(attributes)}
         />
       );
 
@@ -89,9 +99,9 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           y={parseFloat(attributes.cy || "0")}
           radiusX={parseFloat(attributes.rx || "0")}
           radiusY={parseFloat(attributes.ry || "0")}
-          fill={attributes.fill || undefined}
-          stroke={attributes.stroke || undefined}
-          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
+          fill={svgColor(attributes.fill)}
+          stroke={svgColor(attributes.stroke)}
+          strokeWidth={getStrokeWidth(attributes)}
         />
       );
 
@@ -105,8 +115,8 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
             parseFloat(attributes.x2 || "0"),
             parseFloat(attributes.y2 || "0"),
           ]}
-          stroke={attributes.stroke || undefined}
-          strokeWidth={parseFloat(attributes["stroke-width"] || "1")}
+          stroke={svgColor(attributes.stroke)}
+          strokeWidth={getStrokeWidth(attributes)}
         />
       );
 

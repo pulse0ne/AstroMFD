@@ -13,10 +13,10 @@ export function LogsModal({ open, onClose }: LogsModalProps) {
     <Modal
       open={open}
       onClose={onClose}
-      header={<h2 className="text-center">Logs</h2>}
+      header={<h2 className="text-center">LOGS</h2>}
       footer={
         <div className="row justify-content-center align-items-center">
-          <button onClick={onClose}>Close</button>
+          <button onClick={onClose}>CLOSE</button>
         </div>
       }
     >

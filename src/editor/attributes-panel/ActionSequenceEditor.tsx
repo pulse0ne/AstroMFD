@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 import { Modal } from "../../Modal.tsx";
 import { InputKeySelector } from "./InputKeySelector.tsx";
+import { MdAdd } from "react-icons/md";
+import { PiArrowDown, PiArrowUp, PiX } from "react-icons/pi";
 
 export type ActionSequenceEditorProps = {
   open: boolean;
@@ -114,26 +116,26 @@ export function ActionSequenceEditor({
       footer={
         <div className="row gap-16" style={{ justifyContent: "flex-end" }}>
           <button className="btn" onClick={handleCancel}>
-            Cancel
+            CANCEL
           </button>
           <button className="btn btn-primary" onClick={handleSave}>
-            Done
+            DONE
           </button>
         </div>
       }
     >
-      <div className="col gap-12">
+      <div className="col gap-16">
         {draft.map((step, index) => (
           <div
             key={index}
-            className="row gap-8"
+            className="row gap-16"
             style={{
               padding: 12,
               border: "1px solid var(--border-color, #444)",
               borderRadius: 6,
             }}
           >
-            <div className="row gap-8 align-items-center">
+            <div className="row gap-4 align-items-center">
               <span style={{ fontWeight: 600, minWidth: 20 }}>
                 {index + 1}.
               </span>
@@ -161,7 +163,7 @@ export function ActionSequenceEditor({
               />
             )}
             {step.type === "press" && (
-              <div className="row gap-16 align-items-center">
+              <div className="row gap-4 align-items-center">
                 <span>Duration (ms):</span>
                 <input
                   type="number"
@@ -180,7 +182,7 @@ export function ActionSequenceEditor({
               </div>
             )}
             {step.type === "pause" && (
-              <div className="row gap-16 align-items-center">
+              <div className="row gap-4 align-items-center">
                 <span>Duration (ms):</span>
                 <input
                   type="number"
@@ -205,7 +207,7 @@ export function ActionSequenceEditor({
                 onClick={() => moveStep(index, -1)}
                 title="Move up"
               >
-                &#9650;
+                <PiArrowUp />
               </button>
               <button
                 className="btn btn-sm"
@@ -213,14 +215,14 @@ export function ActionSequenceEditor({
                 onClick={() => moveStep(index, 1)}
                 title="Move down"
               >
-                &#9660;
+                <PiArrowDown />
               </button>
               <button
                 className="btn btn-sm"
                 onClick={() => removeStep(index)}
                 title="Remove step"
               >
-                &times;
+                <PiX />
               </button>
             </div>
           </div>
@@ -235,7 +237,10 @@ export function ActionSequenceEditor({
           onClick={addStep}
           style={{ alignSelf: "flex-start" }}
         >
-          + Add Step
+          <div className="row align-items-center gap-8">
+            <MdAdd size={12} />
+            <span>ADD STEP</span>
+          </div>
         </button>
       </div>
     </Modal>

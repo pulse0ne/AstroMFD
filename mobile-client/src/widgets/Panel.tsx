@@ -19,6 +19,26 @@ export function Panel({ attr }: PanelProps) {
     }
   }, [attr]);
 
+  if (attr.shape.svg) {
+    const svgContainerStyle: CSSProperties = {
+      pointerEvents: "none",
+      position: "absolute",
+      left: attr.shape.position.x,
+      top: attr.shape.position.y,
+      width: attr.shape.size.width,
+      height: attr.shape.size.height,
+    };
+    return (
+      <div style={svgContainerStyle}>
+        <SvgRenderer
+          svg={attr.shape.svg}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height}
+        />
+      </div>
+    );
+  }
+
   const shapeStyle: CSSProperties = {
     pointerEvents: "none",
     position: "absolute",
@@ -33,15 +53,5 @@ export function Panel({ attr }: PanelProps) {
     borderRadius: attr.shape.cornerRadius,
   };
 
-  return (
-    <div style={shapeStyle}>
-      {attr.shape.svg && (
-        <SvgRenderer
-          svg={attr.shape.svg}
-          width={attr.shape.size.width}
-          height={attr.shape.size.height}
-        />
-      )}
-    </div>
-  );
+  return <div style={shapeStyle}></div>;
 }

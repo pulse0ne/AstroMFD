@@ -110,6 +110,14 @@ export type JoystickAxis =
 
 export type SliderOrientation = "horizontal" | "vertical";
 
+export type SliderAppearance = {
+  trackColor: string;
+  activeColor: string;
+  thumbColor: string;
+  trackThickness: number;
+  thumbSize: number;
+};
+
 export type SliderAction = {
   axis: JoystickAxis;
   min: number;
@@ -163,6 +171,7 @@ export type PanelAttributes = WidgetBase<"panel">;
 
 export type SliderAttributes = WidgetBase<"slider"> & {
   orientation: SliderOrientation;
+  appearance: SliderAppearance;
   axis: SliderAction;
   text: TextAttributes;
 };
