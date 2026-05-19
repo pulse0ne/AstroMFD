@@ -74,7 +74,7 @@ export function Creator() {
   }, []);
 
   return (
-    <div className="creator flex-grow col no-overflow">
+    <div className="creator flex-grow col no-overflow fill-y">
       {!screenSet && (
         <div className="fill row align-items-center justify-content-center">
           <div className="loader"></div>
@@ -83,7 +83,7 @@ export function Creator() {
       {screenSet && (
         <>
           <Toolbar dirtyRef={dirtyRef} />
-          <div className="row flex-grow no-overflow">
+          <div className="row flex-grow no-overflow fill-y">
             <ScreenSelector />
             <Editor />
           </div>

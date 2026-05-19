@@ -67,7 +67,7 @@ export function ScreenSelector() {
       <div className="fill-x m16-t m16-b border-b">
         <h5 className="text-center">Screens</h5>
       </div>
-      <div className="flex-x flex-grow col align-items-center gap-16">
+      <div className="fill-x flex-grow col align-items-center gap-16">
         {screenSet?.screens?.map((screen, ix) => (
           <div className="col align-items-center" key={screen.id}>
             <div
