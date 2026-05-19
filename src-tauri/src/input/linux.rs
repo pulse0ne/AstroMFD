@@ -1,5 +1,5 @@
 use crate::input::{self, InputDevice, InputKey, JoystickAxis, SpecialKey};
-use evdev::{uinput::VirtualDeviceBuilder, AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, InputEvent, Key, UinputAbsSetup};
+use evdev::{uinput::VirtualDeviceBuilder, AbsInfo, AbsoluteAxisType, AttributeSet, EventType, InputEvent, Key, UinputAbsSetup};
 use log::{debug, info, warn};
 use std::io;
 
@@ -63,14 +63,14 @@ impl EvdevDevice {
 
         let abs_info = AbsInfo::new(0, 0, 32767, 0, 0, 1);
         let axes = [
-            AbsoluteAxisCode::ABS_X,
-            AbsoluteAxisCode::ABS_Y,
-            AbsoluteAxisCode::ABS_Z,
-            AbsoluteAxisCode::ABS_RX,
-            AbsoluteAxisCode::ABS_RY,
-            AbsoluteAxisCode::ABS_RZ,
-            AbsoluteAxisCode::ABS_THROTTLE,
-            AbsoluteAxisCode::ABS_RUDDER,
+            AbsoluteAxisType::ABS_X,
+            AbsoluteAxisType::ABS_Y,
+            AbsoluteAxisType::ABS_Z,
+            AbsoluteAxisType::ABS_RX,
+            AbsoluteAxisType::ABS_RY,
+            AbsoluteAxisType::ABS_RZ,
+            AbsoluteAxisType::ABS_THROTTLE,
+            AbsoluteAxisType::ABS_RUDDER,
         ];
 
         let mut joystick_builder = VirtualDeviceBuilder::new()?
@@ -94,7 +94,7 @@ impl EvdevDevice {
         Ok(())
     }
 
-    fn emit_axis(&mut self, axis: AbsoluteAxisCode, value: i32) -> io::Result<()> {
+    fn emit_axis(&mut self, axis: AbsoluteAxisType, value: i32) -> io::Result<()> {
         let events = [InputEvent::new(EventType::ABSOLUTE, axis.0, value)];
         self.joystick.emit(&events)?;
         Ok(())
@@ -281,15 +281,15 @@ fn special_key_to_evdev(key: SpecialKey) -> Option<Key> {
     }
 }
 
-fn axis_to_evdev(axis: JoystickAxis) -> AbsoluteAxisCode {
+fn axis_to_evdev(axis: JoystickAxis) -> AbsoluteAxisType {
     match axis {
-        JoystickAxis::X => AbsoluteAxisCode::ABS_X,
-        JoystickAxis::Y => AbsoluteAxisCode::ABS_Y,
-        JoystickAxis::Z => AbsoluteAxisCode::ABS_Z,
-        JoystickAxis::Rx => AbsoluteAxisCode::ABS_RX,
-        JoystickAxis::Ry => AbsoluteAxisCode::ABS_RY,
-        JoystickAxis::Rz => AbsoluteAxisCode::ABS_RZ,
-        JoystickAxis::Slider1 => AbsoluteAxisCode::ABS_THROTTLE,
-        JoystickAxis::Slider2 => AbsoluteAxisCode::ABS_RUDDER,
+        JoystickAxis::X => AbsoluteAxisType::ABS_X,
+        JoystickAxis::Y => AbsoluteAxisType::ABS_Y,
+        JoystickAxis::Z => AbsoluteAxisType::ABS_Z,
+        JoystickAxis::Rx => AbsoluteAxisType::ABS_RX,
+        JoystickAxis::Ry => AbsoluteAxisType::ABS_RY,
+        JoystickAxis::Rz => AbsoluteAxisType::ABS_RZ,
+        JoystickAxis::Slider1 => AbsoluteAxisType::ABS_THROTTLE,
+        JoystickAxis::Slider2 => AbsoluteAxisType::ABS_RUDDER,
     }
 }

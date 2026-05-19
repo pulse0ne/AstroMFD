@@ -148,7 +148,7 @@ pub fn platform_available_keys() -> Vec<InputKey> {
             keys.push(InputKey::FunctionKey { key: f });
         }
         for key in SpecialKey::all() {
-            keys.push(InputKey::SpecialKey { key });
+            keys.push(InputKey::SpecialKey { key: *key });
         }
         keys
     }
