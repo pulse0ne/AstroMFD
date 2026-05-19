@@ -98,7 +98,15 @@ export type Position = {
   y: number;
 };
 
-export type JoystickAxis = "x" | "y" | "z" | "rx" | "ry" | "rz" | "slider1" | "slider2";
+export type JoystickAxis =
+  | "x"
+  | "y"
+  | "z"
+  | "rx"
+  | "ry"
+  | "rz"
+  | "slider1"
+  | "slider2";
 
 export type SliderOrientation = "horizontal" | "vertical";
 
@@ -159,7 +167,11 @@ export type SliderAttributes = WidgetBase<"slider"> & {
   text: TextAttributes;
 };
 
-export type Widget = ButtonAttributes | LabelAttributes | PanelAttributes | SliderAttributes;
+export type Widget =
+  | ButtonAttributes
+  | LabelAttributes
+  | PanelAttributes
+  | SliderAttributes;
 
 // export type CrtEffect = {
 //   color: string;

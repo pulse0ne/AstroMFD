@@ -82,7 +82,11 @@ export default function Editor() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const tagName = (e.target as HTMLElement).tagName;
-      if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT") {
+      if (
+        tagName === "INPUT" ||
+        tagName === "TEXTAREA" ||
+        tagName === "SELECT"
+      ) {
         return;
       }
 
@@ -138,7 +142,14 @@ export default function Editor() {
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [activeWidgetIndex, removeActiveWidget, duplicateWidget, unselectWidget, undo, redo]);
+  }, [
+    activeWidgetIndex,
+    removeActiveWidget,
+    duplicateWidget,
+    unselectWidget,
+    undo,
+    redo,
+  ]);
 
   useEffect(() => {
     function handleResize() {

@@ -37,7 +37,9 @@ export function ScreenSetSelector() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null);
-  const [confirmDelete, setConfirmDelete] = useState<ScreenSetMeta | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<ScreenSetMeta | null>(
+    null,
+  );
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const nav = useNavigate();
 
@@ -47,18 +49,22 @@ export function ScreenSetSelector() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   useEffect(() => {
     screenSets
       .filter((ss) => Boolean(ss.screenImgId))
       .forEach((ss) => {
         if (screenImages[ss.id]) return;
-        invoke<ArrayBuffer>("get_screen_img", { id: ss.screenImgId }).then((buf) => {
-          const blob = new Blob([buf], { type: "application/octet-stream" });
-          const url = URL.createObjectURL(blob);
-          setScreenImages((prev) => ({ ...prev, [ss.id]: url }));
-        });
+        invoke<ArrayBuffer>("get_screen_img", { id: ss.screenImgId }).then(
+          (buf) => {
+            const blob = new Blob([buf], { type: "application/octet-stream" });
+            const url = URL.createObjectURL(blob);
+            setScreenImages((prev) => ({ ...prev, [ss.id]: url }));
+          },
+        );
       });
   }, [screenSets]);
 
@@ -86,13 +92,17 @@ export function ScreenSetSelector() {
     closeContextMenu();
     const name = prompt("Rename screen set:", ss.name);
     if (name && name !== ss.name) {
-      invoke<ScreenSetMeta[]>("rename_screen_set", { id: ss.id, name }).then(setScreenSets);
+      invoke<ScreenSetMeta[]>("rename_screen_set", { id: ss.id, name }).then(
+        setScreenSets,
+      );
     }
   };
 
   const handleDuplicate = (ss: ScreenSetMeta) => {
     closeContextMenu();
-    invoke<ScreenSetMeta[]>("duplicate_screen_set", { id: ss.id }).then(setScreenSets);
+    invoke<ScreenSetMeta[]>("duplicate_screen_set", { id: ss.id }).then(
+      setScreenSets,
+    );
   };
 
   const handleDeleteConfirm = () => {
@@ -109,7 +119,9 @@ export function ScreenSetSelector() {
   };
 
   const filtered = search
-    ? screenSets.filter((ss) => ss.name.toLowerCase().includes(search.toLowerCase()))
+    ? screenSets.filter((ss) =>
+        ss.name.toLowerCase().includes(search.toLowerCase()),
+      )
     : screenSets;
 
   return (
@@ -169,10 +181,20 @@ export function ScreenSetSelector() {
                   </div>
                 </div>
                 <div className="screen-set-card-overlay">
-                  <button onClick={(e) => { e.stopPropagation(); nav(`/creator/${ss.id}`); }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nav(`/creator/${ss.id}`);
+                    }}
+                  >
                     <MdEdit size={14} /> Edit
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDuplicate(ss); }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDuplicate(ss);
+                    }}
+                  >
                     <MdContentCopy size={14} /> Duplicate
                   </button>
                 </div>
@@ -194,17 +216,35 @@ export function ScreenSetSelector() {
           className="context-menu"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
-          <div className="context-menu-item" onClick={() => { nav(`/creator/${contextMenu.screenSet.id}`); closeContextMenu(); }}>
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              nav(`/creator/${contextMenu.screenSet.id}`);
+              closeContextMenu();
+            }}
+          >
             <MdEdit size={14} /> Edit
           </div>
-          <div className="context-menu-item" onClick={() => handleRename(contextMenu.screenSet)}>
+          <div
+            className="context-menu-item"
+            onClick={() => handleRename(contextMenu.screenSet)}
+          >
             Rename
           </div>
-          <div className="context-menu-item" onClick={() => handleDuplicate(contextMenu.screenSet)}>
+          <div
+            className="context-menu-item"
+            onClick={() => handleDuplicate(contextMenu.screenSet)}
+          >
             <MdContentCopy size={14} /> Duplicate
           </div>
           <div className="context-menu-separator" />
-          <div className="context-menu-item danger" onClick={() => { setConfirmDelete(contextMenu.screenSet); closeContextMenu(); }}>
+          <div
+            className="context-menu-item danger"
+            onClick={() => {
+              setConfirmDelete(contextMenu.screenSet);
+              closeContextMenu();
+            }}
+          >
             <MdDelete size={14} /> Delete
           </div>
         </div>
@@ -217,14 +257,18 @@ export function ScreenSetSelector() {
         footer={
           <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
             <button onClick={() => setConfirmDelete(null)}>Cancel</button>
-            <button onClick={handleDeleteConfirm} style={{ borderColor: "#ff4444", color: "#ff4444" }}>
+            <button
+              onClick={handleDeleteConfirm}
+              style={{ borderColor: "#ff4444", color: "#ff4444" }}
+            >
               Delete
             </button>
           </div>
         }
       >
         <p>
-          Permanently delete <strong>{confirmDelete?.name}</strong>? This cannot be undone.
+          Permanently delete <strong>{confirmDelete?.name}</strong>? This cannot
+          be undone.
         </p>
       </Modal>
 
@@ -270,7 +314,9 @@ function CreateModal({ open, onClose, onConfirm }: CreateModalProps) {
       footer={
         <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
           <button onClick={onClose}>Cancel</button>
-          <button onClick={handleSubmit} disabled={!name.trim()}>Create</button>
+          <button onClick={handleSubmit} disabled={!name.trim()}>
+            Create
+          </button>
         </div>
       }
     >

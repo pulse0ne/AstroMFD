@@ -63,7 +63,10 @@ export function useWebsocket(url: string) {
 
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {
-        if (!socketRef.current || socketRef.current.readyState === WebSocket.CLOSED) {
+        if (
+          !socketRef.current ||
+          socketRef.current.readyState === WebSocket.CLOSED
+        ) {
           retryDelayRef.current = INITIAL_RETRY_MS;
           connect();
         }

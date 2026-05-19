@@ -25,31 +25,19 @@ export function SliderSpecificsSection({
   onUpdate,
 }: SliderSpecificsSectionProps) {
   const handleOrientationChange = (orientation: SliderOrientation) => {
-    onUpdate(
-      { ...attr, orientation },
-      "widget.slider.orientation",
-    );
+    onUpdate({ ...attr, orientation }, "widget.slider.orientation");
   };
 
   const handleAxisChange = (axis: JoystickAxis) => {
-    onUpdate(
-      { ...attr, axis: { ...attr.axis, axis } },
-      "widget.slider.axis",
-    );
+    onUpdate({ ...attr, axis: { ...attr.axis, axis } }, "widget.slider.axis");
   };
 
   const handleMinChange = (min: number) => {
-    onUpdate(
-      { ...attr, axis: { ...attr.axis, min } },
-      "widget.slider.min",
-    );
+    onUpdate({ ...attr, axis: { ...attr.axis, min } }, "widget.slider.min");
   };
 
   const handleMaxChange = (max: number) => {
-    onUpdate(
-      { ...attr, axis: { ...attr.axis, max } },
-      "widget.slider.max",
-    );
+    onUpdate({ ...attr, axis: { ...attr.axis, max } }, "widget.slider.max");
   };
 
   return (

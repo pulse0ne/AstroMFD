@@ -32,7 +32,9 @@
   border: var(--border-light);
   overflow: hidden;
   background: var(--panel-color-hex);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
   cursor: pointer;
 }
 
@@ -112,7 +114,9 @@
   gap: 8px;
   cursor: pointer;
   min-height: 200px;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .screen-set-add-card:hover {

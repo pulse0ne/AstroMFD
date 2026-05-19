@@ -1,10 +1,10 @@
-import { useState } from "react";
 import {
   ActionSequence,
   ButtonAttributes,
   ButtonSound,
   ButtonType,
 } from "@common/shared/models";
+import { useState } from "react";
 
 import { ActionSequenceEditor } from "./ActionSequenceEditor.tsx";
 import { SoundSelector } from "./SoundSelector.tsx";
@@ -31,11 +31,15 @@ function summarizeSteps(input: ActionSequence): string {
     if (step.type === "press") {
       const k = step.key;
       const label =
-        k.type === "joystickButton" ? `Button ${k.button}` :
-        k.type === "letter" ? `Key ${k.key}` :
-        k.type === "number" ? `Key ${k.key}` :
-        k.type === "functionKey" ? `F${k.key}` :
-        k.key;
+        k.type === "joystickButton"
+          ? `Button ${k.button}`
+          : k.type === "letter"
+            ? `Key ${k.key}`
+            : k.type === "number"
+              ? `Key ${k.key}`
+              : k.type === "functionKey"
+                ? `F${k.key}`
+                : k.key;
       return `Press ${label} (${step.duration}ms)`;
     }
     return `1 step`;
@@ -99,10 +103,7 @@ export function ButtonSpecificsSection({
                 {summarizeSteps(attr.input)}
               </span>
             </div>
-            <button
-              className="btn btn-sm"
-              onClick={() => setEditorOpen(true)}
-            >
+            <button className="btn btn-sm" onClick={() => setEditorOpen(true)}>
               Edit Actions
             </button>
           </div>

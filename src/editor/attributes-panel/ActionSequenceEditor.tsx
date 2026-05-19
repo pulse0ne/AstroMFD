@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { ActionSequence, ActionStep, InputKey } from "@common/shared/models";
+import { useEffect, useState } from "react";
 
 import { Modal } from "../../Modal.tsx";
 import { InputKeySelector } from "./InputKeySelector.tsx";
@@ -14,11 +14,19 @@ export type ActionSequenceEditorProps = {
 type StepType = ActionStep["type"];
 
 function defaultStep(): ActionStep {
-  return { type: "press", key: { type: "joystickButton", button: 1 }, duration: 100 };
+  return {
+    type: "press",
+    key: { type: "joystickButton", button: 1 },
+    duration: 100,
+  };
 }
 
 function getKey(step: ActionStep): InputKey | null {
-  if (step.type === "press" || step.type === "keyDown" || step.type === "keyUp") {
+  if (
+    step.type === "press" ||
+    step.type === "keyDown" ||
+    step.type === "keyUp"
+  ) {
     return step.key;
   }
   return null;
@@ -26,20 +34,28 @@ function getKey(step: ActionStep): InputKey | null {
 
 function setKey(step: ActionStep, key: InputKey): ActionStep {
   switch (step.type) {
-    case "press": return { ...step, key };
-    case "keyDown": return { ...step, key };
-    case "keyUp": return { ...step, key };
-    default: return step;
+    case "press":
+      return { ...step, key };
+    case "keyDown":
+      return { ...step, key };
+    case "keyUp":
+      return { ...step, key };
+    default:
+      return step;
   }
 }
 
 function changeStepType(step: ActionStep, newType: StepType): ActionStep {
   const key = getKey(step) ?? { type: "joystickButton" as const, button: 1 };
   switch (newType) {
-    case "press": return { type: "press", key, duration: 100 };
-    case "keyDown": return { type: "keyDown", key };
-    case "keyUp": return { type: "keyUp", key };
-    case "pause": return { type: "pause", duration: 200 };
+    case "press":
+      return { type: "press", key, duration: 100 };
+    case "keyDown":
+      return { type: "keyDown", key };
+    case "keyUp":
+      return { type: "keyUp", key };
+    case "pause":
+      return { type: "pause", duration: 200 };
   }
 }
 
@@ -97,8 +113,12 @@ export function ActionSequenceEditor({
       header={<h4 style={{ margin: 0 }}>Edit Action Sequence</h4>}
       footer={
         <div className="row gap-16" style={{ justifyContent: "flex-end" }}>
-          <button className="btn" onClick={handleCancel}>Cancel</button>
-          <button className="btn btn-primary" onClick={handleSave}>Done</button>
+          <button className="btn" onClick={handleCancel}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={handleSave}>
+            Done
+          </button>
         </div>
       }
     >
@@ -120,7 +140,10 @@ export function ActionSequenceEditor({
               <select
                 value={step.type}
                 onChange={(e) =>
-                  updateStep(index, changeStepType(step, e.target.value as StepType))
+                  updateStep(
+                    index,
+                    changeStepType(step, e.target.value as StepType),
+                  )
                 }
               >
                 <option value="press">Press</option>
@@ -129,7 +152,9 @@ export function ActionSequenceEditor({
                 <option value="pause">Pause</option>
               </select>
             </div>
-            {(step.type === "press" || step.type === "keyDown" || step.type === "keyUp") && (
+            {(step.type === "press" ||
+              step.type === "keyDown" ||
+              step.type === "keyUp") && (
               <InputKeySelector
                 value={step.key}
                 onChange={(key) => updateStep(index, setKey(step, key))}
@@ -145,7 +170,10 @@ export function ActionSequenceEditor({
                   step={10}
                   value={step.duration}
                   onChange={(e) =>
-                    updateStep(index, { ...step, duration: Number(e.target.value) })
+                    updateStep(index, {
+                      ...step,
+                      duration: Number(e.target.value),
+                    })
                   }
                   style={{ width: 80 }}
                 />
@@ -161,7 +189,10 @@ export function ActionSequenceEditor({
                   step={10}
                   value={step.duration}
                   onChange={(e) =>
-                    updateStep(index, { ...step, duration: Number(e.target.value) })
+                    updateStep(index, {
+                      ...step,
+                      duration: Number(e.target.value),
+                    })
                   }
                   style={{ width: 80 }}
                 />
@@ -199,7 +230,11 @@ export function ActionSequenceEditor({
             No actions configured. Add a step below.
           </div>
         )}
-        <button className="btn" onClick={addStep} style={{ alignSelf: "flex-start" }}>
+        <button
+          className="btn"
+          onClick={addStep}
+          style={{ alignSelf: "flex-start" }}
+        >
           + Add Step
         </button>
       </div>

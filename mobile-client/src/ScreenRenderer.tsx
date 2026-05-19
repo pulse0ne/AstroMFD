@@ -1,4 +1,10 @@
-import type { ActionStep, InputKey, JoystickAxis, Screen, Size } from "@common/shared/models";
+import type {
+  ActionStep,
+  InputKey,
+  JoystickAxis,
+  Screen,
+  Size,
+} from "@common/shared/models";
 import { Fragment, type CSSProperties } from "react";
 
 import { Button } from "./widgets/Button.tsx";

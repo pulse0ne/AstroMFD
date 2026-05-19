@@ -182,10 +182,7 @@ export function ShapeSection({
     reader.onload = () => {
       try {
         const svg = SvgUtils.parse(reader.result as string);
-        onUpdate(
-          Object.assign({}, shapeAttr, { svg }),
-          "widget.shape.svg",
-        );
+        onUpdate(Object.assign({}, shapeAttr, { svg }), "widget.shape.svg");
       } catch (err) {
         console.error("Failed to parse SVG:", err);
       }
@@ -195,10 +192,7 @@ export function ShapeSection({
   };
 
   const handleSvgRemove = () => {
-    onUpdate(
-      Object.assign({}, shapeAttr, { svg: null }),
-      "widget.shape.svg",
-    );
+    onUpdate(Object.assign({}, shapeAttr, { svg: null }), "widget.shape.svg");
   };
 
   const fillValue = !fill
@@ -216,10 +210,15 @@ export function ShapeSection({
           {shapeAttr.svg ? (
             <div className="row align-items-center gap-8">
               <span style={{ fontSize: 11, opacity: 0.6 }}>Imported</span>
-              <button className="btn btn-sm" onClick={handleSvgRemove}>Remove</button>
+              <button className="btn btn-sm" onClick={handleSvgRemove}>
+                Remove
+              </button>
             </div>
           ) : (
-            <button className="btn btn-sm" onClick={() => fileInputRef.current?.click()}>
+            <button
+              className="btn btn-sm"
+              onClick={() => fileInputRef.current?.click()}
+            >
               Import SVG
             </button>
           )}

@@ -135,7 +135,11 @@ export function Button({
   const firstKey = useMemo(() => {
     const first = attr.input.steps[0];
     if (!first) return null;
-    if (first.type === "press" || first.type === "keyDown" || first.type === "keyUp") {
+    if (
+      first.type === "press" ||
+      first.type === "keyDown" ||
+      first.type === "keyUp"
+    ) {
       return first.key;
     }
     return null;

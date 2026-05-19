@@ -17,14 +17,25 @@ export function SvgRenderer({ svg, width, height, style }: SvgRendererProps) {
       viewBox={`${vb.x} ${vb.y} ${vb.width} ${vb.height}`}
       width={width}
       height={height}
-      style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none", ...style }}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        pointerEvents: "none",
+        ...style,
+      }}
     >
       {renderChildren(svg)}
     </svg>
   );
 }
 
-function getViewBox(node: SvgXmlNode): { x: number; y: number; width: number; height: number } {
+function getViewBox(node: SvgXmlNode): {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} {
   if (node.attributes.viewBox) {
     const parts = node.attributes.viewBox.split(/[\s,]+/).map(Number);
     if (parts.length === 4) {
@@ -56,7 +67,9 @@ function renderNode(node: SvgXmlNode, key: number): React.ReactNode {
           key={key}
           d={attributes.d || ""}
           fill={attributes.fill || undefined}
-          fillRule={attributes["fill-rule"] as "nonzero" | "evenodd" | undefined}
+          fillRule={
+            attributes["fill-rule"] as "nonzero" | "evenodd" | undefined
+          }
           stroke={attributes.stroke || undefined}
           strokeWidth={attributes["stroke-width"] || undefined}
           opacity={attributes.opacity || undefined}

@@ -1,6 +1,18 @@
 import { Widget } from "@common/shared/models";
-import { type MutableRefObject, PropsWithChildren, useMemo, useState } from "react";
-import { MdAdd, MdArrowBackIos, MdRedo, MdUndo, MdWarning, MdError } from "react-icons/md";
+import {
+  PropsWithChildren,
+  useMemo,
+  useState,
+  type MutableRefObject,
+} from "react";
+import {
+  MdAdd,
+  MdArrowBackIos,
+  MdError,
+  MdRedo,
+  MdUndo,
+  MdWarning,
+} from "react-icons/md";
 import { useNavigate } from "react-router";
 import Popup from "reactjs-popup";
 
@@ -18,10 +30,14 @@ import { createPanel } from "../utils/createPanel.ts";
 import { createScreen } from "../utils/createScreen.ts";
 import { createSlider } from "../utils/createSlider.ts";
 import { findNextAvailableButton } from "../utils/findNextAvailableButton.ts";
-import { validateScreenSet, type ValidationIssue } from "../utils/validateScreenSet.ts";
+import {
+  validateScreenSet,
+  type ValidationIssue,
+} from "../utils/validateScreenSet.ts";
 
 import "./toolbar.css";
 
+import { ScreenSet } from "@common/shared/models";
 import { IconType } from "react-icons";
 
 import { EditableTitle } from "./EditableTitle.tsx";
@@ -61,7 +77,13 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
       if (defaultKey.type === "joystickButton") {
         const nextButton = findNextAvailableButton(widgets ?? []);
         newWidget.input = {
-          steps: [{ type: "press", key: { type: "joystickButton", button: nextButton }, duration: 100 }],
+          steps: [
+            {
+              type: "press",
+              key: { type: "joystickButton", button: nextButton },
+              duration: 100,
+            },
+          ],
         };
       }
     }
@@ -173,8 +195,6 @@ function UndoRedoButton({ type, onClick, disabled }: UndoRedoButtonProps) {
   );
 }
 
-import { ScreenSet } from "@common/shared/models";
-
 function ValidationIndicator({ screenSet }: { screenSet: ScreenSet }) {
   const result = useMemo(() => validateScreenSet(screenSet), [screenSet]);
 
@@ -186,14 +206,23 @@ function ValidationIndicator({ screenSet }: { screenSet: ScreenSet }) {
   return (
     <Popup
       trigger={
-        <div className="row align-items-center gap-4 pointer" style={{ fontSize: 11 }}>
+        <div
+          className="row align-items-center gap-4 pointer"
+          style={{ fontSize: 11 }}
+        >
           {errors.length > 0 && (
-            <span className="row align-items-center gap-4" style={{ color: "#ff4444" }}>
+            <span
+              className="row align-items-center gap-4"
+              style={{ color: "#ff4444" }}
+            >
               <MdError size={14} /> {errors.length}
             </span>
           )}
           {warnings.length > 0 && (
-            <span className="row align-items-center gap-4" style={{ color: "#ffaa00" }}>
+            <span
+              className="row align-items-center gap-4"
+              style={{ color: "#ffaa00" }}
+            >
               <MdWarning size={14} /> {warnings.length}
             </span>
           )}
@@ -227,7 +256,10 @@ function ValidationIssueRow({ issue }: { issue: ValidationIssue }) {
   return (
     <div
       className="row align-items-center gap-8"
-      style={{ padding: "8px 12px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+      style={{
+        padding: "8px 12px",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}
     >
       <Icon size={13} color={color} style={{ flexShrink: 0 }} />
       <div className="col" style={{ minWidth: 0 }}>

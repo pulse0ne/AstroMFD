@@ -56,7 +56,9 @@ export function Creator() {
 
     const saveTimeout = setTimeout(() => {
       invoke("save_screen_set", { screenSet })
-        .then(() => { dirtyRef.current = false; })
+        .then(() => {
+          dirtyRef.current = false;
+        })
         .catch((e) => console.error(e));
     }, 3000);
 
