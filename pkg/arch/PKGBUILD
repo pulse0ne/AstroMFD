@@ -1,0 +1,43 @@
+# Maintainer: Tyler Snedigar <https://github.com/pulse0ne>
+pkgname=astromfd
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A space-sim MFD creator"
+arch=('x86_64')
+url="https://github.com/pulse0ne/AstroMFD"
+license=('custom')
+depends=('webkit2gtk-4.1' 'libappindicator-gtk3' 'librsvg' 'dbus')
+makedepends=('rust' 'cargo' 'nodejs' 'yarn' 'patchelf')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/pulse0ne/AstroMFD/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+prepare() {
+  cd "AstroMFD-$pkgver"
+  yarn install --frozen-lockfile
+}
+
+build() {
+  cd "AstroMFD-$pkgver"
+  export TAURI_SIGNING_PRIVATE_KEY=""
+  yarn tauri build --bundles none
+}
+
+package() {
+  cd "AstroMFD-$pkgver"
+
+  install -Dm755 "src-tauri/target/release/AstroMFD" "$pkgdir/usr/bin/astromfd"
+
+  install -Dm644 "src-tauri/icons/128x128.png" "$pkgdir/usr/share/icons/hicolor/128x128/apps/astromfd.png"
+  install -Dm644 "src-tauri/icons/32x32.png" "$pkgdir/usr/share/icons/hicolor/32x32/apps/astromfd.png"
+
+  install -Dm644 /dev/stdin "$pkgdir/usr/share/applications/astromfd.desktop" <<EOF
+[Desktop Entry]
+Name=AstroMFD
+Comment=A space-sim MFD creator
+Exec=astromfd
+Icon=astromfd
+Terminal=false
+Type=Application
+Categories=Utility;Game;
+EOF
+}

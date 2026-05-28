@@ -1,7 +1,7 @@
 [package]
-name = "elite-control"
-version = "0.1.0"
-description = "A Tauri App"
+name = "AstroMFD"
+version = "1.0.0"
+description = "A space-sim MFD creator"
 authors = ["Tyler Snedigar"]
 edition = "2021"
 
@@ -11,20 +11,41 @@ edition = "2021"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "elite_control_lib"
+name = "astro_mfd_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2.8.5", features = [] }
+tauri = { version = "2.11.2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1.47.1", features = ["full"] }
 include_dir = "0.7.4"
 futures-util = { version = "0.3.31", features = ["sink"] }
-axum = { version = "0.8.4", features = ["ws"] }
-hyper = { version = "1.7.0", features = ["full"] }
+axum = { version = "0.8.4", features = ["ws", "macros"] }
 mime_guess = "2.0.5"
+async-trait = "0.1.89"
+local-ip-address = "0.6.5"
+font-kit = "0.14.3"
+notify = "8.2.0"
+anyhow = "1.0.99"
+log4rs = { version = "1.4.0", features = ["file_appender", "console_appender"] }
+chrono = "0.4.42"
+log = "0.4.28"
+regex = "1.11.2"
+dirs = "6.0.0"
+rodio = "0.22.2"
+uuid = { version = "1.18.1", features = ["v4"] }
+rfd = "0.15"
+tauri-plugin-updater = "2.10.1"
+tauri-plugin-process = "2.3.1"
+zip = { version = "8.6.0", features = ["deflate"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+vjoy = "0.6.0"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+evdev = "0.12"

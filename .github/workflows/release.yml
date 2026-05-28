@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            args: ""
+          - platform: ubuntu-22.04
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies (Ubuntu)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libdbus-1-dev
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build and release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: v__VERSION__
+          releaseName: "AstroMFD v__VERSION__"
+          releaseBody: "See the assets below to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+
+  release-arch:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: release
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel rust nodejs yarn webkit2gtk-4.1 libappindicator-gtk3 librsvg dbus patchelf git github-cli
+
+      - uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Build pacman package
+        run: |
+          useradd -m builder || true
+          pkgver="${GITHUB_REF_NAME#v}"
+          cp source/pkg/arch/PKGBUILD /home/builder/PKGBUILD
+          cd /home/builder
+
+          # Point source to the checked-out tree instead of a tarball download
+          sed -i "s|^source=.*|source=(\"AstroMFD-${pkgver}::git+file://${GITHUB_WORKSPACE}/source\")|" PKGBUILD
+          sed -i "s|^sha256sums=.*|sha256sums=('SKIP')|" PKGBUILD
+          sed -i "s|^pkgver=.*|pkgver=${pkgver}|" PKGBUILD
+
+          chown -R builder:builder /home/builder
+          chown -R builder:builder "${GITHUB_WORKSPACE}/source"
+          su builder -c 'makepkg -s --noconfirm --skipinteg'
+
+      - name: Upload to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pkg_file=$(find /home/builder -name "*.pkg.tar.zst" | head -1)
+          gh release upload "${GITHUB_REF_NAME}" "$pkg_file" --clobber

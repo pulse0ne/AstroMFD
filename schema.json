@@ -1,0 +1,441 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ButtonAction": {
+      "additionalProperties": false,
+      "properties": {
+        "button": {
+          "type": "number"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "fixedDuration": {
+          "type": "boolean"
+        }
+      },
+      "required": ["button", "fixedDuration", "duration"],
+      "type": "object"
+    },
+    "ButtonAttributes": {
+      "additionalProperties": false,
+      "properties": {
+        "buttonType": {
+          "$ref": "#/definitions/ButtonType"
+        },
+        "id": {
+          "type": "string"
+        },
+        "navTarget": {
+          "type": ["string", "null"]
+        },
+        "pressed": {
+          "additionalProperties": false,
+          "properties": {
+            "shape": {
+              "additionalProperties": false,
+              "properties": {
+                "cornerRadius": {
+                  "type": "number"
+                },
+                "fill": {
+                  "type": ["string", "null"]
+                },
+                "position": {
+                  "$ref": "#/definitions/Position"
+                },
+                "shadow": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/ShadowEffect"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "size": {
+                  "$ref": "#/definitions/Size"
+                },
+                "stroke": {
+                  "type": ["string", "null"]
+                },
+                "strokeWidth": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            "text": {
+              "additionalProperties": false,
+              "properties": {
+                "font": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/FontSpec"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "fontColor": {
+                  "type": ["string", "null"]
+                },
+                "fontSize": {
+                  "type": "number"
+                },
+                "horizontalAlignment": {
+                  "enum": ["left", "center", "right"],
+                  "type": "string"
+                },
+                "shadow": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/ShadowEffect"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "text": {
+                  "type": ["string", "null"]
+                },
+                "verticalAlignment": {
+                  "enum": ["top", "middle", "bottom"],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "required": ["shape", "text"],
+          "type": "object"
+        },
+        "shape": {
+          "$ref": "#/definitions/ShapeAttributes"
+        },
+        "text": {
+          "$ref": "#/definitions/TextAttributes"
+        },
+        "type": {
+          "const": "button",
+          "type": "string"
+        },
+        "vjoyButton": {
+          "$ref": "#/definitions/ButtonAction"
+        }
+      },
+      "required": [
+        "buttonType",
+        "id",
+        "navTarget",
+        "pressed",
+        "shape",
+        "text",
+        "type",
+        "vjoyButton"
+      ],
+      "type": "object"
+    },
+    "ButtonType": {
+      "enum": ["action", "navigation", "toggle"],
+      "type": "string"
+    },
+    "FontSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "postscriptName": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "format", "postscriptName"],
+      "type": "object"
+    },
+    "LabelAttributes": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "shape": {
+          "$ref": "#/definitions/ShapeAttributes"
+        },
+        "text": {
+          "$ref": "#/definitions/TextAttributes"
+        },
+        "type": {
+          "const": "label",
+          "type": "string"
+        },
+        "usesVariables": {
+          "type": "boolean"
+        }
+      },
+      "required": ["id", "shape", "text", "type", "usesVariables"],
+      "type": "object"
+    },
+    "PanelAttributes": {
+      "$ref": "#/definitions/WidgetBase%3C%22panel%22%3E"
+    },
+    "Position": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": ["x", "y"],
+      "type": "object"
+    },
+    "Screen": {
+      "additionalProperties": false,
+      "properties": {
+        "backgroundColor": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "widgets": {
+          "items": {
+            "$ref": "#/definitions/Widget"
+          },
+          "type": "array"
+        }
+      },
+      "required": ["id", "name", "backgroundColor", "widgets"],
+      "type": "object"
+    },
+    "ScreenSet": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "screens": {
+          "items": {
+            "$ref": "#/definitions/Screen"
+          },
+          "type": "array"
+        },
+        "size": {
+          "$ref": "#/definitions/Size"
+        }
+      },
+      "required": ["id", "name", "size", "screens"],
+      "type": "object"
+    },
+    "ShadowEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "strength": {
+          "type": "number"
+        },
+        "xOffset": {
+          "type": "number"
+        },
+        "yOffset": {
+          "type": "number"
+        }
+      },
+      "required": ["color", "strength", "xOffset", "yOffset"],
+      "type": "object"
+    },
+    "ShapeAttributes": {
+      "additionalProperties": false,
+      "properties": {
+        "cornerRadius": {
+          "type": "number"
+        },
+        "fill": {
+          "type": ["string", "null"]
+        },
+        "position": {
+          "$ref": "#/definitions/Position"
+        },
+        "shadow": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ShadowEffect"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size": {
+          "$ref": "#/definitions/Size"
+        },
+        "stroke": {
+          "type": ["string", "null"]
+        },
+        "strokeWidth": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "fill",
+        "stroke",
+        "strokeWidth",
+        "cornerRadius",
+        "shadow",
+        "size",
+        "position"
+      ],
+      "type": "object"
+    },
+    "Size": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        }
+      },
+      "required": ["width", "height"],
+      "type": "object"
+    },
+    "TextAttributes": {
+      "additionalProperties": false,
+      "properties": {
+        "font": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/FontSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fontColor": {
+          "type": ["string", "null"]
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "horizontalAlignment": {
+          "enum": ["left", "center", "right"],
+          "type": "string"
+        },
+        "shadow": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ShadowEffect"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text": {
+          "type": ["string", "null"]
+        },
+        "verticalAlignment": {
+          "enum": ["top", "middle", "bottom"],
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "font",
+        "fontSize",
+        "fontColor",
+        "shadow",
+        "horizontalAlignment",
+        "verticalAlignment"
+      ],
+      "type": "object"
+    },
+    "Widget": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ButtonAttributes"
+        },
+        {
+          "$ref": "#/definitions/LabelAttributes"
+        },
+        {
+          "$ref": "#/definitions/PanelAttributes"
+        }
+      ]
+    },
+    "WidgetBase<\"button\">": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "shape": {
+          "$ref": "#/definitions/ShapeAttributes"
+        },
+        "type": {
+          "const": "button",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id", "shape"],
+      "type": "object"
+    },
+    "WidgetBase<\"label\">": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "shape": {
+          "$ref": "#/definitions/ShapeAttributes"
+        },
+        "type": {
+          "const": "label",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id", "shape"],
+      "type": "object"
+    },
+    "WidgetBase<\"panel\">": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "shape": {
+          "$ref": "#/definitions/ShapeAttributes"
+        },
+        "type": {
+          "const": "panel",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id", "shape"],
+      "type": "object"
+    },
+    "WidgetType": {
+      "enum": ["button", "label", "panel"],
+      "type": "string"
+    }
+  }
+}

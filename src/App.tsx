@@ -1,49 +1,42 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { MemoryRouter, Route, Routes } from "react-router";
+
+import { AvailableInputKeysProvider } from "./hooks/useAvailableInputKeys.tsx";
+import { DevicesProvider } from "./hooks/useDevices.tsx";
+import StatusBar from "./statusbar/StatusBar.tsx";
+import { UpdateChecker } from "./UpdateChecker.tsx";
+import { Creator } from "./views/Creator.tsx";
+import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
+
+/*--------------------
+  TODO:
+- Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
+- User color themes?
+
+----- Elite: Dangerous -specific
+- Turn ED-specific stuff into "plugin" that can be enabled/disabled
+- Build out journal events (check out status.json)
+- Nav triggers (open screen on specified ED journal event)
+---------------------*/
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
-
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+    <main>
+      <AvailableInputKeysProvider>
+        <DevicesProvider>
+          <div className="fill col no-overflow">
+            <div className="flex-grow col no-overflow">
+              <MemoryRouter>
+                <Routes>
+                  <Route path="/" element={<ScreenSetSelector />} />
+                  <Route path="/creator/:screenSetId" element={<Creator />} />
+                </Routes>
+              </MemoryRouter>
+            </div>
+            <StatusBar />
+          </div>
+          <UpdateChecker />
+        </DevicesProvider>
+      </AvailableInputKeysProvider>
     </main>
   );
 }

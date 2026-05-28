@@ -1,0 +1,7 @@
+.logs-container {
+  padding: 16px;
+  overflow-y: auto;
+  border-bottom: var(--border-light);
+  font-size: 11px;
+  font-family: monospace;
+}

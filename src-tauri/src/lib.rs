@@ -1,141 +1,104 @@
-use axum::{
-    extract::{ws::{WebSocketUpgrade, WebSocket}, State},
-    response::IntoResponse,
-};
-use tokio::sync::{broadcast, mpsc, Mutex};
-use futures_util::{StreamExt, SinkExt};
-use serde::{Serialize, Deserialize};
+mod logging;
+mod state;
+mod ws;
+mod mobile_assets;
+mod fonts;
+mod input;
+mod journal;
+mod widget;
+mod locations;
+mod commands;
+mod settings;
+
+use std::net::SocketAddr;
+use std::path::PathBuf;
 use std::sync::Arc;
-use axum::extract::ws::Message;
-use axum::http::{HeaderValue, Response, StatusCode};
-use include_dir::{include_dir, Dir};
 use tokio::net::TcpListener;
-
-static MOBILE_ASSETS: Dir = include_dir!("$CARGO_MANIFEST_DIR/../mobile-client/dist");
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum ServerEvent {
-    LayoutPushed { id: String },
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum MobileEvent {
-    Press { button: u32 },
-}
-
-#[derive(Clone)]
-struct AppState {
-    mobile_tx: mpsc::Sender<MobileEvent>,
-    server_tx: broadcast::Sender<ServerEvent>,
-}
+use log::info;
+use tauri::Manager;
+use tokio::sync::Mutex;
+use crate::state::{AppState, MobileEvent, ServerEvent};
+use crate::input::input_worker;
+use crate::journal::{JournalHandle, detect_elite_dangerous_journal_path};
+use crate::settings::Settings;
 
 pub async fn run() {
-    // Channels
-    let (mobile_tx, mobile_rx) = tokio::sync::mpsc::channel::<MobileEvent>(32);
-    let (server_tx, _) = tokio::sync::broadcast::channel::<ServerEvent>(32);
-
-    let state = AppState {
-        mobile_tx,
-        server_tx: server_tx.clone(),
-    };
-
-    // Spawn vJoy worker
-    tokio::spawn(vjoy_worker(mobile_rx, server_tx.clone()));
-
-    // Spawn Axum server for mobile clients
-    tokio::spawn(async move {
-        let app = axum::Router::new()
-            .route("/ws", axum::routing::get(ws_handler))
-            .fallback(axum::routing::get(static_handler))
-            .with_state(state);
-
-        println!("Serving mobile client on http://0.0.0.0:8787/");
-        let listener = TcpListener::bind("0.0.0.0:8787").await.unwrap();
-        axum::serve(listener, app).await.unwrap();
-    });
-
-    // Run Tauri main loop (desktop UI)
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .invoke_handler(commands::command_handlers())
+        .setup(move |app| {
+            locations::initialize();
+
+            let settings = Settings::load();
+            let port = settings.port;
+            let vjoy_device_id = settings.vjoy_device_id;
+
+            let (mobile_tx, mobile_rx) = tokio::sync::mpsc::channel::<MobileEvent>(32);
+            let (server_tx, _) = tokio::sync::broadcast::channel::<ServerEvent>(32);
+
+            let app_handle = app.handle();
+
+            logging::setup_logging(app_handle.clone());
+
+            let state = AppState {
+                mobile_tx,
+                server_tx: server_tx.clone(),
+                app_handle: app_handle.clone(),
+                mobile_clients: Arc::new(Mutex::new(vec![])),
+                journal: Arc::new(Mutex::new(None)),
+                port,
+            };
+
+            app.manage(state);
+
+            let state_clone = app.state::<AppState>().inner().clone();
+
+            // Start journal watching using configured path or auto-detect
+            {
+                let journal_state = state_clone.clone();
+                let journal_path_setting = settings.journal_path.clone();
+                tokio::spawn(async move {
+                    let journal_path = journal_path_setting.or_else(|| detect_elite_dangerous_journal_path());
+                    if let Some(path) = journal_path {
+                        info!("Starting journal watcher at: {}", path);
+                        match JournalHandle::start(PathBuf::from(path), journal_state.server_tx.clone()).await {
+                            Ok(handle) => {
+                                *journal_state.journal.lock().await = Some(handle);
+                                info!("Journal watcher started successfully");
+                            }
+                            Err(e) => {
+                                info!("Failed to start journal watcher: {}", e);
+                            }
+                        }
+                    } else {
+                        info!("No journal path configured and could not auto-detect");
+                    }
+                });
+            }
+
+            tokio::spawn(input_worker(mobile_rx, server_tx.clone(), vjoy_device_id));
+
+            tokio::spawn(async move {
+                let app = axum::Router::new()
+                    .route("/ws", axum::routing::get(ws::ws_handler))
+                    .route("/audio/{screen_set_id}", axum::routing::get(mobile_assets::list_audio_clips))
+                    .route("/audio/{screen_set_id}/{source}/{sound}", axum::routing::get(mobile_assets::audio_handler))
+                    .route("/fonts/{font}", axum::routing::get(mobile_assets::font_handler))
+                    .route("/images/{screen_set_id}/{file}", axum::routing::get(mobile_assets::image_handler))
+                    .route("/screen-sets", axum::routing::get(mobile_assets::screen_set_handler))
+                    .fallback(axum::routing::get(mobile_assets::static_handler))
+                    .with_state(state_clone);
+
+                let addr = format!("0.0.0.0:{}", port);
+                info!("Serving mobile client on http://{}/", addr);
+                let listener = TcpListener::bind(&addr).await.unwrap();
+                axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await.unwrap();
+            });
+
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-async fn static_handler(
-    State(_state): State<AppState>, // we keep the same state type for sharing channels if needed
-    req: axum::http::Request<axum::body::Body>,
-) -> impl IntoResponse {
-    let path = req.uri().path().trim_start_matches('/'); // remove leading slash
-
-    // fallback to index.html if file is missing
-    let file = MOBILE_ASSETS.get_file(path).or_else(|| MOBILE_ASSETS.get_file("index.html"));
-
-    if let Some(file) = file {
-        let mime = mime_guess::from_path(file.path()).first_or_octet_stream();
-        let mut res = Response::new(file.contents().into());
-        res.headers_mut().insert(
-            "content-type",
-            HeaderValue::from_str(mime.as_ref()).unwrap(),
-        );
-        res
-    } else {
-        (StatusCode::NOT_FOUND, "Not Found").into_response()
-    }
-}
-
-async fn ws_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<AppState>,
-) -> impl IntoResponse {
-    ws.on_upgrade(move |socket| handle_socket(socket, state))
-}
-
-async fn handle_socket(
-    socket: WebSocket,
-    state: AppState,
-) {
-    // Split socket into sink (tx) and stream (rx)
-    let (tx, mut rx) = socket.split();
-
-    // Wrap tx in Arc<Mutex<>> so it can be shared with tasks
-    let tx = Arc::new(Mutex::new(tx));
-
-    // --- Task: Send server events to this client ---
-    let mut sub = state.server_tx.subscribe();
-    let tx_clone = Arc::clone(&tx);
-    tokio::spawn(async move {
-        while let Ok(evt) = sub.recv().await {
-            let txt = match serde_json::to_string(&evt) {
-                Ok(s) => s,
-                Err(_) => continue, // skip bad serialization
-            };
-            let mut locked = tx_clone.lock().await;
-            if locked.send(Message::Text(axum::extract::ws::Utf8Bytes::from(txt))).await.is_err() {
-                // Client disconnected
-                break;
-            }
-        }
-    });
-
-    // --- Task: Receive events from client ---
-    while let Some(Ok(msg)) = rx.next().await {
-        if let Message::Text(txt) = msg {
-            if let Ok(evt) = serde_json::from_str::<MobileEvent>(&txt) {
-                let _ = state.mobile_tx.send(evt).await; // ignore if receiver dropped
-            }
-        }
-    }
-
-    println!("WebSocket client disconnected");
-}
-
-
-async fn vjoy_worker(mut mobile_rx: mpsc::Receiver<MobileEvent>, server_tx: broadcast::Sender<ServerEvent>) {
-    println!("vJoy worker running...");
-    while let Some(evt) = mobile_rx.recv().await {
-        println!("Received mobile event: {:?}", evt);
-        // TODO: map evt -> vJoy actions
-    }
-
-    let _ = server_tx.send(ServerEvent::LayoutPushed { id: "example".into() });
 }

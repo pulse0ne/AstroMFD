@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "elite-control",
-  "version": "0.1.0",
-  "identifier": "com.snedi.elite-control",
+  "productName": "AstroMFD",
+  "version": "1.0.0",
+  "identifier": "com.snedi.astromfd",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,13 @@
   "app": {
     "windows": [
       {
-        "title": "elite-control",
-        "width": 800,
-        "height": 600
+        "title": "AstroMFD",
+        "theme": "Dark",
+        "maximized": true,
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600
       }
     ],
     "security": {
@@ -30,6 +34,15 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/pulse0ne/AstroMFD/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEMxNjI0NDUwRTc1QUQ4QkMKUldTODJGcm5VRVJpd1dzaUFEL1llOVRJb29jQm10ODdmYTdPNWJURnJvcGo4UC90UUNMUXM3UXAK"
+    }
   }
 }

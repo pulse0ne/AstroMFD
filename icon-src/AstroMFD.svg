@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="100%"
+   viewBox="0 0 680 680"
+   role="img"
+   style=""
+   version="1.1"
+   id="svg47"
+   sodipodi:docname="AstroMFD.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview47"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.67947184"
+     inkscape:cx="100.07773"
+     inkscape:cy="437.10421"
+     inkscape:window-width="2056"
+     inkscape:window-height="1209"
+     inkscape:window-x="0"
+     inkscape:window-y="40"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg47" />
+  <title
+     style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="title1">Neon glow A demo for Inkscape</title>
+  <desc
+     style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="desc1">A dark metallic frame with a glowing orange A and 4-point star burst, demonstrating layered glow technique</desc>
+  <defs
+     id="defs10">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect79"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1"
+       radius="16"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect77"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect75"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect74"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1 @ F,0,0,1,0,16,0,1"
+       radius="16"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#Strips4_1"
+       preserveAspectRatio="xMidYMid"
+       id="pattern49"
+       patternTransform="matrix(0,3.5,-3.5,0,0,0)"
+       x="0"
+       y="0"
+       width="2.25" />
+    <pattern
+       inkscape:collect="always"
+       patternUnits="userSpaceOnUse"
+       width="1.25"
+       height="1"
+       patternTransform="translate(0,0) scale(2,2)"
+       preserveAspectRatio="xMidYMid"
+       id="Strips4_1"
+       style="fill:#000000"
+       inkscape:stockid="Stripes 13 (4:1)"
+       inkscape:isstock="true"
+       inkscape:label="Stripes 13 (4:1)">
+      <rect
+   style="stroke:none"
+   x="0"
+   y="-0.5"
+   width="1"
+   height="2"
+   id="rect203" />
+
+    </pattern>
+    <pattern
+       id="scanlines"
+       x="0"
+       y="0"
+       width="2"
+       height="4"
+       patternUnits="userSpaceOnUse"
+       inkscape:label="scanlines">
+      <rect
+         x="0"
+         y="0"
+         width="2"
+         height="2"
+         fill="rgba(0,0,0,0.32)"
+         id="rect1" />
+      <rect
+         x="0"
+         y="2"
+         width="2"
+         height="2"
+         fill="rgba(0,0,0,0.08)"
+         id="rect2" />
+    </pattern>
+    <filter
+       id="glow-outer"
+       x="-0.083196721"
+       y="-0.083884298"
+       width="1.1663934"
+       height="1.1677686">
+      <feGaussianBlur
+         stdDeviation="14"
+         result="blur"
+         id="feGaussianBlur2" />
+      <feComposite
+         in="blur"
+         in2="SourceGraphic"
+         operator="over"
+         id="feComposite2" />
+    </filter>
+    <filter
+       id="glow-mid"
+       x="-0.038333333"
+       y="-0.038493724"
+       width="1.0766667"
+       height="1.0769874">
+      <feGaussianBlur
+         stdDeviation="6"
+         result="blur"
+         id="feGaussianBlur3" />
+      <feComposite
+         in="blur"
+         in2="SourceGraphic"
+         operator="over"
+         id="feComposite3" />
+    </filter>
+    <filter
+       id="glow-inner"
+       x="-0.017391304"
+       y="-0.016877637"
+       width="1.0347826"
+       height="1.0337553">
+      <feGaussianBlur
+         stdDeviation="2.5"
+         result="blur"
+         id="feGaussianBlur4" />
+      <feComposite
+         in="blur"
+         in2="SourceGraphic"
+         operator="over"
+         id="feComposite4" />
+    </filter>
+    <linearGradient
+       id="frame-grad"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#4a4a4a"
+         id="stop4" />
+      <stop
+         offset="50%"
+         stop-color="#2a2a2a"
+         id="stop5" />
+      <stop
+         offset="100%"
+         stop-color="#1a1a1a"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="frame-edge"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#555"
+         id="stop7" />
+      <stop
+         offset="100%"
+         stop-color="#111"
+         id="stop8" />
+    </linearGradient>
+    <radialGradient
+       id="screen-bg"
+       cx="50%"
+       cy="40%"
+       r="60%">
+      <stop
+         offset="0"
+         stop-color="#1a0e00"
+         id="stop9"
+         style="stop-color:#442200;stop-opacity:1;" />
+      <stop
+         offset="100%"
+         stop-color="#080500"
+         id="stop10" />
+    </radialGradient>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Feather"
+       id="filter111"
+       x="-0.025092275"
+       y="-0.015262622"
+       width="1.0501846"
+       height="1.0305252">
+      <feGaussianBlur
+         stdDeviation="2.4"
+         result="blur"
+         id="feGaussianBlur109" />
+      <feComposite
+         in="SourceGraphic"
+         in2="blur"
+         operator="atop"
+         result="composite1"
+         id="feComposite109" />
+      <feComposite
+         in2="composite1"
+         operator="in"
+         result="composite2"
+         id="feComposite110" />
+      <feComposite
+         in2="composite2"
+         operator="in"
+         result="composite3"
+         id="feComposite111" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter129"
+       x="-0.07456975"
+       y="-0.074836665"
+       width="1.1491395"
+       height="1.1496733">
+      <feGaussianBlur
+         stdDeviation="8 8"
+         result="blur"
+         id="feGaussianBlur129" />
+    </filter>
+  </defs>
+  <rect
+     x="10"
+     y="10"
+     width="660"
+     height="660"
+     rx="72"
+     fill="url(#frame-grad)"
+     stroke="#555"
+     stroke-width="1"
+     style="stroke:rgb(85, 85, 85);color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect10"
+     inkscape:label="bevel-outer" />
+  <rect
+     x="14"
+     y="14"
+     width="652"
+     height="652"
+     rx="68"
+     fill="none"
+     stroke="#5a5a5a"
+     stroke-width="1"
+     opacity="0.5"
+     style="fill:none;stroke:rgb(90, 90, 90);color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect11"
+     inkscape:label="bevel-base" />
+  <rect
+     x="50"
+     y="50"
+     width="580"
+     height="580"
+     rx="40"
+     fill="#0d0802"
+     stroke="#333"
+     stroke-width="2"
+     style="fill:rgb(13, 8, 2);stroke:rgb(51, 51, 51);color:rgb(255, 255, 255);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect12"
+     inkscape:label="bevel-inner" />
+  <rect
+     x="10"
+     y="290"
+     width="18"
+     height="100"
+     rx="4"
+     fill="#222"
+     stroke="#444"
+     stroke-width="0.5"
+     style="fill:rgb(34, 34, 34);stroke:rgb(68, 68, 68);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect13"
+     inkscape:label="cutout-left" />
+  <rect
+     x="652"
+     y="290"
+     width="18"
+     height="100"
+     rx="4"
+     fill="#222"
+     stroke="#444"
+     stroke-width="0.5"
+     style="fill:rgb(34, 34, 34);stroke:rgb(68, 68, 68);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect14"
+     inkscape:label="cutout-right" />
+  <rect
+     x="52"
+     y="52"
+     width="576"
+     height="576"
+     rx="38"
+     fill="url(#screen-bg)"
+     style="stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="rect15"
+     inkscape:label="phosphor-glow" />
+  <rect
+     x="52"
+     y="52"
+     width="576"
+     height="576"
+     rx="38"
+     fill="url(#scanlines)"
+     opacity="0.25"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;display:inline;opacity:0.25;mix-blend-mode:normal;fill:url(#pattern49);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="rect49"
+     sodipodi:insensitive="true"
+     inkscape:label="scanlines-bottom" />
+  <g
+     id="g49"
+     inkscape:label="glow"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <g
+       filter="url(#glow-outer)"
+       opacity="0.5"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.5;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="g22"
+       inkscape:label="glow-a-base">
+      <line
+         x1="340"
+         y1="108"
+         x2="162"
+         y2="556"
+         stroke="#c84800"
+         stroke-width="28"
+         stroke-linecap="round"
+         style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#c84800;stroke-width:28px;stroke-linecap:round;stroke-linejoin:miter"
+         id="line16" />
+      <line
+         x1="340"
+         y1="108"
+         x2="518"
+         y2="556"
+         stroke="#c84800"
+         stroke-width="28"
+         stroke-linecap="round"
+         style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#c84800;stroke-width:28px;stroke-linecap:round;stroke-linejoin:miter"
+         id="line17" />
+      <line
+         x1="96"
+         y1="374"
+         x2="584"
+         y2="374"
+         stroke="#c84800"
+         stroke-width="14"
+         stroke-linecap="round"
+         style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#c84800;stroke-width:14px;stroke-linecap:round;stroke-linejoin:miter"
+         id="line19" />
+      <line
+         x1="340"
+         y1="96"
+         x2="340"
+         y2="580"
+         stroke="#c84800"
+         stroke-width="14"
+         stroke-linecap="round"
+         style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#c84800;stroke-width:14px;stroke-linecap:round;stroke-linejoin:miter"
+         id="line20"
+         inkscape:label="center-vert" />
+    </g>
+    <line
+       x1="340"
+       y1="110"
+       x2="164"
+       y2="554"
+       stroke="#e06000"
+       stroke-width="14"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#e06000;stroke-width:14px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line23" />
+    <line
+       x1="340"
+       y1="110"
+       x2="516"
+       y2="554"
+       stroke="#e06000"
+       stroke-width="14"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#e06000;stroke-width:14px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line24" />
+    <line
+       x1="100"
+       y1="374"
+       x2="580"
+       y2="374"
+       stroke="#e06000"
+       stroke-width="8"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#e06000;stroke-width:8px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line26" />
+    <line
+       x1="340"
+       y1="100"
+       x2="340"
+       y2="578"
+       stroke="#e06000"
+       stroke-width="8"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#e06000;stroke-width:8px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line27"
+       inkscape:label="center-vert" />
+    <g
+       filter="url(#glow-mid)"
+       opacity="0.85"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.85;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="g27"
+       inkscape:label="glow-a-mid-2" />
+    <line
+       x1="340"
+       y1="112"
+       x2="166"
+       y2="552"
+       stroke="#f08820"
+       stroke-width="7"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#f08820;stroke-width:7px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line28" />
+    <line
+       x1="340"
+       y1="112"
+       x2="514"
+       y2="552"
+       stroke="#f08820"
+       stroke-width="7"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#f08820;stroke-width:7px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line29" />
+    <line
+       x1="110"
+       y1="374"
+       x2="570"
+       y2="374"
+       stroke="#f08820"
+       stroke-width="4"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#f08820;stroke-width:4px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line31"
+       inkscape:label="center-horiz" />
+    <line
+       x1="340"
+       y1="102"
+       x2="340"
+       y2="576"
+       stroke="#f08820"
+       stroke-width="4"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#f08820;stroke-width:4px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line32"
+       inkscape:label="center-vert" />
+    <g
+       filter="url(#glow-inner)"
+       opacity="0.95"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.95;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="g32"
+       inkscape:label="glow-a-mid-1" />
+    <line
+       x1="340"
+       y1="114"
+       x2="168"
+       y2="550"
+       stroke="#ffe090"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#ffe090;stroke-width:2.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line33"
+       inkscape:label="a-left" />
+    <line
+       x1="340"
+       y1="114"
+       x2="512"
+       y2="550"
+       stroke="#ffe090"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#ffe090;stroke-width:2.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line34"
+       inkscape:label="a-right" />
+    <line
+       x1="340"
+       y1="374"
+       x2="570"
+       y2="374"
+       stroke="#fff4c0"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       opacity="0.9"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.9;fill:#000000;stroke:#fff4c0;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line36"
+       inkscape:label="center-horiz-right" />
+    <line
+       x1="340"
+       y1="374"
+       x2="110"
+       y2="374"
+       stroke="#fff4c0"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       opacity="0.9"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.9;fill:#000000;stroke:#fff4c0;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line37"
+       inkscape:label="center-horiz-left" />
+    <line
+       x1="340"
+       y1="374"
+       x2="340"
+       y2="104"
+       stroke="#fff4c0"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       opacity="0.9"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.9;fill:#000000;stroke:#fff4c0;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line38"
+       inkscape:label="center-vert-top" />
+    <line
+       x1="340"
+       y1="374"
+       x2="340"
+       y2="576"
+       stroke="#fff4c0"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       opacity="0.9"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.9;fill:#000000;stroke:#fff4c0;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line39"
+       inkscape:label="center-vert-bottom" />
+    <circle
+       cx="340"
+       cy="374"
+       r="3"
+       fill="#fff"
+       opacity="0.9"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:0.9;fill:#ffffff;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle39" />
+    <g
+       opacity="1"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="g39"
+       inkscape:label="glow-a-top">
+    </g>
+  </g>
+  <g
+     transform="translate(49,49)"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g41"
+     inkscape:label="screw_top_left">
+    <circle
+       r="12"
+       fill="#1e1e1e"
+       stroke="#555"
+       stroke-width="1"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#1e1e1e;stroke:#555555;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle40"
+       cx="0"
+       cy="0" />
+    <line
+       x1="-7"
+       y1="-7"
+       x2="7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line40" />
+    <line
+       x1="7"
+       y1="-7"
+       x2="-7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line41" />
+  </g>
+  <g
+     transform="translate(631,49)"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g43"
+     inkscape:label="screw_top_right">
+    <circle
+       r="12"
+       fill="#1e1e1e"
+       stroke="#555"
+       stroke-width="1"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#1e1e1e;stroke:#555555;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle41"
+       cx="0"
+       cy="0" />
+    <line
+       x1="-7"
+       y1="-7"
+       x2="7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line42" />
+    <line
+       x1="7"
+       y1="-7"
+       x2="-7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line43" />
+  </g>
+  <g
+     transform="translate(49,631)"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g45"
+     inkscape:label="screw_bottom_left">
+    <circle
+       r="12"
+       fill="#1e1e1e"
+       stroke="#555"
+       stroke-width="1"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#1e1e1e;stroke:#555555;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle43"
+       cx="0"
+       cy="0" />
+    <line
+       x1="-7"
+       y1="-7"
+       x2="7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line44" />
+    <line
+       x1="7"
+       y1="-7"
+       x2="-7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line45" />
+  </g>
+  <g
+     transform="translate(631,631)"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g47"
+     inkscape:label="screw_bottom_right">
+    <circle
+       r="12"
+       fill="#1e1e1e"
+       stroke="#555"
+       stroke-width="1"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#1e1e1e;stroke:#555555;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle45"
+       cx="0"
+       cy="0" />
+    <line
+       x1="-7"
+       y1="-7"
+       x2="7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line46" />
+    <line
+       x1="7"
+       y1="-7"
+       x2="-7"
+       y2="7"
+       stroke="#666"
+       stroke-width="1.5"
+       stroke-linecap="round"
+       style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:#666666;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:miter"
+       id="line47" />
+  </g>
+  <path
+     id="path129"
+     style="opacity:1;fill:#f08820;fill-opacity:0.81784385;stroke-width:3;stroke-miterlimit:56.2;filter:url(#filter129)"
+     d="M -465.2301 29.265945 L -354.12623 191.41166 L -389.47907 229.4539 A 0.58663046 0.58663046 45 0 0 -388.64945 230.28352 L -351.28451 195.55912 L -289.43326 285.82468 L -307.67963 235.45785 L -341.63829 186.59492 L -338.10777 183.31481 A 17.217456 17.217456 0 0 1 -314.66642 183.31458 L -264.12447 230.28309 A 0.58641817 0.58641817 45 0 0 -263.29526 229.45388 L -310.26378 178.91193 A 17.217459 17.217459 0 0 1 -310.26355 155.47059 L -306.98344 151.94006 L -258.12051 185.89873 L -207.75304 204.14447 L -298.32745 142.62649 L -263.29484 104.92891 A 0.58663046 0.58663046 45 0 0 -264.12446 104.09929 L -302.51894 139.77994 L -465.2301 29.265945 z M -420.59675 72.981605 L -311.91622 148.51149 L -314.66614 151.068 A 17.217458 17.217458 0 0 1 -338.10748 151.06823 L -388.64943 104.09971 A 0.58641816 0.58641816 45 0 0 -389.47864 104.92892 L -342.51013 155.47087 A 17.217457 17.217457 0 0 1 -342.51036 178.91222 L -345.06687 181.66214 L -420.59675 72.981605 z "
+     inkscape:label="A-base-bottom"
+     transform="matrix(1.5451479,0.95935213,-1.5451479,0.95935213,1102.6516,550.85252)" />
+  <path
+     id="path50"
+     style="opacity:1;fill:#f08820;fill-opacity:0.81784385;stroke-width:3;stroke-miterlimit:56.2"
+     d="M -465.2301 29.265945 L -354.12623 191.41166 L -389.47907 229.4539 A 0.58663046 0.58663046 45 0 0 -388.64945 230.28352 L -351.28451 195.55912 L -289.43326 285.82468 L -307.67963 235.45785 L -341.63829 186.59492 L -338.10777 183.31481 A 17.217456 17.217456 0 0 1 -314.66642 183.31458 L -264.12447 230.28309 A 0.58641817 0.58641817 45 0 0 -263.29526 229.45388 L -310.26378 178.91193 A 17.217459 17.217459 0 0 1 -310.26355 155.47059 L -306.98344 151.94006 L -258.12051 185.89873 L -207.75304 204.14447 L -298.32745 142.62649 L -263.29484 104.92891 A 0.58663046 0.58663046 45 0 0 -264.12446 104.09929 L -302.51894 139.77994 L -465.2301 29.265945 z M -420.59675 72.981605 L -311.91622 148.51149 L -314.66614 151.068 A 17.217458 17.217458 0 0 1 -338.10748 151.06823 L -388.64943 104.09971 A 0.58641816 0.58641816 45 0 0 -389.47864 104.92892 L -342.51013 155.47087 A 17.217457 17.217457 0 0 1 -342.51036 178.91222 L -345.06687 181.66214 L -420.59675 72.981605 z "
+     inkscape:label="A-base"
+     transform="matrix(1.5451479,0.95935213,-1.5451479,0.95935213,1102.6516,550.85252)" />
+  <path
+     id="path79"
+     style="opacity:0.615;mix-blend-mode:screen;fill:#ffe5c8;fill-opacity:1;stroke-width:5.16548;stroke-miterlimit:56.2;filter:url(#filter111)"
+     inkscape:label="A-base-top"
+     d="m 264.20898,395.3418 c -0.0305,1.11106 -0.70142,2.18463 -1.7207,2.64648 0.83164,-0.15008 1.07194,0.12895 0.65704,0.88342 -12.68276,42.16419 -25.3679,84.32767 -38.05157,126.49158 11.35938,-15.0651 22.71875,-30.13021 34.07813,-45.19531 7.89336,-27.24215 15.78566,-54.48461 23.67968,-81.72656 8.85887,0.37761 17.84403,-0.15393 26.55632,1.81607 7.37168,1.63946 14.62524,4.61391 20.3574,9.63023 3.871,3.41422 7.0078,7.96225 7.73467,13.16447 0.54603,3.49859 0.43516,7.05501 0.76015,10.57521 0.57932,9.81821 1.15863,19.63643 1.73795,29.45464 0.77785,-13.06276 1.52134,-26.12895 2.36818,-39.18671 0.60359,-5.85359 4.16616,-11.01168 8.63653,-14.66395 6.00335,-4.92734 13.46182,-7.78364 21.0207,-9.27252 5.20124,-1.02214 10.51192,-1.24457 15.79938,-1.29656 3.10723,-0.071 6.21446,-0.142 9.32169,-0.21307 7.89734,27.23896 15.79001,54.47927 23.68555,81.71875 11.27213,14.94922 22.54427,29.89844 33.8164,44.84765 C 415.97357,399.3343 377.30406,273.65194 338.63086,147.9707 313.82357,230.42773 289.01628,312.88477 264.20898,395.3418 Z m 77.71094,-187.42774 c 18.33966,63.299 36.69729,126.5928 55.04102,189.89063 -6.91075,-0.26172 -13.85044,-0.0545 -20.73242,-0.83789 -8.0027,-1.01862 -15.96043,-3.47373 -22.68352,-8.02411 -4.87038,-3.32025 -9.12499,-8.02208 -10.66742,-13.82565 -1.0259,-4.56602 -0.79997,-9.27881 -1.22162,-13.91391 -0.55134,-9.34115 -1.10267,-18.6823 -1.65401,-28.02344 -0.78964,13.23363 -1.53993,26.47163 -2.39416,39.70012 -0.70226,5.65908 -4.25954,10.55085 -8.55127,14.11952 -6.23018,5.15921 -14.0456,8.04762 -21.93248,9.47624 -4.88736,0.88441 -9.86198,1.09423 -14.81897,1.113 -3.08801,0.0696 -6.17601,0.14016 -9.26405,0.20831 C 302.02635,332.29138 321.0114,266.7858 340,201.28125 c 0.63997,2.21094 1.27995,4.42188 1.91992,6.63281 z" />
+  <rect
+     x="52"
+     y="52"
+     width="576"
+     height="576"
+     rx="38"
+     fill="url(#scanlines)"
+     opacity="0.25"
+     style="color:#ffffff;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;display:inline;opacity:0.25;mix-blend-mode:normal;fill:url(#pattern49);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="rect47"
+     sodipodi:insensitive="true"
+     inkscape:label="scanlines-overlay" />
+  <metadata
+     id="metadata129">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Neon glow A demo for Inkscape</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
