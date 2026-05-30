@@ -47,8 +47,6 @@ export type Color = {
 
 export type FontSpec = {
   name: string;
-  format: string;
-  postscriptName: string;
 };
 
 export type SvgXmlNode = {

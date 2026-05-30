@@ -11,7 +11,6 @@ use axum::response::IntoResponse;
 use include_dir::{include_dir, Dir};
 use log::error;
 use serde::Serialize;
-use crate::fonts::get_font_path;
 use crate::locations::{save_dir, screen_set_images_dir, screen_set_sounds_dir};
 use crate::state::AppState;
 use crate::widget::screen_set::ScreenSet;
@@ -221,29 +220,6 @@ pub async fn audio_handler(Path((screen_set_id, source, sound)): Path<(String, S
     }
 }
 
-// #[axum::debug_handler]
-pub async fn font_handler(Path(font): Path<String>) -> impl IntoResponse {
-    let last_period = font.rfind(".").unwrap();
-    // println!("{:#?}", font);
-    let font_path = match get_font_path(&font[0..last_period]) {
-        Ok(path) => path,
-        Err(_) => return (StatusCode::NOT_FOUND, "Not found").into_response(),
-    };
-    let file = File::open(font_path.clone());
-    if let Ok(mut file) = file {
-        let mim = mime_guess::from_path(font_path).first_or_octet_stream();
-        let mut contents: Vec<u8> = Vec::new();
-        file.read_to_end(&mut contents).unwrap();
-        let mut res = Response::new(contents.into());
-        res.headers_mut().insert(
-            "content-type",
-            HeaderValue::from_str(mim.as_ref()).unwrap(),
-        );
-        res
-    } else {
-        (StatusCode::NOT_FOUND, "Not Found").into_response()
-    }
-}
 
 pub async fn image_handler(Path((screen_set_id, file)): Path<(String, String)>) -> impl IntoResponse {
     let path = screen_set_images_dir(&screen_set_id).join(&file);

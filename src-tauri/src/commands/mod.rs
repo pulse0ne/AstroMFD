@@ -19,7 +19,7 @@ pub fn command_handlers() -> impl Fn(Invoke) -> bool + Send + Sync + 'static {
         screen_img::save_screen_img,
         screen_img::get_screen_img,
         client::get_mobile_client_server_address,
-        fonts::list_system_fonts,
+        fonts::list_fonts,
         screens::list_screen_sets,
         screens::get_screen_set_by_id,
         screens::save_screen_set,

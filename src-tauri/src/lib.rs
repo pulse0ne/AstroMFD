@@ -85,7 +85,6 @@ pub async fn run() {
                     .route("/ws", axum::routing::get(ws::ws_handler))
                     .route("/audio/{screen_set_id}", axum::routing::get(mobile_assets::list_audio_clips))
                     .route("/audio/{screen_set_id}/{source}/{sound}", axum::routing::get(mobile_assets::audio_handler))
-                    .route("/fonts/{font}", axum::routing::get(mobile_assets::font_handler))
                     .route("/images/{screen_set_id}/{file}", axum::routing::get(mobile_assets::image_handler))
                     .route("/screen-sets", axum::routing::get(mobile_assets::screen_set_handler))
                     .fallback(axum::routing::get(mobile_assets::static_handler))

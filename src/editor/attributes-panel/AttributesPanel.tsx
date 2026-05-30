@@ -1,5 +1,4 @@
 import {
-  FontSpec,
   Position,
   ShapeAttributes,
   Size,
@@ -8,7 +7,6 @@ import {
   WidgetIcon,
 } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
 
 import { useECStore } from "../../store";
 import {
@@ -60,14 +58,9 @@ export function AttributesPanel({
   onUpdate,
   togglePressed,
 }: AttributesPanelProps) {
-  const [fonts, setFonts] = useState<FontSpec[]>([]);
   const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
   const screens = useECStore(screensSelector);
   const currentScreen = useECStore(activeScreenSelector);
-
-  useEffect(() => {
-    invoke<FontSpec[]>("list_system_fonts").then((fonts) => setFonts(fonts));
-  }, []);
 
   const handleSizeChange = (size: Size) => {
     if (!selectedWidget) return;
@@ -175,7 +168,7 @@ export function AttributesPanel({
             isPressed={isPressed}
             onUpdate={handleTextAttrChange}
             onUpdatePressed={handlePressedTextAttrChange}
-            fonts={fonts}
+
           />
         </div>
       )}
@@ -199,7 +192,7 @@ export function AttributesPanel({
           <TextSection
             textAttr={selectedWidget.text}
             onUpdate={handleTextAttrChange}
-            fonts={fonts}
+
           />
         </div>
       )}
@@ -234,7 +227,7 @@ export function AttributesPanel({
           <TextSection
             textAttr={selectedWidget.text}
             onUpdate={handleTextAttrChange}
-            fonts={fonts}
+
           />
         </div>
       )}

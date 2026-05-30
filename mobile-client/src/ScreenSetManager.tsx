@@ -1,4 +1,4 @@
-import type { FontSpec, ScreenSet } from "@common/shared/models";
+import type { ScreenSet } from "@common/shared/models";
 import { useEffect, useState } from "react";
 
 import { ScreenSetRenderer } from "./ScreenSetRenderer.tsx";
@@ -21,22 +21,18 @@ function useWebsocketListener<T>(messageType: string) {
   return message;
 }
 
-function collectFonts(screenSets: ScreenSet[]): FontSpec[] {
-  return screenSets.flatMap((screenSet) => {
-    return screenSet.screens.flatMap((screen) => {
-      return screen.widgets
-        .map((widget) => {
-          if (widget.type === "button") {
-            return widget.text.font;
-          } else if (widget.type === "label") {
-            return widget.text.font;
-          } else {
-            return null;
-          }
-        })
-        .filter((r) => r !== null);
-    });
-  });
+function collectFontNames(screenSets: ScreenSet[]): string[] {
+  const names = new Set<string>();
+  for (const screenSet of screenSets) {
+    for (const screen of screenSet.screens) {
+      for (const widget of screen.widgets) {
+        if (widget.type === "button" || widget.type === "label" || widget.type === "slider") {
+          if (widget.text.font?.name) names.add(widget.text.font.name);
+        }
+      }
+    }
+  }
+  return Array.from(names);
 }
 
 export function ScreenSetManager() {
@@ -53,17 +49,14 @@ export function ScreenSetManager() {
   }, []);
 
   useEffect(() => {
-    const fontSpecs = collectFonts(screenSets);
-    const fonts = fontSpecs.map(
-      (font) =>
-        new FontFace(
-          font.name,
-          `url(/fonts/${font.postscriptName}.${font.format})`,
-        ),
-    );
-    fonts.forEach((f) => {
-      document.fonts.add(f);
-      f.load().catch((e) => console.error(e));
+    const fontNames = collectFontNames(screenSets);
+    fontNames.forEach((name) => {
+      const face = new FontFace(
+        name,
+        `url(/fonts/${encodeURIComponent(name)}.woff2)`,
+      );
+      document.fonts.add(face);
+      face.load().catch(() => {});
     });
   }, [screenSets]);
 

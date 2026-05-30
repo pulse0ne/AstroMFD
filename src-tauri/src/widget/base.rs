@@ -53,11 +53,25 @@ pub enum HorizontalAlignment {
     Right,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FontSpec {
     pub name: String,
-    pub postscript_name: String,
+}
+
+impl<'de> serde::Deserialize<'de> for FontSpec {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = serde_json::Value::deserialize(deserializer)
+            .map_err(serde::de::Error::custom)?;
+        let name = value.get("name")
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
+        Ok(FontSpec { name })
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]

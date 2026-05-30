@@ -1,5 +1,5 @@
-import { FontSpec, ShadowEffect, TextAttributes } from "@common/shared/models";
-import { ChangeEvent, useMemo } from "react";
+import { ShadowEffect, TextAttributes } from "@common/shared/models";
+import { ChangeEvent } from "react";
 import {
   MdAlignHorizontalCenter,
   MdAlignHorizontalLeft,
@@ -9,6 +9,7 @@ import {
   MdAlignVerticalTop,
 } from "react-icons/md";
 
+import { BUNDLED_FONTS } from "../../utils/bundledFonts.ts";
 import { useRecentColors } from "../../hooks/useRecentColors.ts";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { Toggle } from "./Toggle.tsx";
@@ -21,28 +22,16 @@ export type TextSectionProps = {
   isPressed?: boolean;
   onUpdate: (attr: TextAttributes, type: string) => void;
   onUpdatePressed?: (attr: Partial<TextAttributes>, type: string) => void;
-  fonts: FontSpec[];
 };
 
 export function TextSection({
   textAttr,
   pressedAttr,
   isPressed,
-  fonts,
   onUpdate,
   onUpdatePressed,
 }: TextSectionProps) {
   const { recentColors, addRecentColor } = useRecentColors();
-
-  const fontMap = useMemo(() => {
-    return fonts.reduce(
-      (acc, font) => {
-        acc[font.postscriptName] = font;
-        return acc;
-      },
-      {} as Record<string, FontSpec>,
-    );
-  }, [fonts]);
 
   const handleStringValueChange = (
     key: "text" | "fontColor",
@@ -62,19 +51,17 @@ export function TextSection({
   };
 
   const handleFontValueChange = (value: string) => {
-    const fontSpec = fontMap[value];
-    if (fontSpec) {
-      if (isPressed && onUpdatePressed) {
-        onUpdatePressed(
-          Object.assign({}, pressedAttr, { font: fontSpec }),
-          "widget.pressed.text.font",
-        );
-      } else {
-        onUpdate(
-          Object.assign({}, textAttr, { font: fontSpec }),
-          "widget.text.font",
-        );
-      }
+    const font = value ? { name: value } : null;
+    if (isPressed && onUpdatePressed) {
+      onUpdatePressed(
+        Object.assign({}, pressedAttr, { font }),
+        "widget.pressed.text.font",
+      );
+    } else {
+      onUpdate(
+        Object.assign({}, textAttr, { font }),
+        "widget.text.font",
+      );
     }
   };
 
@@ -176,9 +163,7 @@ export function TextSection({
       : textAttr.horizontalAlignment;
   const textValue = (isPressed ? pressedAttr?.text : textAttr.text) ?? "";
   const fontValue =
-    (isPressed
-      ? pressedAttr?.font?.postscriptName
-      : textAttr.font?.postscriptName) ?? "";
+    (isPressed ? pressedAttr?.font?.name : textAttr.font?.name) ?? "";
   const fontColor =
     (isPressed ? pressedAttr?.fontColor : textAttr.fontColor) ?? undefined;
   const fontSize =
@@ -206,11 +191,11 @@ export function TextSection({
           value={fontValue}
           onChange={(evt) => handleFontValueChange(evt.target.value)}
         >
-          <option value=""></option>
-          {fonts.map((font) => (
+          <option value="">Default</option>
+          {BUNDLED_FONTS.map((font) => (
             <option
-              key={font.postscriptName}
-              value={font.postscriptName}
+              key={font.name}
+              value={font.name}
               style={{ fontFamily: font.name }}
             >
               {font.name}
