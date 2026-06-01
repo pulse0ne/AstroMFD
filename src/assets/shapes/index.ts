@@ -44,7 +44,6 @@ import landingGear from "./landing-gear.svg?raw";
 import laser from "./laser.svg?raw";
 import lifeSupport from "./life-support.svg?raw";
 import lightBulb from "./light.svg?raw";
-import loading from "./loading.svg?raw";
 import lock from "./lock.svg?raw";
 import maneuveringThrusters from "./maneuvering-thrusters.svg?raw";
 import missile from "./missile.svg?raw";
@@ -138,7 +137,6 @@ export const shapePresets: ShapePreset[] = [
   { name: "Laser", svg: laser},
   { name: "Life Support", svg: lifeSupport },
   { name: "Lightbulb", svg: lightBulb },
-  { name: "Loading", svg: loading },
   { name: "Locked", svg: lock },
   { name: "Maneuvering Thrusters", svg: maneuveringThrusters },
   { name: "Missile", svg: missile },

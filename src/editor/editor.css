@@ -1,5 +1,7 @@
 .stage-container {
   background-color: var(--editor-background-color-hex);
+  flex: 1;
+  min-height: 0;
 }
 
 .stage-container > div:first-child {

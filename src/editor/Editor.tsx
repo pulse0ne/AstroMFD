@@ -110,10 +110,11 @@ export default function Editor() {
   useEffect(() => {
     if (!trRef.current || !stageRef.current) return;
     const widgets = visibleWidgets ?? [];
+    const searchRoot = trRef.current.getParent() ?? stageRef.current;
     const nodes = [...selectedIndices]
       .map((i) => widgets[i])
       .filter(Boolean)
-      .map((w) => stageRef.current!.findOne('#' + w.id))
+      .map((w) => searchRoot.findOne('#' + w.id))
       .filter(Boolean) as Konva.Node[];
     trRef.current.nodes(nodes);
     trRef.current.getLayer()?.batchDraw();
@@ -171,7 +172,7 @@ export default function Editor() {
         node.off('dragend', handleGroupDragEnd);
       }
     };
-  }, [selectedIndices, visibleWidgets, batchMoveWidgets]);
+  }, [selectedIndices, visibleWidgets, batchMoveWidgets, editingContainerId]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -515,7 +516,7 @@ export default function Editor() {
           <div style={{ position: "absolute" }} className="fill noise"></div>
         )}
         <div
-          className="stage-container fill-y relative"
+          className="stage-container relative"
           ref={stageContainerRef}
         >
           <Stage
@@ -592,6 +593,11 @@ export default function Editor() {
                           state={isPressed ? "pressed" : "primary"}
                         />
                       ))}
+                      <Transformer
+                        ref={trRef}
+                        rotateEnabled={false}
+                        resizeEnabled={selectedIndices.size <= 1}
+                      />
                     </Group>
                   </>
                 ) : (
@@ -610,11 +616,13 @@ export default function Editor() {
                   ))
                 )}
               </Group>
-              <Transformer
-                ref={trRef}
-                rotateEnabled={false}
-                resizeEnabled={selectedIndices.size <= 1}
-              />
+              {!editingContainerId && (
+                <Transformer
+                  ref={trRef}
+                  rotateEnabled={false}
+                  resizeEnabled={selectedIndices.size <= 1}
+                />
+              )}
               {guides.map((guide, i) =>
                 guide.orientation === "vertical" ? (
                   <Line
