@@ -77,56 +77,60 @@ export function ButtonSpecificsSection({
   return (
     <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
       <h5>ATTRIBUTES</h5>
-      <div className="row gap-16">
-        <span>Type:</span>
-        <select
-          value={attr.buttonType}
-          onChange={(evt) =>
-            handleButtonTypeChange(evt.target.value as ButtonType)
-          }
-        >
-          <option value="action">Action</option>
-          <option value="navigation">Navigation</option>
-          <option value="toggle">Toggle</option>
-        </select>
-      </div>
-      <div className="col gap-16">
-        {(attr.buttonType === "action" || attr.buttonType === "toggle") && (
-          <div className="col gap-8">
-            <div className="row gap-16 align-items-center">
-              <span>Actions:</span>
-              <span style={{ opacity: 0.7, fontSize: 12 }}>
-                {summarizeSteps(attr.input)}
-              </span>
-            </div>
-            <button className="btn btn-sm" onClick={() => setEditorOpen(true)}>
-              EDIT ACTIONS
-            </button>
-          </div>
-        )}
-        {attr.buttonType === "navigation" && (
+      {attr.buttonType !== "exit" ? (
+        <>
           <div className="row gap-16">
-            <span>Target Screen:</span>
+            <span>Type:</span>
             <select
-              value={attr.navTarget ?? ""}
-              onChange={(evt) => handleNavTargetChange(evt.target.value)}
+              value={attr.buttonType}
+              onChange={(evt) =>
+                handleButtonTypeChange(evt.target.value as ButtonType)
+              }
             >
-              {screens.length ? (
-                <option value=""></option>
-              ) : (
-                <option value="" disabled={true}>
-                  &lt;No targets&gt;
-                </option>
-              )}
-              {screens.map(({ id, name }) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
+              <option value="action">Action</option>
+              <option value="navigation">Navigation</option>
+              <option value="toggle">Toggle</option>
             </select>
           </div>
-        )}
-      </div>
+          <div className="col gap-16">
+            {(attr.buttonType === "action" || attr.buttonType === "toggle") && (
+              <div className="col gap-8">
+                <div className="row gap-16 align-items-center">
+                  <span>Actions:</span>
+                  <span style={{ opacity: 0.7, fontSize: 12 }}>
+                    {summarizeSteps(attr.input)}
+                  </span>
+                </div>
+                <button className="btn btn-sm" onClick={() => setEditorOpen(true)}>
+                  EDIT ACTIONS
+                </button>
+              </div>
+            )}
+            {attr.buttonType === "navigation" && (
+              <div className="row gap-16">
+                <span>Target Screen:</span>
+                <select
+                  value={attr.navTarget ?? ""}
+                  onChange={(evt) => handleNavTargetChange(evt.target.value)}
+                >
+                  {screens.length ? (
+                    <option value=""></option>
+                  ) : (
+                    <option value="" disabled={true}>
+                      &lt;No targets&gt;
+                    </option>
+                  )}
+                  {screens.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </>
+        ) : <small>This button is for returning to the screen selector. It can be styled but not removed.</small>}
       <div className="col gap-16">
         <div className="row align-items-center gap-16">
           <span>State:</span>

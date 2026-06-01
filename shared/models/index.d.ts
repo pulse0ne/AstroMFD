@@ -130,7 +130,7 @@ export type WidgetBase<W extends WidgetType> = {
   shape: ShapeAttributes;
 };
 
-export type ButtonType = "action" | "navigation" | "toggle";
+export type ButtonType = "action" | "navigation" | "toggle" | "exit";
 
 export type ActionStep =
   | { type: "press"; key: InputKey; duration: number }

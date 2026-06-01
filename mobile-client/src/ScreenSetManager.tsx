@@ -16,7 +16,7 @@ function useWebsocketListener<T>(messageType: string) {
     if (lastMessage && lastMessage[messageType]) {
       setMessage(lastMessage[messageType] as T);
     }
-  }, [lastMessage]);
+  }, [lastMessage, messageType]);
 
   return message;
 }
@@ -72,7 +72,7 @@ export function ScreenSetManager() {
         return copy;
       });
     }
-  }, [layoutPushedMessage]);
+  }, [layoutPushedMessage, screenSets]);
 
   const selectedScreenSet = screenSets.find((i) => i.id === selectedId);
 
@@ -87,7 +87,9 @@ export function ScreenSetManager() {
               onClick={() => setSelectedId(s.id)}
               style={{
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid #dd8844",
                 padding: "8px 12px",
+                margin: "8px 0"
               }}
             >
               {s.name}

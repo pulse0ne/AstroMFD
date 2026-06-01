@@ -160,8 +160,6 @@ export function ScreenSelector() {
                 <img
                   src={screenImages[screen.id]}
                   alt={screenImages[screen.id]}
-                  width={62}
-                  height={62}
                 />
               )}
             </div>

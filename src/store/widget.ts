@@ -279,6 +279,8 @@ export const createWidgetSlice: StateCreator<
     const carouselId = state.editingContainerId;
     const screenId = screen.id;
 
+    if (deletedWidgets[0].widget.type === "button" && deletedWidgets[0].widget.buttonType === "exit") return;
+
     const cmd: UndoableCommand = {
       type: "widget.delete",
       targetId: deletedWidgets[0].widget.id,

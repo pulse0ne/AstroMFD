@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MdAdd } from "react-icons/md";
 import { PiGearSix } from "react-icons/pi";
 import { useNavigate } from "react-router";
+import astromfd from "../assets/AstroMFD.svg?raw";
 
 import "./screen-set-selector.css";
 
@@ -150,7 +151,14 @@ export function ScreenSetSelector() {
   return (
     <div className="screen-set-selector">
       <div className="screen-set-selector-header">
-        <h1>Screen Sets</h1>
+        <div className="row align-items-center gap-12">
+          <div
+            style={{ height: 48, width: 48 }}
+            dangerouslySetInnerHTML={{ __html: astromfd }}
+          >
+          </div>
+          <h1>Screen Sets</h1>
+        </div>
         <div className="row gap-12 align-items-center">
           {screenSets.length > 4 && (
             <input
@@ -275,6 +283,7 @@ export function ScreenSetSelector() {
         open={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
         header={<h4 style={{ margin: 0 }}>Delete Screen Set</h4>}
+        contentStyle={{ maxWidth: 400 }}
         footer={
           <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
             <button onClick={() => setConfirmDelete(null)}>CANCEL</button>
@@ -337,6 +346,7 @@ function CreateModal({ open, onClose, onConfirm }: CreateModalProps) {
       open={open}
       onClose={onClose}
       header={<h4 style={{ margin: 0 }}>New Screen Set</h4>}
+      contentStyle={{ maxWidth: 400 }}
       footer={
         <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
           <button onClick={onClose}>CANCEL</button>

@@ -88,7 +88,7 @@ export default function Editor() {
           .toBlob({
             width: workspaceSize.width * stageScale,
             height: workspaceSize.height * stageScale,
-            pixelRatio: 0.25,
+            pixelRatio: 0.5,
           })
           .then((res) => {
             const blob = res as Blob;

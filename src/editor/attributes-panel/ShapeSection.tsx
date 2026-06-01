@@ -242,7 +242,8 @@ export function ShapeSection({
                 trigger={
                   <button className="btn btn-sm">PRESETS</button>
                 }
-                position="bottom left"
+                position="bottom right"
+                lockScroll={true}
                 arrow={false}
                 closeOnDocumentClick
                 contentStyle={{
@@ -251,6 +252,8 @@ export function ShapeSection({
                   borderRadius: 6,
                   padding: 8,
                   width: 240,
+                  height: 260,
+                  overflowY: "scroll",
                 }}
               >
                 <div style={{

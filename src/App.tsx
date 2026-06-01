@@ -9,6 +9,10 @@ import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
+- VERIFY: all svg's display in both the editor and mobile client
+- FIX: resizing doesn't work in containers (panel/carousel)
+- FIX: zoom controls aren't in the right spot when editing inside a container
+- Collapsible sections in attribute panel?
 - Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
 - User color themes?
 

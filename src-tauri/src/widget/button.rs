@@ -34,6 +34,7 @@ pub enum ButtonType {
     Action,
     Toggle,
     Navigation,
+    Exit,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]

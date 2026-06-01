@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg viewBox="0 0 512 512">
+<circle style="fill:#fff;stroke-width:7.69943;stroke-linecap:round;stroke-linejoin:round"
+         id="circle1"
+         cx="338.58429"
+         cy="175.61862"
+         r="118.92024" /><path
+         id="circle2"
+         style="fill:#fff;fill-opacity:1;stroke-width:7.69943;stroke-linecap:round;stroke-linejoin:round"
+         d="m 207.04833,147.24754 a 118.92024,118.92024 0 0 0 -68.86811,107.66053 118.92024,118.92024 0 0 0 118.91111,118.91125 118.92024,118.92024 0 0 0 107.66053,-68.86825 127.72915,127.72915 0 0 1 -34.97708,5.01262 127.72915,127.72915 0 0 1 -127.73907,-127.73893 127.72915,127.72915 0 0 1 5.01262,-34.97722 z" /><path
+         id="path2"
+         style="fill:#fff;fill-opacity:1;stroke-width:7.69943;stroke-linecap:round;stroke-linejoin:round"
+         d="M 123.36367,228.72987 A 118.92024,118.92024 0 0 0 54.495566,336.39041 118.92024,118.92024 0 0 0 173.40667,455.30165 118.92024,118.92024 0 0 0 281.0672,386.43341 a 127.72915,127.72915 0 0 1 -34.97707,5.01261 127.72915,127.72915 0 0 1 -127.73907,-127.73893 127.72915,127.72915 0 0 1 5.01261,-34.97722 z" />
+</svg>

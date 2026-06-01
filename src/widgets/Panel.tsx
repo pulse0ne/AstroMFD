@@ -2,7 +2,7 @@ import { Gradient, PanelAttributes } from "@common/shared/models";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Shape } from "konva/lib/Shape";
 import { useMemo, useRef } from "react";
-import { Group, Rect, Text } from "react-konva";
+import { Group, Rect } from "react-konva";
 
 import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
 import { SvgContent } from "./SvgContent.tsx";
@@ -12,8 +12,6 @@ import { WidgetRenderer } from "./WidgetRenderer.tsx";
 export type PanelProps = WidgetPropsBase & {
   attr: PanelAttributes;
 };
-
-// TODO: Support images/svg shapes
 
 export function Panel({
   attr,
@@ -211,7 +209,7 @@ export function Panel({
         cornerRadius={attr.shape.cornerRadius}
         {...gradientProps}
       />
-      {attr.widgets.length > 0 ? (
+      {attr.widgets.length > 0 && (
         <Group listening={false}>
           {attr.widgets.map((widget) => (
             <WidgetRenderer
@@ -226,16 +224,6 @@ export function Panel({
             />
           ))}
         </Group>
-      ) : (
-        <Text
-          text="Panel (empty)"
-          width={attr.shape.size.width}
-          height={attr.shape.size.height}
-          align="center"
-          verticalAlign="middle"
-          fontSize={12}
-          fill="rgba(255,255,255,0.3)"
-        />
       )}
     </Group>
   );

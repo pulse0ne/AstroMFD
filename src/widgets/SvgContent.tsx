@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { Circle, Ellipse, Group, Line, Path, Rect } from "react-konva";
 
 import { SvgUtils } from "../utils/svg/parseSvg.ts";
+import { LineCap, LineJoin } from "konva/lib/Shape";
 
 export function SvgContent({
   svg,
@@ -41,6 +42,14 @@ function getStrokeWidth(attributes: Record<string, string>): number {
   return raw ? parseFloat(raw) : 0;
 }
 
+function getLinecap(attributes: Record<string, string>): LineCap | undefined {
+  return (attributes.strokeLinecap ?? attributes["stroke-linecap"]) as LineCap | undefined;
+}
+
+function getLinejoin(attributes: Record<string, string>): LineJoin | undefined {
+  return (attributes.strokeLinejoin ?? attributes["stroke-linejoin"]) as LineJoin | undefined;
+}
+
 function parsePoints(pointsStr: string): number[] {
   return pointsStr
     .trim()
@@ -68,6 +77,8 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fillRule={(attributes.fillRule as CanvasFillRule) || undefined}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          lineCap={getLinecap(attributes)}
+          lineJoin={getLinejoin(attributes)}
         />
       );
 
@@ -124,6 +135,8 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           ]}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          lineCap={getLinecap(attributes)}
+          lineJoin={getLinejoin(attributes)}
         />
       );
 
@@ -148,6 +161,8 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fill={svgColor(attributes.fill)}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          lineCap={getLinecap(attributes)}
+          lineJoin={getLinejoin(attributes)}
         />
       );
 

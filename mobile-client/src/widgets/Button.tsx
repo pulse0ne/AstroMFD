@@ -18,6 +18,7 @@ export type ButtonProps = {
   onDown: (key: InputKey) => void;
   onUp: (key: InputKey) => void;
   onNavigate: (target: string) => void;
+  onExit?: () => void;
 };
 
 export function Button({
@@ -26,6 +27,7 @@ export function Button({
   onDown,
   onUp,
   onNavigate,
+  onExit,
 }: ButtonProps) {
   const [pressed, setPressed] = useState(false);
 
@@ -137,8 +139,10 @@ export function Button({
       onExecuteActions(attr.input.steps);
     } else if (attr.buttonType === "navigation" && attr.navTarget) {
       onNavigate(attr.navTarget);
+    } else if (attr.buttonType === "exit") {
+      onExit?.();
     }
-  }, [attr, onExecuteActions, onNavigate]);
+  }, [attr, onExecuteActions, onNavigate, onExit]);
 
   const handleDown = useCallback(() => {
     // TODO: not supported in iOS

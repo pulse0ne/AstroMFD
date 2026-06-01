@@ -19,9 +19,15 @@ export function activeWidgetListSelector(state: RootState): Widget[] | null {
   if (state.editingContainerId) {
     const carousel = screen.widgets.find(
       (w) => w.id === state.editingContainerId,
-    ) as CarouselAttributes | undefined;
+    ) as CarouselAttributes | PanelAttributes | undefined;
     if (!carousel) return null;
-    return carousel.pages[carousel.activePageIndex]?.widgets ?? null;
+    if (Object.keys(carousel).includes("pages")) {
+      const c = carousel as CarouselAttributes;
+      return c.pages[c.activePageIndex]?.widgets ?? null;
+    } else {
+      const p = carousel as PanelAttributes;
+      return p.widgets;
+    }
   }
   return screen.widgets;
 }

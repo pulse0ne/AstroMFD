@@ -19,7 +19,8 @@ export type ScreenRendererProps = {
   screenSetId: string;
   size: Size;
   onNavigate: (target: string) => void;
-  onMessage: (msg: any) => void;
+  onMessage: (msg: unknown) => void;
+  onExit: () => void;
 };
 
 export function ScreenRenderer({
@@ -28,6 +29,7 @@ export function ScreenRenderer({
   size,
   onNavigate,
   onMessage,
+  onExit,
 }: ScreenRendererProps) {
   const bgStyle: CSSProperties = {
     position: "relative",
@@ -90,6 +92,7 @@ export function ScreenRenderer({
               onDown={handleDown}
               onUp={handleUp}
               onNavigate={onNavigate}
+              onExit={onExit}
             />
           )}
           {widget.type === "slider" && (

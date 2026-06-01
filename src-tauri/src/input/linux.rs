@@ -1,4 +1,4 @@
-use crate::input::{self, InputDevice, InputKey, JoystickAxis, SpecialKey};
+use crate::input::{InputDevice, InputKey, JoystickAxis, SpecialKey};
 use evdev::{uinput::VirtualDeviceBuilder, AbsInfo, AbsoluteAxisType, AttributeSet, EventType, InputEvent, Key, UinputAbsSetup};
 use log::{debug, info, warn};
 use std::io;

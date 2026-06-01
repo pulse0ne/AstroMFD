@@ -94,7 +94,7 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
                 onOpen={() => setPresetsOpen(true)}
                 onClose={() => setPresetsOpen(false)}
                 trigger={<button className="btn btn-sm">CHANGE</button>}
-                position="bottom left"
+                position="bottom right"
                 arrow={false}
                 closeOnDocumentClick
                 contentStyle={{
@@ -103,6 +103,9 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
                   borderRadius: 6,
                   padding: 8,
                   width: 240,
+                  height: 260,
+                  maxHeight: 260,
+                  overflowY: "scroll"
                 }}
               >
                 <div
@@ -139,7 +142,7 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
                 onOpen={() => setPresetsOpen(true)}
                 onClose={() => setPresetsOpen(false)}
                 trigger={<button className="btn btn-sm">PRESETS</button>}
-                position="bottom left"
+                position="bottom right"
                 arrow={false}
                 closeOnDocumentClick
                 contentStyle={{
@@ -148,6 +151,8 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
                   borderRadius: 6,
                   padding: 8,
                   width: 240,
+                  height: 260,
+                  overflowY: "scroll"
                 }}
               >
                 <div
