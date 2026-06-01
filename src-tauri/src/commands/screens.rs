@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
@@ -6,6 +7,9 @@ use serde::Serialize;
 use uuid::Uuid;
 use crate::locations::{save_dir, screen_set_dir, screen_set_images_dir, screen_set_sounds_dir};
 use crate::state::{AppState, ServerEvent};
+use crate::widget::Widget::Button;
+use crate::widget::base::{Position, ShapeAttributes, Size, SvgXmlNode, TextAttributes, WidgetBase};
+use crate::widget::button::{ActionSequence, ButtonAttributes, PressedOverrides};
 use crate::widget::screen_set::{Screen, ScreenEffects, ScreenSet, ScreenSize};
 
 #[derive(Serialize, Clone)]
@@ -144,7 +148,56 @@ pub async fn create_screen_set(name: String) -> Result<ScreenSet, String> {
             Screen {
                 id: Uuid::new_v4().to_string(),
                 name: "Untitled Screen 1".to_string(),
-                widgets: vec![],
+                widgets: vec![
+                    Button(
+                        ButtonAttributes {
+                            widget: WidgetBase {
+                                id: Uuid::new_v4().to_string(),
+                                shape: ShapeAttributes {
+                                    svg: Some(SvgXmlNode {
+                                        name: "svg".to_string(),
+                                        element_type: "element".to_string(),
+                                        value: "".to_string(),
+                                        attributes: HashMap::from([
+                                            ("viewbox".to_string(), "0 0 24 24".to_string()),
+                                            ("height".to_string(), "24px".to_string()),
+                                            ("width".to_string(), "24px".to_string()),
+                                        ]),
+                                        children: vec![
+                                            SvgXmlNode {
+                                                name: "path".to_string(),
+                                                element_type: "element".to_string(),
+                                                value: "".to_string(),
+                                                attributes: HashMap::from([
+                                                    ("fill".to_string(), "rgba(128,128,128,0.6".to_string()),
+                                                    ("d".to_string(), "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm6,12H8.414l2.293,2.293a1,1,0,1,1-1.414,1.414l-4-4a1,1,0,0,1,0-1.414l4-4a1,1,0,1,1,1.414,1.414L8.414,11H18a1,1,0,0,1,0,2Z".to_string()),
+                                                ]),
+                                                children: vec![],
+                                            }
+                                        ]
+                                    }),
+                                    fill: None,
+                                    stroke: None,
+                                    stroke_width: 0f64,
+                                    corner_radius: 0f64,
+                                    shadow: None,
+                                    position: Position { x: 5f64, y: 5f64 },
+                                    size: Size { height: 24f64, width: 24f64 },
+                                }
+                            },
+                            button_type: crate::widget::button::ButtonType::Exit,
+                            icon: None,
+                            input: ActionSequence { steps: vec![] },
+                            nav_target: None,
+                            pressed: PressedOverrides {
+                                ..Default::default()
+                            },
+                            text: TextAttributes {
+                                ..Default::default()
+                            }
+                        }
+                    )
+                ],
                 background_color: "rgba(13, 20, 24, 1)".to_string(),
                 crt_effect: false,
                 effects: ScreenEffects::default(),
