@@ -56,10 +56,10 @@ fi
 echo "New version: $NEW"
 
 # Update all version locations
-sed -i'' -e "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/package.json"
-sed -i'' -e "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/mobile-client/package.json"
-sed -i'' -e "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/src-tauri/tauri.conf.json"
-sed -i'' -e "s/^version = \"$CURRENT\"/version = \"$NEW\"/" "$ROOT/src-tauri/Cargo.toml"
+sed -i '' "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/package.json"
+sed -i '' "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/mobile-client/package.json"
+sed -i '' "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$ROOT/src-tauri/tauri.conf.json"
+sed -i '' "s/^version = \"$CURRENT\"/version = \"$NEW\"/" "$ROOT/src-tauri/Cargo.toml"
 
 # Update Cargo.lock
 (cd "$ROOT/src-tauri" && cargo update -p AstroMFD --precise "$NEW" 2>/dev/null || cargo generate-lockfile 2>/dev/null || true)
