@@ -19,7 +19,7 @@ prepare() {
 build() {
   cd "AstroMFD-$pkgver"
   export TAURI_SIGNING_PRIVATE_KEY=""
-  yarn tauri build --bundles none
+  yarn tauri build --bundles deb
 }
 
 package() {
