@@ -1,6 +1,6 @@
 [package]
 name = "AstroMFD"
-version = "0.0.5"
+version = "0.0.6"
 description = "A space-sim MFD creator"
 authors = ["Tyler Snedigar"]
 edition = "2021"
