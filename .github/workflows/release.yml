@@ -90,7 +90,7 @@ jobs:
 
           chown -R builder:builder /home/builder
           chown -R builder:builder "${GITHUB_WORKSPACE}/source"
-          su builder -c 'makepkg -s --noconfirm --skipinteg'
+          su builder -c 'CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=gcc makepkg -s --noconfirm --skipinteg'
 
       - name: Upload to release
         env:
