@@ -70,7 +70,7 @@ jobs:
       - name: Install build dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base-devel rust nodejs yarn webkit2gtk-4.1 libappindicator-gtk3 librsvg dbus patchelf git github-cli
+          pacman -S --noconfirm base-devel rust nodejs yarn webkit2gtk-4.1 libappindicator-gtk3 librsvg dbus alsa-lib patchelf git github-cli
 
       - uses: actions/checkout@v4
         with:
