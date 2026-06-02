@@ -197,6 +197,10 @@ export function Label({
         fontFamily={attr.text.font?.name ?? undefined}
         fontSize={attr.text.fontSize}
         fill={attr.text.fontColor ?? undefined}
+        shadowColor={attr.text.shadow?.color ?? undefined}
+        shadowBlur={attr.text.shadow?.strength ? attr.text.shadow?.strength * 6 : undefined}
+        shadowOffsetX={attr.text.shadow?.xOffset ?? undefined}
+        shadowOffsetY={attr.text.shadow?.yOffset ?? undefined}
       />
     </Group>
   );

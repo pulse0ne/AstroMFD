@@ -50,6 +50,11 @@ function getLinejoin(attributes: Record<string, string>): LineJoin | undefined {
   return (attributes.strokeLinejoin ?? attributes["stroke-linejoin"]) as LineJoin | undefined;
 }
 
+function getFillOpacity(attributes: Record<string, string>): number | undefined {
+  const raw = attributes.fillOpacity ?? attributes["fill-opacity"];
+  return raw ? parseFloat(raw) : undefined;
+}
+
 function parsePoints(pointsStr: string): number[] {
   return pointsStr
     .trim()
@@ -79,6 +84,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           strokeWidth={getStrokeWidth(attributes)}
           lineCap={getLinecap(attributes)}
           lineJoin={getLinejoin(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -93,6 +99,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fill={svgColor(attributes.fill)}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -106,6 +113,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fill={svgColor(attributes.fill)}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -120,6 +128,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fill={svgColor(attributes.fill)}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -137,6 +146,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           strokeWidth={getStrokeWidth(attributes)}
           lineCap={getLinecap(attributes)}
           lineJoin={getLinejoin(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -149,6 +159,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           fill={svgColor(attributes.fill)}
           stroke={svgColor(attributes.stroke)}
           strokeWidth={getStrokeWidth(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 
@@ -163,6 +174,7 @@ function renderSvgNode(node: SvgXmlNode, key?: string | number) {
           strokeWidth={getStrokeWidth(attributes)}
           lineCap={getLinecap(attributes)}
           lineJoin={getLinejoin(attributes)}
+          opacity={getFillOpacity(attributes)}
         />
       );
 

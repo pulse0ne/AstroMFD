@@ -9,10 +9,11 @@ import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- ED-like SVG elems
 - Collapsible sections in attribute panel?
 - Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
 - User color themes?
+- Configuration option for SVG preserveAspectRatio?
+- Configuration option for SVG stroke scale enabled/disabled?
 
 ----- Elite: Dangerous -specific
 - Turn ED-specific stuff into "plugin" that can be enabled/disabled

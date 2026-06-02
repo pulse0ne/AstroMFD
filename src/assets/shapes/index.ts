@@ -5,6 +5,10 @@ import arrowRight from "./arrow-right.svg?raw";
 import arrowUp from "./arrow-up.svg?raw";
 import atom from "./atom.svg?raw";
 import battery from "./battery.svg?raw";
+import boxBorderBottom from "./box-border-bottom.svg?raw";
+import boxBorderLeft from "./box-border-left.svg?raw";
+import boxBorderRight from "./box-border-right.svg?raw";
+import boxBorderTop from "./box-border-top.svg?raw";
 import breach from "./breach.svg?raw";
 import brokenCircle from "./broken-circle.svg?raw";
 import capsule from "./capsule.svg?raw";
@@ -103,6 +107,10 @@ export const shapePresets: ShapePreset[] = [
   { name: "Aperture", svg: aperture },
   { name: "Atom", svg: atom },
   { name: "Battery", svg: battery },
+  { name: "Box with Bottom Border", svg: boxBorderBottom },
+  { name: "Box with Left Border", svg: boxBorderLeft },
+  { name: "Box with Right Border", svg: boxBorderRight },
+  { name: "Box with Top Border", svg: boxBorderTop },
   { name: "Breach", svg: breach },
   { name: "Broken Circle", svg: brokenCircle },
   { name: "Cargo", svg: cargo },

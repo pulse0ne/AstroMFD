@@ -17,6 +17,7 @@ export function SvgRenderer({ svg, width, height, style }: SvgRendererProps) {
       viewBox={`${vb.x} ${vb.y} ${vb.width} ${vb.height}`}
       width={width}
       height={height}
+      preserveAspectRatio="none"
       style={{
         position: "absolute",
         top: 0,
