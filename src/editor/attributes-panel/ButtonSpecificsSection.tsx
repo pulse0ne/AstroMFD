@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { useECStore } from "../../store";
 import { ActionSequenceEditor } from "./ActionSequenceEditor.tsx";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { Toggle } from "./Toggle.tsx";
 
 export type ScreenIdAndName = {
@@ -75,8 +76,7 @@ export function ButtonSpecificsSection({
   };
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>ATTRIBUTES</h5>
+    <CollapsibleSection title="Attributes">
       {attr.buttonType !== "exit" ? (
         <>
           <div className="row gap-16">
@@ -150,6 +150,6 @@ export function ButtonSpecificsSection({
         onChange={handleActionsChange}
         screenSetId={screenSetId}
       />
-    </div>
+    </CollapsibleSection>
   );
 }

@@ -11,6 +11,7 @@ import {
 
 import { BUNDLED_FONTS } from "../../utils/bundledFonts.ts";
 import { useRecentColors } from "../../hooks/useRecentColors.ts";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { Toggle } from "./Toggle.tsx";
 
@@ -174,8 +175,7 @@ export function TextSection({
     isPressed && pressedAttr?.shadow ? pressedAttr.shadow : textAttr.shadow;
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>TEXT</h5>
+    <CollapsibleSection title="Text">
       <div className="row align-items-center gap-16">
         <span>Label:</span>
         <textarea
@@ -342,6 +342,6 @@ export function TextSection({
           onClick={() => handleAlignmentChange("bottom")}
         />
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }

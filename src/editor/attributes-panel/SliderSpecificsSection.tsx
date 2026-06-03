@@ -5,6 +5,7 @@ import {
 } from "@common/shared/models";
 
 import { useRecentColors } from "../../hooks/useRecentColors.ts";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 
 export type SliderSpecificsSectionProps = {
@@ -66,8 +67,7 @@ export function SliderSpecificsSection({
   };
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>SLIDER</h5>
+    <CollapsibleSection title="Slider">
       <div className="row gap-16">
         <span>Orientation:</span>
         <select
@@ -116,7 +116,7 @@ export function SliderSpecificsSection({
         />
       </div>
 
-      <h5 style={{ marginTop: 8 }}>APPEARANCE</h5>
+      <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "4px 0" }} />
       <div className="row gap-16 align-items-center">
         <span style={{ width: 100 }}>Track:</span>
         <ColorSwatch
@@ -172,6 +172,6 @@ export function SliderSpecificsSection({
           }
         />
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }

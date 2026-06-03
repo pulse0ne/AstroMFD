@@ -1,4 +1,5 @@
 import { Position, Size } from "@common/shared/models";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { useMemo } from "react";
 import { IconType } from "react-icons";
 import {
@@ -45,8 +46,7 @@ export function SizePositionSection({
   };
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>SIZE / POSITION</h5>
+    <CollapsibleSection title="Size / Position">
       <div className="row gap-4">
         <div className="flex-grow row">
           <span style={{ width: 24 }}>w:</span>
@@ -119,7 +119,7 @@ export function SizePositionSection({
           <ArrangeIcon type="back" title="Send To Back" onClick={sendToBack} />
         </div>
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }
 

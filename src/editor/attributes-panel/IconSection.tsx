@@ -4,6 +4,7 @@ import Popup from "reactjs-popup";
 
 import { shapePresets } from "../../assets/shapes";
 import { SvgUtils } from "../../utils/svg/parseSvg.ts";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { SvgColorEditor } from "./SvgColorEditor.tsx";
 
 export type IconSectionProps = {
@@ -79,8 +80,7 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
   };
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>ICON</h5>
+    <CollapsibleSection title="Icon" defaultOpen={!!icon}>
       <div className="col gap-8">
         <div className="row align-items-center gap-8">
           {icon ? (
@@ -238,6 +238,6 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
           <SvgColorEditor svg={icon.svg} onUpdate={handleSvgUpdate} />
         </div>
       )}
-    </div>
+    </CollapsibleSection>
   );
 }

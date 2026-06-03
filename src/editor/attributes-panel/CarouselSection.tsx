@@ -2,6 +2,8 @@ import { CarouselAttributes, CarouselNavigation } from "@common/shared/models";
 import { MdAdd, MdDelete } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
+
 export type CarouselSectionProps = {
   attr: CarouselAttributes;
   onUpdate: (attr: CarouselAttributes, type: string) => void;
@@ -38,10 +40,9 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
   };
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>NAVIGATION</h5>
+    <CollapsibleSection title="Carousel">
       <div className="row align-items-center gap-8">
-        <label style={{ fontSize: 12, opacity: 0.7, flex: 1 }}>Mode</label>
+        <label style={{ fontSize: 12, opacity: 0.7, flex: 1 }}>Navigation</label>
         <select
           value={attr.navigation ?? "swipe"}
           onChange={handleNavigationChange}
@@ -52,7 +53,7 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
           <option value="both">Both</option>
         </select>
       </div>
-      <h5>PAGES</h5>
+      <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "4px 0" }} />
       <div className="col gap-4">
         {attr.pages.map((page, i) => (
           <div
@@ -99,6 +100,6 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
         <MdAdd size={14} />
         <span>Add Page</span>
       </button>
-    </div>
+    </CollapsibleSection>
   );
 }

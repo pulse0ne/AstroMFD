@@ -5,13 +5,52 @@
   border-left: var(--border-light);
 }
 
+.attributes-panel h2 {
+  padding: 12px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
 .attribute-section {
   padding: 16px 12px;
   border-bottom: var(--border-light);
 }
 
-.attributes-panel h2 {
+.collapsible-section {
+  margin: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.collapsible-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.collapsible-section-header:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.collapsible-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .shape-preset-item {

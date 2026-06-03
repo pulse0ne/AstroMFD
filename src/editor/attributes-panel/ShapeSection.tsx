@@ -10,6 +10,7 @@ import { v4 as uuid } from "uuid";
 import Popup from "reactjs-popup";
 
 import { shapePresets } from "../../assets/shapes";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { useRecentColors } from "../../hooks/useRecentColors.ts";
 import { gradientString } from "../../utils/gradientString.ts";
 import { SvgUtils } from "../../utils/svg/parseSvg.ts";
@@ -221,8 +222,7 @@ export function ShapeSection({
       : gradientString(fill.value as Gradient);
 
   return (
-    <div className="attribute-section col gap-16" style={{ paddingTop: 16 }}>
-      <h5>SHAPE</h5>
+    <CollapsibleSection title="Shape">
       <div className="col gap-8">
         <div className="row align-items-center gap-8">
           <span>SVG:</span>
@@ -435,6 +435,6 @@ export function ShapeSection({
           </div>
         </>
       )}
-    </div>
+    </CollapsibleSection>
   );
 }

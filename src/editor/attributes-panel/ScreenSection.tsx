@@ -14,6 +14,7 @@ import { useDevices } from "../../hooks/useDevices.tsx";
 import { useECStore } from "../../store";
 import { activeScreenSelector } from "../../store/selectors.ts";
 import { ClientInfo } from "../../types/websocket.ts";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { Toggle } from "./Toggle.tsx";
 
@@ -67,65 +68,65 @@ export function ScreenSection() {
   };
 
   return (
-    <div className="col attribute-section gap-16">
-      <div className="row align-items-center gap-4">
-        <span>Size:</span>
-        <input
-          style={{ width: 56 }}
-          value={screenSet?.size?.width ?? 1200}
-          type="number"
-          min={0}
-          onChange={handleWidthChange}
-        />
-        <MdClose size={12} />
-        <input
-          style={{ width: 56 }}
-          value={screenSet?.size?.height ?? 800}
-          type="number"
-          min={0}
-          onChange={handleHeightChange}
-        />
+    <>
+      <CollapsibleSection title="Screen">
+        <div className="row align-items-center gap-4">
+          <span>Size:</span>
+          <input
+            style={{ width: 56 }}
+            value={screenSet?.size?.width ?? 1200}
+            type="number"
+            min={0}
+            onChange={handleWidthChange}
+          />
+          <MdClose size={12} />
+          <input
+            style={{ width: 56 }}
+            value={screenSet?.size?.height ?? 800}
+            type="number"
+            min={0}
+            onChange={handleHeightChange}
+          />
 
-        <Popup
-          trigger={
-            <MdPhoneAndroid
-              style={{
-                cursor: devices.length ? "pointer" : undefined,
-                color: devices.length ? "var(--gradient-stop1)" : "#666",
-              }}
-            />
-          }
-          open={syncPopupOpen}
-          onOpen={() => setSyncPopupOpen(true)}
-          onClose={() => setSyncPopupOpen(false)}
-          contentStyle={{ background: "var(--toolbar-color-hex)" }}
-          disabled={!devices.length}
-          position="bottom center"
-        >
-          {devices.map((device) => (
-            <div
-              className="popup-menu-item row align-items-center gap-8"
-              key={device.ipAddr}
-              onClick={() => handleDeviceSync(device)}
-            >
-              <DeviceIcon deviceType={device.deviceType} />
-              {device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
-            </div>
-          ))}
-        </Popup>
-      </div>
-      {/* grid?, others? */}
-      <div className="row gap-16 align-items-center">
-        <span>Background:</span>
-        <ColorSwatch
-          recents={[]} // TODO
-          color={activeScreen?.backgroundColor}
-          onUpdate={handleScreenBgColorChange}
-          onAddRecentColor={console.log}
-        />
-      </div>
-      <div className="col gap-8">
-        <h5>EFFECTS</h5>
+          <Popup
+            trigger={
+              <MdPhoneAndroid
+                style={{
+                  cursor: devices.length ? "pointer" : undefined,
+                  color: devices.length ? "var(--gradient-stop1)" : "#666",
+                }}
+              />
+            }
+            open={syncPopupOpen}
+            onOpen={() => setSyncPopupOpen(true)}
+            onClose={() => setSyncPopupOpen(false)}
+            contentStyle={{ background: "var(--toolbar-color-hex)" }}
+            disabled={!devices.length}
+            position="bottom center"
+          >
+            {devices.map((device) => (
+              <div
+                className="popup-menu-item row align-items-center gap-8"
+                key={device.ipAddr}
+                onClick={() => handleDeviceSync(device)}
+              >
+                <DeviceIcon deviceType={device.deviceType} />
+                {device.ipAddr} - {device.viewportWidth}x{device.viewportHeight}
+              </div>
+            ))}
+          </Popup>
+        </div>
+        <div className="row gap-16 align-items-center">
+          <span>Background:</span>
+          <ColorSwatch
+            recents={[]}
+            color={activeScreen?.backgroundColor}
+            onUpdate={handleScreenBgColorChange}
+            onAddRecentColor={console.log}
+          />
+        </div>
+      </CollapsibleSection>
+      <CollapsibleSection title="Effects" defaultOpen={false}>
         <table>
           <tbody>
             <tr>
@@ -207,8 +208,8 @@ export function ScreenSection() {
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </CollapsibleSection>
+    </>
   );
 }
 
