@@ -232,10 +232,21 @@ pub async fn input_worker(
     let device: Arc<Mutex<dyn InputDevice>> = {
         #[cfg(target_os = "windows")]
         {
-            Arc::new(Mutex::new(VJoyDevice {
-                vjoy: VJoy::from_default_dll_location().unwrap(),
-                device_id: vjoy_device_id as u32,
-            }))
+            match VJoy::from_default_dll_location() {
+                Ok(vjoy) => Arc::new(Mutex::new(VJoyDevice {
+                    vjoy,
+                    device_id: vjoy_device_id as u32,
+                })),
+                Err(e) => {
+                    log::error!("Failed to initialize VJoy: {}", e);
+                    rfd::MessageDialog::new()
+                        .set_title("AstroMFD - VJoy Not Found")
+                        .set_description(format!("VJoy could not be loaded: {}\n\nPlease install VJoy from https://github.com/njz3/vJoy and restart AstroMFD.", e))
+                        .set_level(rfd::MessageLevel::Error)
+                        .show();
+                    std::process::exit(1);
+                }
+            }
         }
         #[cfg(target_os = "linux")]
         {

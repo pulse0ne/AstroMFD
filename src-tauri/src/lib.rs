@@ -91,9 +91,17 @@ pub async fn run() {
                     .with_state(state_clone);
 
                 let addr = format!("0.0.0.0:{}", port);
+                let listener = match TcpListener::bind(&addr).await {
+                    Ok(l) => l,
+                    Err(e) => {
+                        log::error!("Failed to bind to {}: {}", addr, e);
+                        return;
+                    }
+                };
                 info!("Serving mobile client on http://{}/", addr);
-                let listener = TcpListener::bind(&addr).await.unwrap();
-                axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await.unwrap();
+                if let Err(e) = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await {
+                    log::error!("Server error: {}", e);
+                }
             });
 
             Ok(())
