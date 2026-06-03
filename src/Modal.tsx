@@ -36,6 +36,7 @@ export function Modal({
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        zIndex: 9999999,
         ...contentStyle,
       }}
       overlayStyle={{
@@ -44,6 +45,7 @@ export function Modal({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 9999998,
         ...overlayStyle,
       }}
     >

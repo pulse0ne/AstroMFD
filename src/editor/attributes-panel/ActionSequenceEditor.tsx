@@ -123,6 +123,7 @@ export function ActionSequenceEditor({
     <Modal
       open={open}
       onClose={handleCancel}
+      contentStyle={{ width: "unset" }}
       header={<h4 style={{ margin: 0 }}>Edit Action Sequence</h4>}
       footer={
         <div className="row gap-16" style={{ justifyContent: "flex-end" }}>

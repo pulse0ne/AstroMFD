@@ -287,10 +287,7 @@ export function ScreenSetSelector() {
         footer={
           <div className="row gap-12" style={{ justifyContent: "flex-end" }}>
             <button onClick={() => setConfirmDelete(null)}>CANCEL</button>
-            <button
-              onClick={handleDeleteConfirm}
-              style={{ borderColor: "#ff4444", color: "#ff4444" }}
-            >
+            <button className="delete-button" onClick={handleDeleteConfirm}>
               DELETE
             </button>
           </div>

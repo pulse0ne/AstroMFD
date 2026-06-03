@@ -14,7 +14,7 @@ pub struct Settings {
 }
 
 fn default_port() -> u16 { 11011 }
-fn default_vjoy_device_id() -> u8 { 2 }
+fn default_vjoy_device_id() -> u8 { 1 }
 
 impl Default for Settings {
     fn default() -> Self {
