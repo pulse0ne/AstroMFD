@@ -23,11 +23,18 @@ use crate::journal::{JournalHandle, detect_elite_dangerous_journal_path};
 use crate::settings::Settings;
 
 pub async fn run() {
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
-        .invoke_handler(commands::command_handlers())
+        .invoke_handler(commands::command_handlers());
+
+    #[cfg(feature = "updater")]
+    {
+        builder = builder
+            .plugin(tauri_plugin_process::init())
+            .plugin(tauri_plugin_updater::Builder::new().build());
+    }
+
+    builder
         .setup(move |app| {
             locations::initialize();
 

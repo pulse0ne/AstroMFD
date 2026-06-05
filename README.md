@@ -1,20 +1,28 @@
 # AstroMFD
 
+![AstroFMD Logo](src-tauri/icons/128x128@2x.png)
+
 An open-source, configurable multi-function display (MFD) panel builder for space sims and flight games. Design custom button layouts on your desktop, then use any phone or tablet as a touch-screen control panel over your local network.
 
 Built with [Tauri](https://tauri.app), React, and Rust.
 
 ## Features
 
-- **Visual drag-and-drop editor** - place buttons, sliders, labels, panels, carousels, and images on a canvas with snap guides and alignment tools
-- **Action sequences** - bind multi-step macros to a single button press (key combos, delays, sounds)
-- **Mobile client** - any device with a browser becomes a control panel (served over your local network)
-- **Screen effects** - scanlines, LCD grid, phosphor glow, vignette, flicker, chromatic aberration, noise
-- **Elite Dangerous integration** - journal file watching with live status events
-- **Input backends** - VJoy (Windows), evdev virtual device (Linux)
-- **Auto-update** - checks GitHub Releases on startup and prompts to install
+- **Visual drag-and-drop editor**: place buttons, sliders, labels, panels, carousels, and images on a canvas with snap guides and alignment tools
+- **Action sequences**: bind multi-step macros to a single button press (key combos, delays, sounds)
+- **Mobile client**: any device with a browser becomes a control panel (served over your local network)
+- **Screen effects**: scanlines, LCD grid, phosphor glow, vignette, flicker, chromatic aberration, noise
+- **Elite Dangerous integration**: journal file watching with live status events (WIP)
+- **Input backends**: VJoy (Windows), evdev virtual device (Linux)
+- **Auto-update**: checks GitHub Releases on startup and prompts to install
 
-## Getting Started
+
+# Usage
+After installation, launch the app and create a new screen set. Use the editor to design your layout, then connect your mobile device to the same Wi-Fi network and open the provided URL (or scan the QR code) to access your custom control panel.
+
+Coming soon: link to video demo
+
+## Getting Started Developing
 
 ### Prerequisites
 
@@ -89,18 +97,10 @@ The workflow builds for macOS (ARM + Intel), Windows, and Linux, then creates a 
 
 ## Building without auto-update
 
-To build a standalone version that never phones home for updates, remove the updater configuration before building:
-
-1. In `src-tauri/tauri.conf.json`, delete the `"plugins"` section and remove `"createUpdaterArtifacts": true` from `"bundle"`.
-
-2. In `src-tauri/src/lib.rs`, remove the `.plugin(tauri_plugin_updater::Builder::new().build())` line.
-
-3. In `src/App.tsx`, remove the `<UpdateChecker />` component and its import.
-
-4. Build normally:
+To build a standalone version without the auto-update plugin, pass `--no-default-features`:
 
 ```bash
-yarn tauri build
+yarn tauri build -- --no-default-features
 ```
 
 ## Development Notes

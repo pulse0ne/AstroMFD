@@ -39,9 +39,13 @@ dirs = "6.0.0"
 rodio = "0.22.2"
 uuid = { version = "1.18.1", features = ["v4"] }
 rfd = "0.15"
-tauri-plugin-updater = "2.10.1"
-tauri-plugin-process = "2.3.1"
+tauri-plugin-updater = { version = "2.10.1", optional = true }
+tauri-plugin-process = { version = "2.3.1", optional = true }
 zip = { version = "8.6.0", features = ["deflate"] }
+
+[features]
+default = ["updater"]
+updater = ["tauri-plugin-updater", "tauri-plugin-process"]
 
 [target.'cfg(target_os = "windows")'.dependencies]
 vjoy = "0.6.0"

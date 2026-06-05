@@ -61,6 +61,8 @@ Tests live alongside source files as `*.test.ts` in `src/utils/`.
 cd src-tauri && cargo test
 ```
 
+Testing is....tough in tauri. Still needs lots of love, so if you'd like to contribute in this area, it would be very much appreciated!
+
 ## Building
 
 Local builds require the `TAURI_SIGNING_PRIVATE_KEY` environment variable for updater artifact signing. For development, use `yarn tauri dev` instead.
