@@ -9,7 +9,7 @@ import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 /*--------------------
   TODO:
-- Collapsible sections in attribute panel?
+- FIX: icon + text in mobile client is wonky
 - Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
 - User color themes?
 - Configuration option for SVG preserveAspectRatio?

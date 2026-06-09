@@ -67,20 +67,24 @@ Testing is....tough in tauri. Still needs lots of love, so if you'd like to cont
 
 Local builds require the `TAURI_SIGNING_PRIVATE_KEY` environment variable for updater artifact signing. For development, use `yarn tauri dev` instead.
 
-Release builds are handled by GitHub Actions. Push a version tag to trigger:
+Release builds are handled by GitHub Actions. Push a version tag to trigger (or use the script in `scripts/publish.sh`):
 
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
 ```
 
-This builds for macOS (arm64 + x86_64), Windows, and Linux, then creates a draft GitHub Release.
+This builds for Windows and Linux, then creates a draft GitHub Release.
 
 ## Code Style
 
 - TypeScript is formatted with Prettier (run `yarn format` before committing)
 - Rust uses standard `rustfmt` conventions
 - Imports are sorted by the `@ianvs/prettier-plugin-sort-imports` plugin
+
+## LLM/AI Policy
+
+Use of generative AI in this project should be avoided. All pull requests must disclose if generative AI was used and may be rejected.
 
 ## Architecture Notes
 
