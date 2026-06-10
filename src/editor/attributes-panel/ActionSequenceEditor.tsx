@@ -1,7 +1,7 @@
 import { ActionSequence, ActionStep, InputKey } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useMemo, useState } from "react";
-import { MdAdd, MdPlayArrow } from "react-icons/md";
+import { MdAdd, MdPlayArrow, MdWarning } from "react-icons/md";
 import { PiArrowDown, PiArrowUp, PiX } from "react-icons/pi";
 
 import { Modal } from "../../Modal.tsx";
@@ -343,8 +343,12 @@ export function ActionSequenceEditor({
             <span>ADD STEP</span>
           </div>
         </button>
-        {/* TODO: warn text and symbol */}
-        {showWarning && <div>Warn</div>}
+        {showWarning && (
+          <div className="row align-items-center gap-8" style={{ color: "#ffaa00" }}>
+            <MdWarning size={16} />
+            <span><small>Warning: Some "Key Down" events do not have matching "Key Up" events. This will leave the key pressed down until a "Key Up" event from another source is fired.</small></span>
+          </div>
+        )}
       </div>
     </Modal>
   );

@@ -55,7 +55,6 @@ export function Carousel({
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     startXRef.current = e.clientX;
     isDraggingRef.current = true;
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   }, []);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {

@@ -1,4 +1,4 @@
-import { Widget } from "@common/shared/models";
+import { ShapeAttributes, TextAttributes, Widget } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
 import {
   PropsWithChildren,
@@ -51,6 +51,8 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
   const hasRedos = useECStore(hasRedosSelector);
   const undo = useECStore((state) => state.undo);
   const redo = useECStore((state) => state.redo);
+  const lastStyle = useECStore((state) => state.lastStyle);
+  const lastTextStyle = useECStore((state) => state.lastTextStyle);
   const navigate = useNavigate();
   const { defaultKey } = useAvailableInputKeys();
 
@@ -67,9 +69,9 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
     }
   };
 
-  const handleAddWidget = (createWidgetFn: () => Widget) => {
+  const handleAddWidget = (createWidgetFn: (lastStyle?: ShapeAttributes, lastTextStyle?: TextAttributes) => Widget) => {
     setAddPopupOpen(false);
-    const newWidget = createWidgetFn();
+    const newWidget = createWidgetFn(lastStyle || undefined, lastTextStyle || undefined);
     if (newWidget.type === "button") {
       if (defaultKey.type === "joystickButton") {
         const nextButton = findNextAvailableButton(widgets ?? []);
@@ -127,7 +129,7 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
           }
         >
           <AddWidgetMenuItem
-            onClick={() => handleAddWidget(() => createButton(defaultKey))}
+            onClick={() => handleAddWidget(() => createButton(defaultKey, lastStyle || undefined, lastTextStyle || undefined))}
           >
             Button
           </AddWidgetMenuItem>

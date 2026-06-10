@@ -2,6 +2,7 @@ import {
   CarouselAttributes,
   PanelAttributes,
   Screen,
+  ShapeAttributes,
   Widget,
 } from "@common/shared/models";
 
@@ -71,4 +72,10 @@ export function editingContainerSelector(
   if (!widget) return null;
   if (widget.type === "carousel" || widget.type === "panel") return widget;
   return null;
+}
+
+export function lastStyleSelector(
+  state: RootState,
+): ShapeAttributes | null {
+  return state.lastStyle;
 }

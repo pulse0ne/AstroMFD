@@ -1,4 +1,4 @@
-import { Position, Screen, ScreenSet, Size, Widget } from "@common/shared/models";
+import { Position, Screen, ScreenSet, ShapeAttributes, Size, TextAttributes, Widget } from "@common/shared/models";
 
 import { UndoableCommand } from "./command.ts";
 import { History } from "./history.ts";
@@ -59,7 +59,18 @@ export type HistorySlice = {
   redo: () => void;
 };
 
+export type LastStyleSlice = {
+  // state
+  lastStyle: ShapeAttributes | null;
+  lastTextStyle: TextAttributes | null;
+
+  // mutators
+  updateLastStyle: (style: ShapeAttributes) => void;
+  updateLastTextStyle: (text: TextAttributes) => void;
+};
+
 export type RootState = WidgetSlice &
   ScreenSlice &
   ScreenSetSlice &
-  HistorySlice;
+  HistorySlice &
+  LastStyleSlice;

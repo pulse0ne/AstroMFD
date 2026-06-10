@@ -2,7 +2,7 @@ import { ImageAttributes } from "@common/shared/models";
 import { Konva } from "konva/lib/_FullInternals";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Shape } from "konva/lib/Shape";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Group, Image as KonvaImage, Rect } from "react-konva";
 
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
@@ -20,17 +20,14 @@ export function ImageWidget({
   onDragSnap,
 }: ImageWidgetProps) {
   const groupRef = useRef<Konva.Group | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const konvaImageRef = useRef<Konva.Image | null>(null);
+  const [image, setImage] = useState <HTMLImageElement | null>(null);
 
   useEffect(() => {
     if (!attr.file) return;
     const img = new window.Image();
     img.src = `http://localhost:11011/images/${encodeURIComponent(screenSetId)}/${encodeURIComponent(attr.file)}`;
     img.onload = () => {
-      imageRef.current = img;
-      konvaImageRef.current?.image(img);
-      konvaImageRef.current?.getLayer()?.batchDraw();
+      setImage(img);
     };
   }, [attr.file]);
 
@@ -110,10 +107,9 @@ export function ImageWidget({
       onTransform={handleTransform}
       onTransformEnd={handleTransformEnd}
     >
-      {imageRef.current ? (
+      {image ? (
         <KonvaImage
-          ref={konvaImageRef}
-          image={imageRef.current}
+          image={image}
           width={attr.shape.size.width}
           height={attr.shape.size.height}
         />

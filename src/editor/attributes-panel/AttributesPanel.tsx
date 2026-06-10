@@ -61,6 +61,8 @@ export function AttributesPanel({
   const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
   const screens = useECStore(screensSelector);
   const currentScreen = useECStore(activeScreenSelector);
+  const updateLastStyle = useECStore((state) => state.updateLastStyle);
+  const updateLastTextStyle = useECStore((state) => state.updateLastTextStyle);
 
   const handleSizeChange = (size: Size) => {
     if (!selectedWidget) return;
@@ -80,6 +82,7 @@ export function AttributesPanel({
 
   const handleShapeAttrChange = (attr: ShapeAttributes, type: string) => {
     onUpdate(Object.assign({}, selectedWidget, { shape: attr }), type);
+    updateLastStyle(attr);
   };
 
   const handlePressedShapeAttrChange = (
@@ -96,6 +99,7 @@ export function AttributesPanel({
 
   const handleTextAttrChange = (attr: TextAttributes, type: string) => {
     onUpdate(Object.assign({}, selectedWidget, { text: attr }), type);
+    updateLastTextStyle(attr);
   };
 
   const handlePressedTextAttrChange = (

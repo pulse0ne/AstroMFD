@@ -7,6 +7,7 @@ import { createScreenSlice } from "./screen.ts";
 import { createScreenSetSlice } from "./screenSet.ts";
 import { RootState } from "./types.ts";
 import { createWidgetSlice } from "./widget.ts";
+import { createLastStyleSlice } from "./lastStyle.ts";
 
 enableMapSet();
 
@@ -16,5 +17,6 @@ export const useECStore = create<RootState>()(
     ...createScreenSlice(...args),
     ...createWidgetSlice(...args),
     ...createHistorySlice(...args),
+    ...createLastStyleSlice(...args),
   })),
 );

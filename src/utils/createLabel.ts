@@ -1,7 +1,7 @@
-import { LabelAttributes } from "@common/shared/models";
+import { LabelAttributes, ShapeAttributes, TextAttributes } from "@common/shared/models";
 import { v4 as uuid } from "uuid";
 
-export function createLabel(): LabelAttributes {
+export function createLabel(_lastStyle?: ShapeAttributes, lastTextStyle?: TextAttributes): LabelAttributes {
   return {
     id: uuid(),
     type: "label",
@@ -17,12 +17,12 @@ export function createLabel(): LabelAttributes {
     },
     text: {
       text: "Label",
-      font: null,
-      fontSize: 16,
-      fontColor: "white",
-      shadow: null,
-      horizontalAlignment: "center",
-      verticalAlignment: "middle",
+      font: lastTextStyle?.font || null,
+      fontSize: lastTextStyle?.fontSize || 16,
+      fontColor: lastTextStyle?.fontColor || "white",
+      shadow: lastTextStyle?.shadow || null,
+      horizontalAlignment: lastTextStyle?.horizontalAlignment || "center",
+      verticalAlignment: lastTextStyle?.verticalAlignment || "middle",
     },
     icon: null,
     usesVariables: false,
