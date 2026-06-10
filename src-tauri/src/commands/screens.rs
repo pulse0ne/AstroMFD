@@ -249,11 +249,25 @@ pub async fn duplicate_screen_set(id: String) -> Result<Vec<ScreenSetMeta>, Stri
         }
     }
 
+    // Copy thumb images (may have opportunity for optimization here)
+    let mut screen_id_map = HashMap::new();
+    for s in source.screens.iter() {
+        screen_id_map.entry(s.id.clone()).or_insert_with(|| Uuid::new_v4().to_string());
+    }
+
+    for (s, d) in screen_id_map.iter() {
+        let src_file = screen_img_dir().join(format!("{}.png", s));
+        if src_file.exists() {
+            let dest_file = screen_img_dir().join(format!("{}.png", d));
+            let _ = fs::copy(src_file, dest_file);
+        }
+    }
+
     let new_set = ScreenSet {
         id: new_id,
         name: format!("{} (Copy)", source.name),
         screens: source.screens.into_iter().map(|s| Screen {
-            id: Uuid::new_v4().to_string(),
+            id: screen_id_map.get(&s.id).unwrap_or(&Uuid::new_v4().to_string()).clone(),
             ..s
         }).collect(),
         size: source.size,

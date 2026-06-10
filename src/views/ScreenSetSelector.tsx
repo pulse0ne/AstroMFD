@@ -59,6 +59,7 @@ export function ScreenSetSelector() {
   const refresh = useCallback(() => {
     invoke<ScreenSetMeta[]>("list_screen_sets")
       .then(setScreenSets)
+      .catch(e => console.error(e))
       .finally(() => setLoading(false));
   }, []);
 
@@ -77,7 +78,7 @@ export function ScreenSetSelector() {
             const url = URL.createObjectURL(blob);
             setScreenImages((prev) => ({ ...prev, [ss.id]: url }));
           },
-        );
+        ).catch(e => console.error(e));
       });
   }, [screenSets]);
 

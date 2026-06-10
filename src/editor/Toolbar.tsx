@@ -115,7 +115,8 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
           onOpen={() => setAddPopupOpen(true)}
           onClose={() => setAddPopupOpen(false)}
           arrow={false}
-          contentStyle={{ background: "var(--toolbar-color-hex)" }}
+          contentStyle={{ background: "var(--toolbar-color-hex)", width: 128 }}
+          position="bottom left"
           trigger={
             <button className="p16-l">
               <div className="row align-items-center gap-4">

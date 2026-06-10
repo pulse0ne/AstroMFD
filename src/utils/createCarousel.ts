@@ -1,6 +1,7 @@
 import { CarouselAttributes } from "@common/shared/models";
 import { v4 as uuid } from "uuid";
 
+// TODO: add default page buttons, make sure they can't be deleted
 export function createCarousel(): CarouselAttributes {
   return {
     id: uuid(),

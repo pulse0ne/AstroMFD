@@ -2,6 +2,7 @@
   "name": "AstroMFD",
   "short_name": "AstroMFD",
   "display": "standalone",
+  "start_url": "/",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
   "icons": [

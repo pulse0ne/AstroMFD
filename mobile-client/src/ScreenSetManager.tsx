@@ -77,10 +77,22 @@ export function ScreenSetManager() {
   const selectedScreenSet = screenSets.find((i) => i.id === selectedId);
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", position: "relative" }}>
       {selectedId === null && (
         <div style={{ overflowY: "auto", margin: 12 }}>
-          <h2 style={{ margin: 0 }}>Screen Sets</h2>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
+            <h2 style={{ margin: 0 }}>Screen Sets</h2>
+            <button onClick={() => document.documentElement.requestFullscreen()}>
+              Fullscreen
+            </button>
+          </div>
           {screenSets.map((s) => (
             <div
               key={s.id}

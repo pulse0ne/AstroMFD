@@ -1,6 +1,6 @@
 import { ActionSequence, ActionStep, InputKey } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdAdd, MdPlayArrow } from "react-icons/md";
 import { PiArrowDown, PiArrowUp, PiX } from "react-icons/pi";
 
@@ -67,6 +67,29 @@ function changeStepType(step: ActionStep, newType: StepType): ActionStep {
   }
 }
 
+function inputKeysEqual(a: InputKey, b: InputKey): boolean {
+  if (a.type !== b.type) return false;
+  if (a.type === "joystickButton" && b.type === "joystickButton") {
+    return a.button === b.button;
+  } else if (a.type !== "joystickButton" && b.type !== "joystickButton") {
+    return a.key === b.key;
+  }
+  return false; // shouldn't get here
+}
+
+function validateSequence(sequence: ActionStep[]): boolean {
+  const keydowns = sequence.filter(s => s.type === "keyDown");
+  const keyups = sequence.filter(s => s.type === "keyUp");
+  keyups.forEach(keyup => {
+    const keyupKey = keyup.key;
+    const keydownIndex = keydowns.findIndex(k => inputKeysEqual(k.key, keyupKey));
+    if (keydownIndex > -1) {
+      keydowns.splice(keydownIndex, 1);
+    }
+  });
+  return keydowns.length === 0;
+}
+
 export function ActionSequenceEditor({
   open,
   onClose,
@@ -76,6 +99,8 @@ export function ActionSequenceEditor({
 }: ActionSequenceEditorProps) {
   const [draft, setDraft] = useState<ActionStep[]>(() => [...value.steps]);
   const [audioClips, setAudioClips] = useState<AudioEntry[]>([]);
+
+  const showWarning = useMemo(() => !validateSequence(draft), [draft]);
 
   useEffect(() => {
     if (open) {
@@ -318,6 +343,8 @@ export function ActionSequenceEditor({
             <span>ADD STEP</span>
           </div>
         </button>
+        {/* TODO: warn text and symbol */}
+        {showWarning && <div>Warn</div>}
       </div>
     </Modal>
   );
