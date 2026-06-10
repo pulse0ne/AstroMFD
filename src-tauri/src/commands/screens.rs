@@ -5,7 +5,7 @@ use std::io::BufReader;
 use log::debug;
 use serde::Serialize;
 use uuid::Uuid;
-use crate::locations::{save_dir, screen_set_dir, screen_set_images_dir, screen_set_sounds_dir};
+use crate::locations::{save_dir, screen_img_dir, screen_set_dir, screen_set_images_dir, screen_set_sounds_dir};
 use crate::state::{AppState, ServerEvent};
 use crate::widget::Widget::Button;
 use crate::widget::base::{Position, ShapeAttributes, Size, SvgXmlNode, TextAttributes, WidgetBase};
@@ -118,6 +118,17 @@ pub async fn update_clients(state: tauri::State<'_, AppState>, screen_set: Scree
 pub async fn delete_screen_set(id: String) -> Result<Vec<ScreenSetMeta>, String> {
     let dir = screen_set_dir(&id);
     if dir.exists() {
+        let layout_path = dir.join("layout.json");
+        if let Ok(file) = File::open(&layout_path) {
+            let reader = BufReader::new(file);
+            if let Ok(screen_set) = serde_json::from_reader::<_, ScreenSet>(reader) {
+                let thumbs_dir = screen_img_dir();
+                for screen in &screen_set.screens {
+                    let thumb_path = thumbs_dir.join(format!("{}.png", screen.id));
+                    let _ = fs::remove_file(thumb_path);
+                }
+            }
+        }
         fs::remove_dir_all(&dir)
             .map_err(|e| format!("Failed to delete screen set directory {:?}: {e}", dir))?;
     }

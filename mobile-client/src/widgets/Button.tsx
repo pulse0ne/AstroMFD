@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState, type CSSProperties } from "react";
 
 import { gradientString } from "../utils.ts";
 import { hAlignmentMap, vAlignmentMap } from "./common.ts";
-import { IconRenderer } from "./IconRenderer.tsx";
+import { computeIconLayout, IconRenderer } from "./IconRenderer.tsx";
 import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type ButtonProps = {
@@ -91,10 +91,19 @@ export function Button({
           : undefined,
   };
 
+  const iconLayout = useMemo(() => {
+    if (!attr.icon) return null;
+    return computeIconLayout(attr.icon, attr.shape.size.width, attr.shape.size.height);
+  }, [attr.icon, attr.shape.size.width, attr.shape.size.height]);
+
   const textContainerStyle: CSSProperties = {
-    width: "100%",
-    height: "100%",
+    position: "absolute",
+    left: iconLayout?.textX ?? 0,
+    top: iconLayout?.textY ?? 0,
+    width: iconLayout?.textWidth ?? attr.shape.size.width,
+    height: iconLayout?.textHeight ?? attr.shape.size.height,
     display: "flex",
+    flexDirection: "column",
     justifyContent: vAlignmentMap[attr.text.verticalAlignment],
     alignItems: hAlignmentMap[attr.text.horizontalAlignment],
   };

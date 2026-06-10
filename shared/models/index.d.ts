@@ -145,11 +145,14 @@ export type ActionSequence = {
 
 export type IconPosition = "left" | "right" | "top" | "bottom";
 
+export type IconLayout = "fit" | "equal" | "centered";
+
 export type WidgetIcon = {
   svg: SvgXmlNode;
   size: number;
   position: IconPosition;
   gap: number;
+  layout: IconLayout;
 };
 
 export type ButtonAttributes = WidgetBase<"button"> & {

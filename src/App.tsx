@@ -7,20 +7,6 @@ import { UpdateChecker } from "./UpdateChecker.tsx";
 import { Creator } from "./views/Creator.tsx";
 import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
-/*--------------------
-  TODO:
-- FIX: icon + text in mobile client is wonky
-- Haptic feedback? (not supported in mobile safari; will be hard to test; beta feature?)
-- User color themes?
-- Configuration option for SVG preserveAspectRatio?
-- Configuration option for SVG stroke scale enabled/disabled?
-
------ Elite: Dangerous -specific
-- Turn ED-specific stuff into "plugin" that can be enabled/disabled
-- Build out journal events (check out status.json)
-- Nav triggers (open screen on specified ED journal event)
----------------------*/
-
 function App() {
   return (
     <main>

@@ -1,4 +1,4 @@
-import { IconPosition, SvgXmlNode, WidgetIcon } from "@common/shared/models";
+import { IconLayout, IconPosition, SvgXmlNode, WidgetIcon } from "@common/shared/models";
 import { useRef, useState } from "react";
 import Popup from "reactjs-popup";
 
@@ -19,6 +19,12 @@ const POSITIONS: { value: IconPosition; label: string }[] = [
   { value: "left", label: "Text Left" },
 ];
 
+const LAYOUTS: { value: IconLayout; label: string }[] = [
+  { value: "centered", label: "Centered" },
+  { value: "fit", label: "Fit" },
+  { value: "equal", label: "Equal" },
+];
+
 export function IconSection({ icon, onUpdate }: IconSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [presetsOpen, setPresetsOpen] = useState(false);
@@ -31,7 +37,7 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
       try {
         const svg = SvgUtils.parse(reader.result as string);
         onUpdate(
-          { svg, size: 24, position: "bottom", gap: 4 },
+          { svg, size: 24, position: "bottom", gap: 4, layout: "centered" },
           "widget.icon",
         );
       } catch (err) {
@@ -46,7 +52,7 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
     try {
       const svg = SvgUtils.parse(rawSvg);
       onUpdate(
-        { svg, size: 24, position: icon?.position ?? "bottom", gap: icon?.gap ?? 4 },
+        { svg, size: 24, position: icon?.position ?? "bottom", gap: icon?.gap ?? 4, layout: icon?.layout ?? "centered" },
         "widget.icon",
       );
       setPresetsOpen(false);
@@ -77,6 +83,11 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
   const handleGap = (gap: number) => {
     if (!icon) return;
     onUpdate({ ...icon, gap }, "widget.icon.gap");
+  };
+
+  const handleLayout = (layout: IconLayout) => {
+    if (!icon) return;
+    onUpdate({ ...icon, layout }, "widget.icon.layout");
   };
 
   return (
@@ -234,6 +245,20 @@ export function IconSection({ icon, onUpdate }: IconSectionProps) {
               value={icon.gap}
               onChange={(e) => handleGap(parseInt(e.target.value) || 0)}
             />
+          </div>
+          <div className="row align-items-center gap-16">
+            <span style={{ width: 60 }}>Layout:</span>
+            <select
+              value={icon.layout ?? "centered"}
+              onChange={(e) => handleLayout(e.target.value as IconLayout)}
+              style={{ flex: 1 }}
+            >
+              {LAYOUTS.map((l) => (
+                <option key={l.value} value={l.value}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
           </div>
           <SvgColorEditor svg={icon.svg} onUpdate={handleSvgUpdate} />
         </div>

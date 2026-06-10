@@ -132,11 +132,22 @@ pub enum IconPosition {
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub enum IconLayout {
+    Fit,
+    Equal,
+    #[default]
+    Centered,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct WidgetIcon {
     pub svg: SvgXmlNode,
     pub size: f64,
     pub position: IconPosition,
     pub gap: f64,
+    #[serde(default)]
+    pub layout: IconLayout,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
