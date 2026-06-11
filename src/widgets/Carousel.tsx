@@ -1,4 +1,4 @@
-import { CarouselAttributes, Gradient } from "@common/shared/models";
+import { CarouselAttributes, CarouselPageButton, Gradient } from "@common/shared/models";
 import { Konva } from "konva/lib/_FullInternals";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Shape } from "konva/lib/Shape";
@@ -9,6 +9,7 @@ import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
 import { SvgContent } from "./SvgContent.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 import { WidgetRenderer } from "./WidgetRenderer.tsx";
+import { IconContent } from "./IconContent.tsx";
 
 export type CarouselProps = WidgetPropsBase & {
   attr: CarouselAttributes;
@@ -180,17 +181,39 @@ export function Carousel({
               state="primary"
             />
           ))}
+          {attr.navigation !== "swipe" && (
+            <>
+              <CarouselButton
+                attr={attr.buttons.previous}
+              />
+              <CarouselButton
+                attr={attr.buttons.next}
+              />
+            </>
+          )}
         </Group>
       ) : (
-        <Text
-          text={`Page ${attr.activePageIndex + 1} (empty)`}
-          width={attr.shape.size.width}
-          height={attr.shape.size.height - 24}
-          align="center"
-          verticalAlign="middle"
-          fontSize={12}
-          fill="rgba(255,255,255,0.3)"
-        />
+        <Group>
+          <Text
+            text={`Page ${attr.activePageIndex + 1} (empty)`}
+            width={attr.shape.size.width}
+            height={attr.shape.size.height - 24}
+            align="center"
+            verticalAlign="middle"
+            fontSize={12}
+            fill="rgba(255,255,255,0.3)"
+          />
+          {attr.navigation !== "swipe" && (
+            <>
+              <CarouselButton
+                attr={attr.buttons.previous}
+              />
+              <CarouselButton
+                attr={attr.buttons.next}
+              />
+            </>
+          )}
+        </Group>
       )}
       {attr.pages.length > 1 &&
         attr.pages.map((page, i) => (
@@ -206,6 +229,37 @@ export function Carousel({
             }
           />
         ))}
+    </Group>
+  );
+}
+
+type CarouselButtonProps = {
+  attr: CarouselPageButton;
+};
+
+function CarouselButton({ attr }: CarouselButtonProps) {
+  console.log("rendering");
+  // TODO: finish this
+  return (
+    <Group
+      x={attr.shape.position.x}
+      y={attr.shape.position.y}
+      width={attr.shape.size.width}
+      height={attr.shape.size.height}
+    >
+      <Rect
+        x={attr.shape.position.x}
+        y={attr.shape.position.y}
+        fill={attr.shape.fill?.value as string ?? undefined}
+        stroke={attr.shape.stroke ?? undefined}
+        strokeWidth={attr.shape.strokeWidth}
+        cornerRadius={attr.shape.cornerRadius}
+      />
+      <IconContent
+        icon={attr.icon}
+        containerWidth={attr.shape.size.width}
+        containerHeight={attr.shape.size.height}
+      />
     </Group>
   );
 }
