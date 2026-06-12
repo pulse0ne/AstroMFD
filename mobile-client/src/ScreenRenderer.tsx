@@ -113,6 +113,7 @@ export function ScreenRenderer({
           {widget.type === "carousel" && (
             <Carousel
               attr={widget}
+              screenSetId={screenSetId}
               onExecuteActions={handleExecuteActions}
               onDown={handleDown}
               onUp={handleUp}

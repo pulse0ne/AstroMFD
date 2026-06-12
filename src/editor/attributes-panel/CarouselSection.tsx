@@ -41,65 +41,67 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
 
   return (
     <CollapsibleSection title="Carousel">
-      <div className="row align-items-center gap-8">
-        <label style={{ fontSize: 12, opacity: 0.7, flex: 1 }}>Navigation</label>
-        <select
-          value={attr.navigation ?? "swipe"}
-          onChange={handleNavigationChange}
-          style={{ fontSize: 12 }}
-        >
-          <option value="swipe">Swipe</option>
-          <option value="buttons">Buttons</option>
-          <option value="both">Both</option>
-        </select>
-      </div>
-      <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "4px 0" }} />
-      <div className="col gap-4">
-        {attr.pages.map((page, i) => (
-          <div
-            key={page.id}
-            className="row align-items-center gap-8"
-            style={{
-              padding: "4px 8px",
-              borderRadius: 4,
-              background:
-                i === attr.activePageIndex
-                  ? "rgba(255,255,255,0.1)"
-                  : undefined,
-              cursor: "pointer",
-            }}
-            onClick={() => handlePageSelect(i)}
+      <div className="col gap-8">
+        <div className="row align-items-center gap-8">
+          <label style={{ fontSize: 12, opacity: 0.7, flex: 1 }}>Navigation</label>
+          <select
+            value={attr.navigation ?? "swipe"}
+            onChange={handleNavigationChange}
+            style={{ fontSize: 12 }}
           >
-            <span style={{ flex: 1, fontSize: 12 }}>
-              Page {i + 1}
-              {page.widgets.length > 0 && (
-                <span style={{ opacity: 0.5 }}>
-                  {" "}
-                  ({page.widgets.length} widget
-                  {page.widgets.length !== 1 ? "s" : ""})
-                </span>
+            <option value="swipe">Swipe</option>
+            <option value="buttons">Buttons</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+        <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "4px 0" }} />
+        <div className="col gap-4">
+          {attr.pages.map((page, i) => (
+            <div
+              key={page.id}
+              className="row align-items-center gap-8"
+              style={{
+                padding: "4px 8px",
+                borderRadius: 4,
+                background:
+                  i === attr.activePageIndex
+                    ? "rgba(255,255,255,0.1)"
+                    : undefined,
+                cursor: "pointer",
+              }}
+              onClick={() => handlePageSelect(i)}
+            >
+              <span style={{ flex: 1, fontSize: 12 }}>
+                Page {i + 1}
+                {page.widgets.length > 0 && (
+                  <span style={{ opacity: 0.5 }}>
+                    {" "}
+                    ({page.widgets.length} widget
+                    {page.widgets.length !== 1 ? "s" : ""})
+                  </span>
+                )}
+              </span>
+              {attr.pages.length > 1 && (
+                <MdDelete
+                  size={14}
+                  style={{ opacity: 0.5, cursor: "pointer" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeletePage(i);
+                  }}
+                />
               )}
-            </span>
-            {attr.pages.length > 1 && (
-              <MdDelete
-                size={14}
-                style={{ opacity: 0.5, cursor: "pointer" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeletePage(i);
-                }}
-              />
-            )}
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
+        <button
+          className="btn btn-sm row align-items-center gap-4"
+          onClick={handleAddPage}
+        >
+          <MdAdd size={14} />
+          <span>Add Page</span>
+        </button>
       </div>
-      <button
-        className="btn btn-sm row align-items-center gap-4"
-        onClick={handleAddPage}
-      >
-        <MdAdd size={14} />
-        <span>Add Page</span>
-      </button>
     </CollapsibleSection>
   );
 }

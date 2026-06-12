@@ -6,14 +6,34 @@ import { useMemo, useRef } from "react";
 import { Circle, Group, Rect, Text } from "react-konva";
 
 import { coordinatesFromAngle } from "../utils/coordinatesFromAngle.ts";
+import { IconContent } from "./IconContent.tsx";
 import { SvgContent } from "./SvgContent.tsx";
 import { WidgetPropsBase } from "./WidgetPropsBase.ts";
 import { WidgetRenderer } from "./WidgetRenderer.tsx";
-import { IconContent } from "./IconContent.tsx";
 
 export type CarouselProps = WidgetPropsBase & {
   attr: CarouselAttributes;
 };
+
+function computeButtonPosition(
+  btn: CarouselPageButton,
+  containerWidth: number,
+  containerHeight: number,
+): { x: number; y: number } {
+  const { corner, margin } = btn;
+  const { width, height } = btn.shape.size;
+
+  switch (corner) {
+    case "top-left":
+      return { x: margin, y: margin };
+    case "top-right":
+      return { x: containerWidth - width - margin, y: margin };
+    case "bottom-left":
+      return { x: margin, y: containerHeight - height - margin };
+    case "bottom-right":
+      return { x: containerWidth - width - margin, y: containerHeight - height - margin };
+  }
+}
 
 export function Carousel({
   attr,
@@ -135,6 +155,8 @@ export function Carousel({
   const dotsStartX =
     attr.shape.size.width / 2 - ((attr.pages.length - 1) * dotSpacing) / 2;
 
+  const showButtons = attr.navigation !== "swipe";
+
   return (
     <Group
       id={attr.id}
@@ -181,39 +203,31 @@ export function Carousel({
               state="primary"
             />
           ))}
-          {attr.navigation !== "swipe" && (
-            <>
-              <CarouselButton
-                attr={attr.buttons.previous}
-              />
-              <CarouselButton
-                attr={attr.buttons.next}
-              />
-            </>
-          )}
         </Group>
       ) : (
-        <Group>
-          <Text
-            text={`Page ${attr.activePageIndex + 1} (empty)`}
-            width={attr.shape.size.width}
-            height={attr.shape.size.height - 24}
-            align="center"
-            verticalAlign="middle"
-            fontSize={12}
-            fill="rgba(255,255,255,0.3)"
+        <Text
+          text={`Page ${attr.activePageIndex + 1} (empty)`}
+          width={attr.shape.size.width}
+          height={attr.shape.size.height - 24}
+          align="center"
+          verticalAlign="middle"
+          fontSize={12}
+          fill="rgba(255,255,255,0.3)"
+        />
+      )}
+      {showButtons && (
+        <>
+          <CarouselButtonRenderer
+            btn={attr.buttons.previous}
+            containerWidth={attr.shape.size.width}
+            containerHeight={attr.shape.size.height}
           />
-          {attr.navigation !== "swipe" && (
-            <>
-              <CarouselButton
-                attr={attr.buttons.previous}
-              />
-              <CarouselButton
-                attr={attr.buttons.next}
-              />
-            </>
-          )}
-        </Group>
+          <CarouselButtonRenderer
+            btn={attr.buttons.next}
+            containerWidth={attr.shape.size.width}
+            containerHeight={attr.shape.size.height}
+          />
+        </>
       )}
       {attr.pages.length > 1 &&
         attr.pages.map((page, i) => (
@@ -233,32 +247,37 @@ export function Carousel({
   );
 }
 
-type CarouselButtonProps = {
-  attr: CarouselPageButton;
-};
+function CarouselButtonRenderer({
+  btn,
+  containerWidth,
+  containerHeight,
+}: {
+  btn: CarouselPageButton;
+  containerWidth: number;
+  containerHeight: number;
+}) {
+  const pos = computeButtonPosition(btn, containerWidth, containerHeight);
+  const fill = useMemo(() => {
+    const f = btn.shape.fill;
+    if (!f) return undefined;
+    if (f.type === "solid") return f.value as string;
+    return undefined;
+  }, [btn.shape.fill]);
 
-function CarouselButton({ attr }: CarouselButtonProps) {
-  console.log("rendering");
-  // TODO: finish this
   return (
-    <Group
-      x={attr.shape.position.x}
-      y={attr.shape.position.y}
-      width={attr.shape.size.width}
-      height={attr.shape.size.height}
-    >
+    <Group x={pos.x} y={pos.y}>
       <Rect
-        x={attr.shape.position.x}
-        y={attr.shape.position.y}
-        fill={attr.shape.fill?.value as string ?? undefined}
-        stroke={attr.shape.stroke ?? undefined}
-        strokeWidth={attr.shape.strokeWidth}
-        cornerRadius={attr.shape.cornerRadius}
+        width={btn.shape.size.width}
+        height={btn.shape.size.height}
+        fill={fill}
+        stroke={btn.shape.stroke ?? undefined}
+        strokeWidth={btn.shape.strokeWidth}
+        cornerRadius={btn.shape.cornerRadius}
       />
       <IconContent
-        icon={attr.icon}
-        containerWidth={attr.shape.size.width}
-        containerHeight={attr.shape.size.height}
+        icon={btn.icon}
+        containerWidth={btn.shape.size.width}
+        containerHeight={btn.shape.size.height}
       />
     </Group>
   );

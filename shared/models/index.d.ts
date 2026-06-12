@@ -122,7 +122,7 @@ export type SliderAction = {
   max: number;
 };
 
-export type WidgetType = "button" | "label" | "panel" | "slider" | "carousel" | "carousel_button" | "image";
+export type WidgetType = "button" | "label" | "panel" | "slider" | "carousel" | "image";
 
 export type WidgetBase<W extends WidgetType> = {
   type: W;
@@ -189,11 +189,16 @@ export type CarouselPage = {
   widgets: Widget[];
 };
 
-export type CarouselPageButton = WidgetBase<"carousel_button"> & {
+export type CarouselButtonCorner = "bottom-left" | "bottom-right" | "top-left" | "top-right";
+
+export type CarouselPageButton = {
+  id: string;
+  corner: CarouselButtonCorner;
+  margin: number;
+  shape: ShapeAttributes;
   icon: WidgetIcon;
   pressed: {
     shape: Partial<ShapeAttributes>;
-    text: Partial<ShapeAttributes>;
   };
 };
 
@@ -204,9 +209,9 @@ export type CarouselAttributes = WidgetBase<"carousel"> & {
   activePageIndex: number;
   navigation: CarouselNavigation;
   buttons: {
-    previous: CarouselPageButton,
-    next: CarouselPageButton,
-  }
+    previous: CarouselPageButton;
+    next: CarouselPageButton;
+  };
 };
 
 export type ImageAttributes = WidgetBase<"image"> & {

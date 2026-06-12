@@ -1,8 +1,105 @@
-import { CarouselAttributes, ShapeAttributes } from "@common/shared/models";
+import { CarouselAttributes, CarouselPageButton, ShapeAttributes } from "@common/shared/models";
 import { v4 as uuid } from "uuid";
 import { fastCopy } from "./fastCopy";
 
-// TODO: add default page buttons, and make sure they can't be deleted
+function createPreviousButton(): CarouselPageButton {
+  return {
+    id: uuid(),
+    corner: "bottom-left",
+    margin: 6,
+    shape: {
+      position: { x: 0, y: 0 },
+      size: { width: 24, height: 24 },
+      fill: { type: "solid", value: "rgba(255, 255, 255, 0.2)" },
+      stroke: null,
+      strokeWidth: 0,
+      cornerRadius: 2,
+      shadow: null,
+      svg: null,
+    },
+    icon: {
+      svg: {
+        name: "svg",
+        parent: null,
+        type: "element",
+        value: "",
+        attributes: { viewBox: "0 0 512 512" },
+        children: [
+          {
+            name: "path",
+            parent: null,
+            type: "element",
+            value: "",
+            attributes: {
+              "d": "M328 112L184 256l144 144",
+              "fill": "none",
+              "stroke": "rgba(255, 255, 255, 1)",
+              "stroke-width": "48",
+              "stroke-linecap": "round",
+              "stroke-linejoin": "round",
+            },
+            children: [],
+          },
+        ],
+      },
+      gap: 0,
+      layout: "centered",
+      position: "top",
+      size: 18,
+    },
+    pressed: { shape: {} },
+  };
+}
+
+function createNextButton(): CarouselPageButton {
+  return {
+    id: uuid(),
+    corner: "bottom-right",
+    margin: 6,
+    shape: {
+      position: { x: 0, y: 0 },
+      size: { width: 24, height: 24 },
+      fill: { type: "solid", value: "rgba(255, 255, 255, 0.2)" },
+      stroke: null,
+      strokeWidth: 0,
+      cornerRadius: 2,
+      shadow: null,
+      svg: null,
+    },
+    icon: {
+      svg: {
+        name: "svg",
+        parent: null,
+        type: "element",
+        value: "",
+        attributes: { viewBox: "0 0 512 512" },
+        children: [
+          {
+            name: "path",
+            parent: null,
+            type: "element",
+            value: "",
+            attributes: {
+              "d": "M184 112l144 144-144 144",
+              "fill": "none",
+              "stroke": "rgba(255, 255, 255, 1)",
+              "stroke-width": "48",
+              "stroke-linecap": "round",
+              "stroke-linejoin": "round",
+            },
+            children: [],
+          },
+        ],
+      },
+      gap: 0,
+      layout: "centered",
+      position: "top",
+      size: 18,
+    },
+    pressed: { shape: {} },
+  };
+}
+
 export function createDefaultCarousel(): CarouselAttributes {
   return {
     id: uuid(),
@@ -21,106 +118,8 @@ export function createDefaultCarousel(): CarouselAttributes {
     activePageIndex: 0,
     navigation: "swipe",
     buttons: {
-      previous: {
-        id: uuid(),
-        type: "carousel_button",
-        shape: {
-          position: { x: 112, y: 364 },
-          size: { width: 24, height: 24 },
-          fill: { type: "solid", value: "rgba(255, 255, 255, 0.2)" },
-          stroke: "rgba(0, 0, 0, 0.0)",
-          strokeWidth: 0,
-          cornerRadius: 2,
-          shadow: null,
-          svg: null,
-        },
-        icon: {
-          svg: {
-            name: "svg",
-            parent: null,
-            type: "element",
-            value: "",
-            attributes: {
-              viewbox: "0 0 512 512",
-            },
-            children: [
-              {
-                name: "path",
-                parent: null,
-                type: "element",
-                value: "",
-                attributes: {
-                  "stroke-linejoin": "round",
-                  "d": "M328 112L184 256l144 144",
-                  "stroke": "rgba(255, 255, 255, 1)",
-                  "fill": "none",
-                  "stroke-width": "48",
-                  "stroke-linecap": "round"
-                },
-                children: [],
-              }
-            ],
-          },
-          gap: 0,
-          layout: "centered",
-          position: "top",
-          size: 18.0,
-        },
-        pressed: {
-          shape: {}, // TODO
-          text: {},
-        },
-      },
-      next: {
-        id: uuid(),
-        type: "carousel_button",
-        shape: {
-          position: { x: 264, y: 364 },
-          size: { width: 24, height: 24 },
-          fill: { type: "solid", value: "rgba(255, 255, 255, 0.2)" },
-          stroke: "rgba(0, 0, 0, 0.0)",
-          strokeWidth: 0,
-          cornerRadius: 2,
-          shadow: null,
-          svg: null,
-        },
-        icon: {
-          svg: {
-            name: "svg",
-            parent: null,
-            type: "element",
-            value: "",
-            attributes: {
-              viewbox: "0 0 512 512",
-            },
-            children: [
-              {
-                name: "path",
-                parent: null,
-                type: "element",
-                value: "",
-                attributes: {
-                  "fill": "none",
-                  "stroke-linecap": "round",
-                  "stroke-linejoin": "round",
-                  "stroke-width": "48",
-                  "stroke": "rgba(255, 255, 255, 1)",
-                  "d": "M184 112l144 144-144 144",
-                },
-                children: [],
-              }
-            ],
-          },
-          gap: 0,
-          layout: "centered",
-          position: "top",
-          size: 18.0,
-        },
-        pressed: {
-          shape: {}, // TODO
-          text: {},
-        },
-      }
+      previous: createPreviousButton(),
+      next: createNextButton(),
     },
   };
 }

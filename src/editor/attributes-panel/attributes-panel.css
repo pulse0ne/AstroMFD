@@ -53,6 +53,38 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.segmented-toggle {
+  display: flex;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.segmented-toggle button {
+  flex: 1;
+  padding: 5px 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.segmented-toggle button:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.segmented-toggle button.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.segmented-toggle button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .shape-preset-item {
   background: rgba(255, 255, 255, 0.05);
   transition: background 0.15s;

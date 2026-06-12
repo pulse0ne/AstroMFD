@@ -1,6 +1,7 @@
 import type {
   ActionStep,
   CarouselAttributes,
+  CarouselPageButton,
   Gradient,
   InputKey,
   JoystickAxis,
@@ -8,6 +9,7 @@ import type {
 import {
   Fragment,
   useCallback,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -15,6 +17,8 @@ import {
 
 import { gradientString } from "../utils.ts";
 import { Button } from "./Button.tsx";
+import { IconRenderer } from "./IconRenderer.tsx";
+import { ImageWidget } from "./ImageWidget.tsx";
 import { Label } from "./Label.tsx";
 import { Panel } from "./Panel.tsx";
 import { Slider } from "./Slider.tsx";
@@ -22,6 +26,7 @@ import { SvgRenderer } from "./SvgRenderer.tsx";
 
 export type CarouselProps = {
   attr: CarouselAttributes;
+  screenSetId: string;
   onExecuteActions: (steps: ActionStep[]) => void;
   onDown: (key: InputKey) => void;
   onUp: (key: InputKey) => void;
@@ -31,8 +36,29 @@ export type CarouselProps = {
 
 const SWIPE_THRESHOLD = 40;
 
+function computeButtonPosition(
+  btn: CarouselPageButton,
+  containerWidth: number,
+  containerHeight: number,
+): { x: number; y: number } {
+  const { corner, margin } = btn;
+  const { width, height } = btn.shape.size;
+
+  switch (corner) {
+    case "top-left":
+      return { x: margin, y: margin };
+    case "top-right":
+      return { x: containerWidth - width - margin, y: margin };
+    case "bottom-left":
+      return { x: margin, y: containerHeight - height - margin };
+    case "bottom-right":
+      return { x: containerWidth - width - margin, y: containerHeight - height - margin };
+  }
+}
+
 export function Carousel({
   attr,
+  screenSetId,
   onExecuteActions,
   onDown,
   onUp,
@@ -44,13 +70,13 @@ export function Carousel({
   const startXRef = useRef(0);
   const isDraggingRef = useRef(false);
 
-  const fill = (() => {
+  const fill = useMemo(() => {
     const f = attr.shape.fill;
     if (!f) return null;
     if (f.type === "solid") return f.value as string;
     if (f.type === "gradient") return gradientString(f.value as Gradient);
     return null;
-  })();
+  }, [attr.shape.fill]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     startXRef.current = e.clientX;
@@ -112,19 +138,6 @@ export function Carousel({
     pointerEvents: "none",
   };
 
-  const navButtonStyle: CSSProperties = {
-    position: "absolute",
-    bottom: 4,
-    background: "rgba(255,255,255,0.15)",
-    border: "none",
-    borderRadius: 4,
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 16,
-    padding: "4px 10px",
-    cursor: "pointer",
-    zIndex: 1,
-  };
-
   return (
     <div
       style={containerStyle}
@@ -141,26 +154,6 @@ export function Carousel({
           width={attr.shape.size.width}
           height={attr.shape.size.height}
         />
-      )}
-      {showButtons && attr.pages.length > 1 && (
-        <>
-          <button
-            style={{ ...navButtonStyle, left: 4 }}
-            onClick={() =>
-              setPageIndex(
-                (i) => (i - 1 + attr.pages.length) % attr.pages.length,
-              )
-            }
-          >
-            ‹
-          </button>
-          <button
-            style={{ ...navButtonStyle, right: 4 }}
-            onClick={() => setPageIndex((i) => (i + 1) % attr.pages.length)}
-          >
-            ›
-          </button>
-        </>
       )}
       <div style={pageStyle}>
         {activePage &&
@@ -189,9 +182,28 @@ export function Carousel({
                 />
               )}
               {widget.type === "label" && <Label attr={widget} />}
+              {widget.type === "image" && <ImageWidget attr={widget} screenSetId={screenSetId} />}
             </Fragment>
           ))}
       </div>
+      {showButtons && attr.pages.length > 1 && (
+        <>
+          <CarouselButtonView
+            btn={attr.buttons.previous}
+            containerWidth={attr.shape.size.width}
+            containerHeight={attr.shape.size.height}
+            onClick={() =>
+              setPageIndex((i) => (i - 1 + attr.pages.length) % attr.pages.length)
+            }
+          />
+          <CarouselButtonView
+            btn={attr.buttons.next}
+            containerWidth={attr.shape.size.width}
+            containerHeight={attr.shape.size.height}
+            onClick={() => setPageIndex((i) => (i + 1) % attr.pages.length)}
+          />
+        </>
+      )}
       {attr.pages.length > 1 && (
         <div style={dotsStyle}>
           {attr.pages.map((page, i) => (
@@ -210,6 +222,53 @@ export function Carousel({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function CarouselButtonView({
+  btn,
+  containerWidth,
+  containerHeight,
+  onClick,
+}: {
+  btn: CarouselPageButton;
+  containerWidth: number;
+  containerHeight: number;
+  onClick: () => void;
+}) {
+  const pos = computeButtonPosition(btn, containerWidth, containerHeight);
+
+  const fill = useMemo(() => {
+    const f = btn.shape.fill;
+    if (!f) return "transparent";
+    if (f.type === "solid") return f.value as string;
+    if (f.type === "gradient") return gradientString(f.value as Gradient);
+    return "transparent";
+  }, [btn.shape.fill]);
+
+  const style: CSSProperties = {
+    position: "absolute",
+    left: pos.x,
+    top: pos.y,
+    width: btn.shape.size.width,
+    height: btn.shape.size.height,
+    background: fill,
+    borderRadius: btn.shape.cornerRadius,
+    border: btn.shape.stroke
+      ? `${btn.shape.strokeWidth}px solid ${btn.shape.stroke}`
+      : "none",
+    cursor: "pointer",
+    zIndex: 1,
+  };
+
+  return (
+    <div style={style} onClick={onClick}>
+      <IconRenderer
+        icon={btn.icon}
+        containerWidth={btn.shape.size.width}
+        containerHeight={btn.shape.size.height}
+      />
     </div>
   );
 }

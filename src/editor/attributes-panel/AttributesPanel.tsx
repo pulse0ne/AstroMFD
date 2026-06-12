@@ -17,6 +17,7 @@ import {
   ButtonSpecificsSection,
   ScreenIdAndName,
 } from "./ButtonSpecificsSection.tsx";
+import { CarouselButtonsSection } from "./CarouselButtonsSection.tsx";
 import { CarouselSection } from "./CarouselSection.tsx";
 import { IconSection } from "./IconSection.tsx";
 import { ScreenSection } from "./ScreenSection.tsx";
@@ -252,6 +253,18 @@ export function AttributesPanel({
             shapeAttr={selectedWidget.shape}
             onUpdate={handleShapeAttrChange}
           />
+          {selectedWidget.navigation !== "swipe" && (
+            <CarouselButtonsSection
+              previous={selectedWidget.buttons.previous}
+              next={selectedWidget.buttons.next}
+              onUpdate={(which, btn) => {
+                onUpdate(
+                  { ...selectedWidget, buttons: { ...selectedWidget.buttons, [which]: btn } },
+                  `widget.carousel.buttons.${which}`,
+                );
+              }}
+            />
+          )}
         </div>
       )}
       {selectedWidget?.type === "image" && (
