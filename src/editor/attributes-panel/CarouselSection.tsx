@@ -3,6 +3,7 @@ import { MdAdd, MdDelete } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 
 import { CollapsibleSection } from "./CollapsibleSection.tsx";
+import { Toggle } from "./Toggle.tsx";
 
 export type CarouselSectionProps = {
   attr: CarouselAttributes;
@@ -36,6 +37,13 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
     onUpdate(
       { ...attr, navigation: e.target.value as CarouselNavigation },
       "widget.carousel.navigation",
+    );
+  };
+
+  const toggleHideIndicators = () => {
+    onUpdate(
+      { ...attr, hidePageIndicators: !attr.hidePageIndicators },
+      "widget.carousel.pageIndicatorsChange",
     );
   };
 
@@ -101,6 +109,10 @@ export function CarouselSection({ attr, onUpdate }: CarouselSectionProps) {
           <MdAdd size={14} />
           <span>Add Page</span>
         </button>
+        <div className="row align-items-center gap-12">
+          <span>Hide Indicators:</span>
+          <Toggle value={attr.hidePageIndicators} onToggle={toggleHideIndicators} />
+        </div>
       </div>
     </CollapsibleSection>
   );

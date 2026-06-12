@@ -8,8 +8,7 @@ import { Creator } from "./views/Creator.tsx";
 import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 // TODO:
-// - stylable carousel buttons
-// - carousel buttons that can't be deleted (maybe make these "locked" buttons have an attribute?)
+// - carousel: show/hide page indicators
 // - move items in or out of a container
 
 function App() {

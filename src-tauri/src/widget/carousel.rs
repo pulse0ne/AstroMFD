@@ -71,4 +71,6 @@ pub struct CarouselAttributes {
     pub navigation: CarouselNavigation,
     #[serde(default)]
     pub buttons: CarouselButtons,
+    #[serde(default)]
+    pub hide_page_indicators: bool,
 }

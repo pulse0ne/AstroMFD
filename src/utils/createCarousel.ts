@@ -121,6 +121,7 @@ export function createDefaultCarousel(): CarouselAttributes {
       previous: createPreviousButton(),
       next: createNextButton(),
     },
+    hidePageIndicators: false,
   };
 }
 

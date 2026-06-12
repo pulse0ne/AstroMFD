@@ -212,6 +212,7 @@ export type CarouselAttributes = WidgetBase<"carousel"> & {
     previous: CarouselPageButton;
     next: CarouselPageButton;
   };
+  hidePageIndicators: boolean;
 };
 
 export type ImageAttributes = WidgetBase<"image"> & {

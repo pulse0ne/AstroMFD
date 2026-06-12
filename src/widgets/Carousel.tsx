@@ -229,7 +229,7 @@ export function Carousel({
           />
         </>
       )}
-      {attr.pages.length > 1 &&
+      {(attr.pages.length > 1 && !attr.hidePageIndicators) &&
         attr.pages.map((page, i) => (
           <Circle
             key={page.id}

@@ -204,7 +204,7 @@ export function Carousel({
           />
         </>
       )}
-      {attr.pages.length > 1 && (
+      {(attr.pages.length > 1 && !attr.hidePageIndicators) && (
         <div style={dotsStyle}>
           {attr.pages.map((page, i) => (
             <div
