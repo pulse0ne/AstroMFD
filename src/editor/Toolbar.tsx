@@ -43,6 +43,7 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
   const screenSet = useECStore((state) => state.screenSet);
   const selectedScreen = useECStore(activeScreenSelector);
+  const editingContainerId = useECStore((state) => state.editingContainerId);
   const addScreen = useECStore((state) => state.addScreen);
   const updateScreen = useECStore((state) => state.updateScreen);
   const addWidget = useECStore((state) => state.addWidget);
@@ -139,12 +140,16 @@ export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
           <AddWidgetMenuItem onClick={() => handleAddWidget(createSlider)}>
             Slider
           </AddWidgetMenuItem>
-          <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>
-            Panel
-          </AddWidgetMenuItem>
-          <AddWidgetMenuItem onClick={() => handleAddWidget(createCarousel)}>
-            Carousel
-          </AddWidgetMenuItem>
+          {!editingContainerId && (
+            <>
+              <AddWidgetMenuItem onClick={() => handleAddWidget(createPanel)}>
+                Panel
+              </AddWidgetMenuItem>
+              <AddWidgetMenuItem onClick={() => handleAddWidget(createCarousel)}>
+                Carousel
+              </AddWidgetMenuItem>
+            </>
+          )}
           <AddWidgetMenuItem onClick={handleAddImage}>
             Image
           </AddWidgetMenuItem>

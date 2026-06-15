@@ -18,7 +18,12 @@ import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { ColorSwatch } from "./ColorSwatch.tsx";
 import { Toggle } from "./Toggle.tsx";
 
-export function ScreenSection() {
+export type ScreenSectionProps = {
+  effectsHidden: boolean;
+  onToggleEffectsHidden: () => void;
+};
+
+export function ScreenSection({ effectsHidden, onToggleEffectsHidden }: ScreenSectionProps) {
   const [syncPopupOpen, setSyncPopupOpen] = useState(false);
   const screenSet = useECStore((state) => state.screenSet);
   const activeScreen = useECStore(activeScreenSelector);
@@ -205,6 +210,17 @@ export function ScreenSection() {
                   value={Boolean(activeScreen?.effects?.noise)}
                 />
               </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}></div>
+
+        <table>
+          <tbody>
+            <tr>
+              <td>Hide effects in editor:</td>
+              <td><Toggle value={effectsHidden} onToggle={onToggleEffectsHidden} /></td>
             </tr>
           </tbody>
         </table>

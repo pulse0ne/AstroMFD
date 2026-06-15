@@ -8,7 +8,6 @@ import { Creator } from "./views/Creator.tsx";
 import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
 // TODO:
-// - carousel: show/hide page indicators
 // - move items in or out of a container
 
 function App() {

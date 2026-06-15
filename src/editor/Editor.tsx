@@ -9,6 +9,8 @@ import {
   PiArrowLineUp,
   PiArrowLineDown,
   PiTrashSimple,
+  PiScissors,
+  PiClipboard,
 } from "react-icons/pi";
 import { TbMagnet, TbMagnetOff } from "react-icons/tb";
 import { Group, Layer, Line, Rect, Stage, Transformer } from "react-konva";
@@ -25,6 +27,7 @@ import { WidgetRenderer } from "../widgets/WidgetRenderer.tsx";
 import { AttributesPanel } from "./attributes-panel/AttributesPanel.tsx";
 
 import "./editor.css";
+import { fastCopy } from "../utils/fastCopy.ts";
 
 const SCALE_FACTOR = 1.05;
 
@@ -50,9 +53,11 @@ export default function Editor() {
   const redo = useECStore((state) => state.redo);
   const enterContainer = useECStore((state) => state.enterContainer);
   const exitContainer = useECStore((state) => state.exitContainer);
+  const addWidget = useECStore((state) => state.addWidget);
   const sendToFront = useECStore((state) => state.sendToFront);
   const sendToBack = useECStore((state) => state.sendToBack);
 
+  const [hideEffects, setHideEffects] = useState(false); // TODO: persist
   const [isPressed, setPressed] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [ephemeralShapeState, setEphemeralShapeState] = useState<
@@ -69,6 +74,7 @@ export default function Editor() {
   const [stageScale, setStageScale] = useState<number>(1.0);
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [guides, setGuides] = useState<GuideLine[]>([]);
+  const clipboardRef = useRef<Widget | null>(null);
   const stageContainerRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const contentGroupRef = useRef<Konva.Group>(null);
@@ -80,6 +86,30 @@ export default function Editor() {
     () => size ?? { width: 1200, height: 800 },
     [size],
   );
+
+  const copyWidget = useCallback(() => {
+    if (activeWidget) {
+      clipboardRef.current = fastCopy(activeWidget);
+    }
+  }, [activeWidget]);
+
+  const cutWidget = useCallback(() => {
+    if (activeWidget) {
+      clipboardRef.current = fastCopy(activeWidget);
+      removeActiveWidget()
+    }
+  }, [activeWidget, removeActiveWidget]);
+
+  const pasteWidget = useCallback(() => {
+    if (!clipboardRef.current) return;
+    const widget = fastCopy(clipboardRef.current);
+    widget.id = uuid();
+    widget.shape.position = {
+      x: widget.shape.position.x + 20,
+      y: widget.shape.position.y + 20,
+    };
+    addWidget(widget);
+  }, [addWidget]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -202,6 +232,22 @@ export default function Editor() {
         duplicateWidget();
         return;
       }
+      if (ctrl && e.key === "c") {
+        e.preventDefault();
+        copyWidget();
+        return;
+      }
+      if (ctrl && e.key === "x") {
+        e.preventDefault();
+        cutWidget();
+        return;
+      }
+      if (ctrl && e.key === "v") {
+        e.preventDefault();
+        pasteWidget();
+        return;
+      }
+
       if (e.key === "Escape") {
         if (editingContainerId) {
           exitContainer();
@@ -246,6 +292,9 @@ export default function Editor() {
     selectedIndices,
     removeActiveWidget,
     duplicateWidget,
+    copyWidget,
+    cutWidget,
+    pasteWidget,
     unselectWidget,
     editingContainerId,
     exitContainer,
@@ -327,7 +376,11 @@ export default function Editor() {
     evt.evt.preventDefault();
     const target = evt.target;
     if (target instanceof Konva.Stage || target.id() === "bg") {
-      setContextMenu(null);
+      if (clipboardRef.current) {
+        setContextMenu({ x: evt.evt.clientX, y: evt.evt.clientY });
+      } else {
+        setContextMenu(null);
+      }
       return;
     }
     // Find the widget group (top-level group with an id)
@@ -414,17 +467,18 @@ export default function Editor() {
         return pos;
       }
       const widgets = visibleWidgets ?? [];
+      const snapSize = editingContainer ? editingContainer.shape.size : workspaceSize;
       const result = computeSnapGuides(
         pos,
         dragSize,
         widgets,
         activeWidget.id,
-        workspaceSize,
+        snapSize,
       );
       setGuides(result.guides);
       return { x: result.x, y: result.y };
     },
-    [snapEnabled, activeWidget, visibleWidgets, workspaceSize],
+    [snapEnabled, activeWidget, visibleWidgets, workspaceSize, editingContainer],
   );
 
   const clearGuides = useCallback(() => setGuides([]), []);
@@ -485,35 +539,39 @@ export default function Editor() {
             </button>
           </div>
         )}
-        {activeScreen?.effects?.scanlines && (
-          <div
-            style={{ position: "absolute" }}
-            className="fill scanlines"
-          ></div>
-        )}
-        {activeScreen?.effects?.lcdGrid && (
-          <div style={{ position: "absolute" }} className="fill lcd-grid"></div>
-        )}
-        {activeScreen?.effects?.vignette && (
-          <div style={{ position: "absolute" }} className="fill vignette"></div>
-        )}
-        {activeScreen?.effects?.phosphorGlow && (
-          <div
-            style={{ position: "absolute" }}
-            className="fill phosphor-glow"
-          ></div>
-        )}
-        {activeScreen?.effects?.flicker && (
-          <div style={{ position: "absolute" }} className="fill flicker"></div>
-        )}
-        {activeScreen?.effects?.chromaticAberration && (
-          <div
-            style={{ position: "absolute" }}
-            className="fill chromatic-aberration"
-          ></div>
-        )}
-        {activeScreen?.effects?.noise && (
-          <div style={{ position: "absolute" }} className="fill noise"></div>
+        {!hideEffects && (
+          <>
+            {activeScreen?.effects?.scanlines && (
+              <div
+                style={{ position: "absolute" }}
+                className="fill scanlines"
+              ></div>
+            )}
+            {activeScreen?.effects?.lcdGrid && (
+              <div style={{ position: "absolute" }} className="fill lcd-grid"></div>
+            )}
+            {activeScreen?.effects?.vignette && (
+              <div style={{ position: "absolute" }} className="fill vignette"></div>
+            )}
+            {activeScreen?.effects?.phosphorGlow && (
+              <div
+                style={{ position: "absolute" }}
+                className="fill phosphor-glow"
+              ></div>
+            )}
+            {activeScreen?.effects?.flicker && (
+              <div style={{ position: "absolute" }} className="fill flicker"></div>
+            )}
+            {activeScreen?.effects?.chromaticAberration && (
+              <div
+                style={{ position: "absolute" }}
+                className="fill chromatic-aberration"
+              ></div>
+            )}
+            {activeScreen?.effects?.noise && (
+              <div style={{ position: "absolute" }} className="fill noise"></div>
+            )}
+          </>
         )}
         <div
           className="stage-container relative"
@@ -598,6 +656,25 @@ export default function Editor() {
                         rotateEnabled={false}
                         resizeEnabled={selectedIndices.size <= 1}
                       />
+                      {guides.map((guide, i) => guide.orientation === "vertical" ? (
+                        <Line
+                          key={`guide-${i}`}
+                          points={[guide.position, 0, guide.position, editingContainer.shape.size.height]}
+                          stroke="#ff6b9d"
+                          strokeWidth={1 / stageScale}
+                          dash={[4 / stageScale, 4 / stageScale]}
+                          listening={false}
+                        />
+                      ) : (
+                        <Line
+                          key={`guide-${i}`}
+                          points={[0, guide.position, editingContainer.shape.size.width, guide.position]}
+                          stroke="#ff6b9d"
+                          strokeWidth={1 / stageScale}
+                          dash={[4 / stageScale, 4 / stageScale]}
+                          listening={false}
+                        />
+                      ))}
                     </Group>
                   </>
                 ) : (
@@ -623,7 +700,7 @@ export default function Editor() {
                   resizeEnabled={selectedIndices.size <= 1}
                 />
               )}
-              {guides.map((guide, i) =>
+              {!editingContainerId && guides.map((guide, i) =>
                 guide.orientation === "vertical" ? (
                   <Line
                     key={`guide-${i}`}
@@ -683,40 +760,73 @@ export default function Editor() {
           style={{ left: contextMenu.x, top: contextMenu.y }}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          <div
-            className="context-menu-item"
-            onClick={() => { duplicateWidget(); setContextMenu(null); }}
-          >
-            <PiCopySimple size={14} /> Duplicate
-          </div>
-          <div
-            className="context-menu-item"
-            onClick={() => { sendToFront(); setContextMenu(null); }}
-          >
-            <PiArrowLineUp size={14} /> Bring to Front
-          </div>
-          <div
-            className="context-menu-item"
-            onClick={() => { sendToBack(); setContextMenu(null); }}
-          >
-            <PiArrowLineDown size={14} /> Send to Back
-          </div>
-          <div className="context-menu-separator" />
-          <div
-            className="context-menu-item danger"
-            onClick={() => { removeActiveWidget(); setContextMenu(null); }}
-          >
-            <PiTrashSimple size={14} /> Delete
-          </div>
+          {activeWidget && (
+            <>
+              <div
+                className="context-menu-item"
+                onClick={() => { copyWidget(); setContextMenu(null); }}
+              >
+                <PiCopySimple size={14} /> Copy
+              </div>
+              <div
+                className="context-menu-item"
+                onClick={() => { cutWidget(); setContextMenu(null); }}
+              >
+                <PiScissors size={14} /> Cut
+              </div>
+            </>
+          )}
+          {clipboardRef.current && (
+            <div
+              className="context-menu-item"
+              onClick={() => { pasteWidget(); setContextMenu(null); }}
+            >
+              <PiClipboard size={14} /> Paste
+            </div>
+          )}
+          {activeWidget && (
+            <>
+              <div
+                className="context-menu-item"
+                onClick={() => { duplicateWidget(); setContextMenu(null); }}
+              >
+                <PiCopySimple size={14} /> Duplicate
+              </div>
+              <div
+                className="context-menu-item"
+                onClick={() => { sendToFront(); setContextMenu(null); }}
+              >
+                <PiArrowLineUp size={14} /> Bring to Front
+              </div>
+              <div
+                className="context-menu-item"
+                onClick={() => { sendToBack(); setContextMenu(null); }}
+              >
+                <PiArrowLineDown size={14} /> Send to Back
+              </div>
+              <div className="context-menu-separator" />
+              <div
+                className="context-menu-item danger"
+                onClick={() => { removeActiveWidget(); setContextMenu(null); }}
+              >
+                <PiTrashSimple size={14} /> Delete
+              </div>
+            </>
+          )}
         </div>
       )}
       <AttributesPanel
         ephemeralShapeState={ephemeralShapeState}
         selectedWidget={activeWidget}
         isPressed={isPressed}
+        isHideEffects={hideEffects}
         onUpdate={handleAttributePanelUpdate}
         togglePressed={() => setPressed((ov) => !ov)}
+        toggleHideEffects={() => setHideEffects(!hideEffects)}
       />
     </div>
   );
+}
+function uuid(): string {
+  throw new Error("Function not implemented.");
 }

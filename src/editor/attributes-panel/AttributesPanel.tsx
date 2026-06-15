@@ -48,16 +48,20 @@ export type AttributesPanelProps = {
   ephemeralShapeState: (Size & Position) | null;
   selectedWidget: Widget | null;
   isPressed: boolean;
+  isHideEffects: boolean;
   onUpdate: (updated: Widget, type: string) => void;
   togglePressed: () => void;
+  toggleHideEffects: () => void;
 };
 
 export function AttributesPanel({
   ephemeralShapeState,
   selectedWidget,
   isPressed,
+  isHideEffects,
   onUpdate,
   togglePressed,
+  toggleHideEffects,
 }: AttributesPanelProps) {
   const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
   const screens = useECStore(screensSelector);
@@ -137,7 +141,10 @@ export function AttributesPanel({
       {!selectedWidget && (
         <div>
           <h2 className="border-b p8-b">SCREEN</h2>
-          <ScreenSection />
+          <ScreenSection
+            effectsHidden={isHideEffects}
+            onToggleEffectsHidden={toggleHideEffects}
+          />
         </div>
       )}
       {selectedWidget?.type === "button" && (

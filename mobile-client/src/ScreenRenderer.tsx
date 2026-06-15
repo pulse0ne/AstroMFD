@@ -5,7 +5,7 @@ import type {
   Screen,
   Size,
 } from "@common/shared/models";
-import { Fragment, type CSSProperties } from "react";
+import { Fragment, useEffect, type CSSProperties } from "react";
 
 import { Button } from "./widgets/Button.tsx";
 import { Carousel } from "./widgets/Carousel.tsx";
@@ -31,6 +31,11 @@ export function ScreenRenderer({
   onMessage,
   onExit,
 }: ScreenRendererProps) {
+
+  useEffect(() => {
+    window.document.documentElement.style.backgroundColor = screen.backgroundColor;
+  }, [screen.backgroundColor]);
+
   const bgStyle: CSSProperties = {
     position: "relative",
     backgroundColor: screen.backgroundColor,
