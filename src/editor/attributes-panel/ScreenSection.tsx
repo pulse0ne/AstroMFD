@@ -11,7 +11,7 @@ import {
 import Popup from "reactjs-popup";
 
 import { useDevices } from "../../hooks/useDevices.tsx";
-import { useECStore } from "../../store";
+import { useAstroStore } from "../../store";
 import { activeScreenSelector } from "../../store/selectors.ts";
 import { ClientInfo } from "../../types/websocket.ts";
 import { CollapsibleSection } from "./CollapsibleSection.tsx";
@@ -25,10 +25,10 @@ export type ScreenSectionProps = {
 
 export function ScreenSection({ effectsHidden, onToggleEffectsHidden }: ScreenSectionProps) {
   const [syncPopupOpen, setSyncPopupOpen] = useState(false);
-  const screenSet = useECStore((state) => state.screenSet);
-  const activeScreen = useECStore(activeScreenSelector);
-  const updateSize = useECStore((state) => state.updateSize);
-  const updateScreen = useECStore((state) => state.updateScreen);
+  const screenSet = useAstroStore((state) => state.screenSet);
+  const activeScreen = useAstroStore(activeScreenSelector);
+  const updateSize = useAstroStore((state) => state.updateSize);
+  const updateScreen = useAstroStore((state) => state.updateScreen);
 
   const { devices } = useDevices();
 

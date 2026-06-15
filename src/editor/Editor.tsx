@@ -15,7 +15,7 @@ import {
 import { TbMagnet, TbMagnetOff } from "react-icons/tb";
 import { Group, Layer, Line, Rect, Stage, Transformer } from "react-konva";
 
-import { useECStore } from "../store";
+import { useAstroStore } from "../store";
 import {
   activeScreenSelector,
   activeWidgetListSelector,
@@ -41,30 +41,30 @@ function saveToLocalStorage(key: string, value: string): string {
 }
 
 export default function Editor() {
-  const activeScreen = useECStore(activeScreenSelector);
-  const activeWidget = useECStore(activeWidgetSelector);
-  const editingContainer = useECStore(editingContainerSelector);
-  const editingContainerId = useECStore((state) => state.editingContainerId);
-  const visibleWidgets = useECStore(activeWidgetListSelector);
-  const removeActiveWidget = useECStore((state) => state.deleteActiveWidget);
-  const duplicateWidget = useECStore((state) => state.duplicateActiveWidget);
-  const selectWidget = useECStore((state) => state.setActiveWidgetIndex);
-  const toggleWidget = useECStore((state) => state.toggleWidgetIndex);
-  const unselectWidget = useECStore((state) => state.unsetActiveWidgetIndex);
-  const activeWidgetIndex = useECStore((state) => state.activeWidgetIndex);
-  const selectedIndices = useECStore((state) => state.selectedWidgetIndices);
-  const updateWidget = useECStore((state) => state.updateWidget);
-  const batchMoveWidgets = useECStore((state) => state.batchMoveWidgets);
-  const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
-  const size = useECStore((state) => state.screenSet?.size);
-  const nudgeWidget = useECStore((state) => state.nudge);
-  const undo = useECStore((state) => state.undo);
-  const redo = useECStore((state) => state.redo);
-  const enterContainer = useECStore((state) => state.enterContainer);
-  const exitContainer = useECStore((state) => state.exitContainer);
-  const addWidget = useECStore((state) => state.addWidget);
-  const sendToFront = useECStore((state) => state.sendToFront);
-  const sendToBack = useECStore((state) => state.sendToBack);
+  const activeScreen = useAstroStore(activeScreenSelector);
+  const activeWidget = useAstroStore(activeWidgetSelector);
+  const editingContainer = useAstroStore(editingContainerSelector);
+  const editingContainerId = useAstroStore((state) => state.editingContainerId);
+  const visibleWidgets = useAstroStore(activeWidgetListSelector);
+  const removeActiveWidget = useAstroStore((state) => state.deleteActiveWidget);
+  const duplicateWidget = useAstroStore((state) => state.duplicateActiveWidget);
+  const selectWidget = useAstroStore((state) => state.setActiveWidgetIndex);
+  const toggleWidget = useAstroStore((state) => state.toggleWidgetIndex);
+  const unselectWidget = useAstroStore((state) => state.unsetActiveWidgetIndex);
+  const activeWidgetIndex = useAstroStore((state) => state.activeWidgetIndex);
+  const selectedIndices = useAstroStore((state) => state.selectedWidgetIndices);
+  const updateWidget = useAstroStore((state) => state.updateWidget);
+  const batchMoveWidgets = useAstroStore((state) => state.batchMoveWidgets);
+  const screenSetId = useAstroStore((state) => state.screenSet?.id ?? "");
+  const size = useAstroStore((state) => state.screenSet?.size);
+  const nudgeWidget = useAstroStore((state) => state.nudge);
+  const undo = useAstroStore((state) => state.undo);
+  const redo = useAstroStore((state) => state.redo);
+  const enterContainer = useAstroStore((state) => state.enterContainer);
+  const exitContainer = useAstroStore((state) => state.exitContainer);
+  const addWidget = useAstroStore((state) => state.addWidget);
+  const sendToFront = useAstroStore((state) => state.sendToFront);
+  const sendToBack = useAstroStore((state) => state.sendToBack);
 
   const [hideEffects, setHideEffects] = useState(() => loadFromLocalStorage("hideEffects") === "true");
   const [isPressed, setPressed] = useState(false);

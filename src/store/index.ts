@@ -11,7 +11,7 @@ import { createLastStyleSlice } from "./lastStyle.ts";
 
 enableMapSet();
 
-export const useECStore = create<RootState>()(
+export const useAstroStore = create<RootState>()(
   immer((...args) => ({
     ...createScreenSetSlice(...args),
     ...createScreenSlice(...args),

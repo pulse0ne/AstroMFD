@@ -5,7 +5,7 @@ import {
 } from "@common/shared/models";
 import { useState } from "react";
 
-import { useECStore } from "../../store";
+import { useAstroStore } from "../../store";
 import { ActionSequenceEditor } from "./ActionSequenceEditor.tsx";
 import { CollapsibleSection } from "./CollapsibleSection.tsx";
 import { Toggle } from "./Toggle.tsx";
@@ -54,7 +54,7 @@ export function ButtonSpecificsSection({
   togglePressed,
   onUpdate,
 }: ButtonSpecificsSectionProps) {
-  const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
+  const screenSetId = useAstroStore((state) => state.screenSet?.id ?? "");
   const [editorOpen, setEditorOpen] = useState(false);
 
   const handleButtonTypeChange = (value: ButtonType) => {

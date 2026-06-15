@@ -9,7 +9,7 @@ import {
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 
-import { useECStore } from "../../store";
+import { useAstroStore } from "../../store";
 
 export type SizePositionSectionProps = {
   size: Size;
@@ -24,10 +24,10 @@ export function SizePositionSection({
   onSizeChange,
   onPositionChange,
 }: SizePositionSectionProps) {
-  const sendForward = useECStore((state) => state.sendForward);
-  const sendBackward = useECStore((state) => state.sendBackward);
-  const sendToFront = useECStore((state) => state.sendToFront);
-  const sendToBack = useECStore((state) => state.sendToBack);
+  const sendForward = useAstroStore((state) => state.sendForward);
+  const sendBackward = useAstroStore((state) => state.sendBackward);
+  const sendToFront = useAstroStore((state) => state.sendToFront);
+  const sendToBack = useAstroStore((state) => state.sendToBack);
 
   const handleSizeChange = (key: keyof Size, value: number) => {
     if (key === "width") {

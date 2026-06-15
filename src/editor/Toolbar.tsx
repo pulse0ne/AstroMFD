@@ -11,7 +11,7 @@ import { useNavigate } from "react-router";
 import Popup from "reactjs-popup";
 
 import { useAvailableInputKeys } from "../hooks/useAvailableInputKeys.tsx";
-import { useECStore } from "../store";
+import { useAstroStore } from "../store";
 import {
   activeScreenSelector,
   activeScreenWidgetsSelector,
@@ -41,19 +41,19 @@ import { EditableTitle } from "./EditableTitle.tsx";
 
 export function Toolbar({ dirtyRef }: { dirtyRef: MutableRefObject<boolean> }) {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
-  const screenSet = useECStore((state) => state.screenSet);
-  const selectedScreen = useECStore(activeScreenSelector);
-  const editingContainerId = useECStore((state) => state.editingContainerId);
-  const addScreen = useECStore((state) => state.addScreen);
-  const updateScreen = useECStore((state) => state.updateScreen);
-  const addWidget = useECStore((state) => state.addWidget);
-  const widgets = useECStore(activeScreenWidgetsSelector);
-  const hasUndos = useECStore(hasUndosSelector);
-  const hasRedos = useECStore(hasRedosSelector);
-  const undo = useECStore((state) => state.undo);
-  const redo = useECStore((state) => state.redo);
-  const lastStyle = useECStore((state) => state.lastStyle);
-  const lastTextStyle = useECStore((state) => state.lastTextStyle);
+  const screenSet = useAstroStore((state) => state.screenSet);
+  const selectedScreen = useAstroStore(activeScreenSelector);
+  const editingContainerId = useAstroStore((state) => state.editingContainerId);
+  const addScreen = useAstroStore((state) => state.addScreen);
+  const updateScreen = useAstroStore((state) => state.updateScreen);
+  const addWidget = useAstroStore((state) => state.addWidget);
+  const widgets = useAstroStore(activeScreenWidgetsSelector);
+  const hasUndos = useAstroStore(hasUndosSelector);
+  const hasRedos = useAstroStore(hasRedosSelector);
+  const undo = useAstroStore((state) => state.undo);
+  const redo = useAstroStore((state) => state.redo);
+  const lastStyle = useAstroStore((state) => state.lastStyle);
+  const lastTextStyle = useAstroStore((state) => state.lastTextStyle);
   const navigate = useNavigate();
   const { defaultKey } = useAvailableInputKeys();
 

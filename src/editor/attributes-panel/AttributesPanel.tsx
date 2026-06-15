@@ -8,7 +8,7 @@ import {
 } from "@common/shared/models";
 import { invoke } from "@tauri-apps/api/core";
 
-import { useECStore } from "../../store";
+import { useAstroStore } from "../../store";
 import {
   activeScreenSelector,
   screensSelector,
@@ -63,11 +63,11 @@ export function AttributesPanel({
   togglePressed,
   toggleHideEffects,
 }: AttributesPanelProps) {
-  const screenSetId = useECStore((state) => state.screenSet?.id ?? "");
-  const screens = useECStore(screensSelector);
-  const currentScreen = useECStore(activeScreenSelector);
-  const updateLastStyle = useECStore((state) => state.updateLastStyle);
-  const updateLastTextStyle = useECStore((state) => state.updateLastTextStyle);
+  const screenSetId = useAstroStore((state) => state.screenSet?.id ?? "");
+  const screens = useAstroStore(screensSelector);
+  const currentScreen = useAstroStore(activeScreenSelector);
+  const updateLastStyle = useAstroStore((state) => state.updateLastStyle);
+  const updateLastTextStyle = useAstroStore((state) => state.updateLastTextStyle);
 
   const handleSizeChange = (size: Size) => {
     if (!selectedWidget) return;

@@ -5,7 +5,7 @@ import { PiCopySimple, PiCursorText, PiTrashSimple } from "react-icons/pi";
 
 import useTauriListen from "../hooks/useTauriListen.tsx";
 import { Modal } from "../Modal.tsx";
-import { useECStore } from "../store";
+import { useAstroStore } from "../store";
 import { duplicateScreen } from "../utils/duplicateScreen.ts";
 import { EditableTitle } from "./EditableTitle.tsx";
 
@@ -22,14 +22,14 @@ type ContextMenuState = {
 } | null;
 
 export function ScreenSelector() {
-  const screenSet = useECStore((state) => state.screenSet);
-  const activeScreenIndex = useECStore((state) => state.activeScreenIndex);
-  const setActiveScreenIndex = useECStore(
+  const screenSet = useAstroStore((state) => state.screenSet);
+  const activeScreenIndex = useAstroStore((state) => state.activeScreenIndex);
+  const setActiveScreenIndex = useAstroStore(
     (state) => state.setActiveScreenIndex,
   );
-  const updateScreen = useECStore((state) => state.updateScreen);
-  const deleteScreen = useECStore((state) => state.deleteScreen);
-  const addScreen = useECStore((state) => state.addScreen);
+  const updateScreen = useAstroStore((state) => state.updateScreen);
+  const deleteScreen = useAstroStore((state) => state.deleteScreen);
+  const addScreen = useAstroStore((state) => state.addScreen);
   const [screenImages, setScreenImages] = useState<Record<string, string>>({});
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null);
   const [renaming, setRenaming] = useState<{

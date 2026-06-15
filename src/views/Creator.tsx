@@ -6,7 +6,7 @@ import { useParams } from "react-router";
 import Editor from "../editor/Editor.tsx";
 import { ScreenSelector } from "../editor/ScreenSelector.tsx";
 import { Toolbar } from "../editor/Toolbar.tsx";
-import { useECStore } from "../store";
+import { useAstroStore } from "../store";
 
 function debounce<T extends (...args: any[]) => any>(
   callback: T,
@@ -33,8 +33,8 @@ const debouncedUpdate = debounce(update, 250);
 
 export function Creator() {
   const { screenSetId } = useParams();
-  const screenSet = useECStore((state) => state.screenSet);
-  const selectScreenSet = useECStore((state) => state.setActiveScreenSet);
+  const screenSet = useAstroStore((state) => state.screenSet);
+  const selectScreenSet = useAstroStore((state) => state.setActiveScreenSet);
   const dirtyRef = useRef(false);
   const initialLoadRef = useRef(true);
 
