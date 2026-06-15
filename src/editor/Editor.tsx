@@ -31,6 +31,15 @@ import { fastCopy } from "../utils/fastCopy.ts";
 
 const SCALE_FACTOR = 1.05;
 
+function loadFromLocalStorage(key: string): string | null {
+  return window.localStorage.getItem(key);
+}
+
+function saveToLocalStorage(key: string, value: string): string {
+  window.localStorage.setItem(key, value);
+  return value;
+}
+
 export default function Editor() {
   const activeScreen = useECStore(activeScreenSelector);
   const activeWidget = useECStore(activeWidgetSelector);
@@ -57,7 +66,7 @@ export default function Editor() {
   const sendToFront = useECStore((state) => state.sendToFront);
   const sendToBack = useECStore((state) => state.sendToBack);
 
-  const [hideEffects, setHideEffects] = useState(false); // TODO: persist
+  const [hideEffects, setHideEffects] = useState(() => loadFromLocalStorage("hideEffects") === "true");
   const [isPressed, setPressed] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [ephemeralShapeState, setEphemeralShapeState] = useState<
@@ -822,7 +831,7 @@ export default function Editor() {
         isHideEffects={hideEffects}
         onUpdate={handleAttributePanelUpdate}
         togglePressed={() => setPressed((ov) => !ov)}
-        toggleHideEffects={() => setHideEffects(!hideEffects)}
+        toggleHideEffects={() => { const v = !hideEffects; setHideEffects(v); saveToLocalStorage("hideEffects", String(v)); }}
       />
     </div>
   );

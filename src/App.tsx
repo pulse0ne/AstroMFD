@@ -7,9 +7,6 @@ import { UpdateChecker } from "./UpdateChecker.tsx";
 import { Creator } from "./views/Creator.tsx";
 import { ScreenSetSelector } from "./views/ScreenSetSelector.tsx";
 
-// TODO:
-// - move items in or out of a container
-
 function App() {
   return (
     <main>
