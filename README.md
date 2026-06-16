@@ -20,7 +20,9 @@ Built with [Tauri](https://tauri.app), React, and Rust.
 # Usage
 After installation, launch the app and create a new screen set. Use the editor to design your layout, then connect your mobile device to the same Wi-Fi network and open the provided URL (or scan the QR code) to access your custom control panel.
 
-Coming soon: link to video demo
+**Important Note for Windows Users**: [vJoy](https://sourceforge.net/projects/vjoystick/) is required for handling inputs
+
+[Demo video](https://youtu.be/l5MCBeZRUok)
 
 ## Getting Started Developing
 
@@ -69,7 +71,7 @@ AstroMFD/
 1. The desktop app runs an HTTP + WebSocket server on a configurable port (default 11011)
 2. Mobile devices connect via browser to `http://<your-ip>:<port>`
 3. Button presses on the mobile client are sent over WebSocket
-4. The Rust backend translates them into virtual joystick inputs or keyboard events
+4. The Rust backend translates them into virtual joystick inputs (vJoy on windows, evdev on linux) or keyboard events (linux only)
 
 ## Configuration
 
