@@ -61,18 +61,17 @@ export function ScreenSetManager() {
   }, [screenSets]);
 
   useEffect(() => {
-    const targetIx = screenSets.findIndex(
-      (s) => s.id === layoutPushedMessage?.id,
-    );
-    if (targetIx > -1) {
-      console.log("updating layout");
-      setScreenSets((ov) => {
-        const copy = JSON.parse(JSON.stringify(ov)) as ScreenSet[];
-        copy[targetIx] = layoutPushedMessage!.screenSet;
-        return copy;
-      });
-    }
-  }, [layoutPushedMessage, screenSets]);
+    if (!layoutPushedMessage) return;
+
+    setScreenSets((ov) => {
+      const targetIx = ov.findIndex((s) => s.id === layoutPushedMessage.id);
+      if (targetIx === -1) return ov;
+
+      const copy = JSON.parse(JSON.stringify(ov)) as ScreenSet[];
+      copy[targetIx] = layoutPushedMessage.screenSet;
+      return copy;
+    });
+  }, [layoutPushedMessage]);
 
   const selectedScreenSet = screenSets.find((i) => i.id === selectedId);
 
